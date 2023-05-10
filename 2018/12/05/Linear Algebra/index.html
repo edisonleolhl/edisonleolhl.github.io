@@ -1,0 +1,558 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Linear Algebra | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Essence of Linear Algebra普适的代价是抽象 Abstractness is the price of generality 向量（Vector） 计算机学生眼里：向量是数字列表  物理学生眼里：向量是箭头  数学家认为：向量可以表示任何东西，只要满足两个运算关系——数乘（scalar multiplication）与加法   线性组合、张成的空间和基（Linear comb">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linear Algebra">
+<meta property="og:url" content="http://example.com/2018/12/05/Linear%20Algebra/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="Essence of Linear Algebra普适的代价是抽象 Abstractness is the price of generality 向量（Vector） 计算机学生眼里：向量是数字列表  物理学生眼里：向量是箭头  数学家认为：向量可以表示任何东西，只要满足两个运算关系——数乘（scalar multiplication）与加法   线性组合、张成的空间和基（Linear comb">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2018-12-04T17:06:07.000Z">
+<meta property="article:modified_time" content="2023-05-10T12:46:36.017Z">
+<meta property="article:author" content="一个廖少少">
+<meta property="article:tag" content="数学">
+<meta property="article:tag" content="线性代数">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2018/12/05/Linear%20Algebra/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linear Algebra',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-10 20:46:36'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Linear Algebra</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2018-12-04T17:06:07.000Z" title="Created 2018-12-05 01:06:07">2018-12-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-05-10T12:46:36.017Z" title="Updated 2023-05-10 20:46:36">2023-05-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%B0%E5%AD%A6/">数学</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Linear Algebra"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Essence-of-Linear-Algebra"><a href="#Essence-of-Linear-Algebra" class="headerlink" title="Essence of Linear Algebra"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av6731067/?p=1">Essence of Linear Algebra</a></h2><p>普适的代价是抽象</p>
+<p>Abstractness is the price of generality</p>
+<h3 id="向量（Vector）"><a href="#向量（Vector）" class="headerlink" title="向量（Vector）"></a>向量（Vector）</h3><ul>
+<li><p>计算机学生眼里：向量是数字列表</p>
+</li>
+<li><p>物理学生眼里：向量是箭头</p>
+</li>
+<li><p>数学家认为：向量可以表示任何东西，只要满足两个运算关系——数乘（scalar multiplication）与加法</p>
+</li>
+</ul>
+<h3 id="线性组合、张成的空间和基（Linear-combination、span-and-base）"><a href="#线性组合、张成的空间和基（Linear-combination、span-and-base）" class="headerlink" title="线性组合、张成的空间和基（Linear combination、span and base）"></a>线性组合、张成的空间和基（Linear combination、span and base）</h3><ul>
+<li><p>将每个坐标看成标量，这些标量与基向量数乘后就可以表示所有向量</p>
+</li>
+<li><p>对于二维空间，只需要两个<em><strong>基向量</strong></em>——i-hat and j-hat，就可以用它们的线性组合表示整个二维空间所有的向量</p>
+<p>但是如果这两个基向量是同向或者反向的，则没法表示整个二维空间的所有向量</p>
+</li>
+<li><p>为何叫<em><strong>线性组合</strong></em>？</p>
+<p>对于二维空间的基向量，如果把其中一个基向量固定，另一个基向量变化，则合向量的末端会落在一条直线上</p>
+</li>
+<li><p>基向量的全部线性组合构成的向量集合称为“<em><strong>张成的空间</strong></em>”</p>
+</li>
+<li><p>对于三维空间，两个向量张成的空间是什么？</p>
+<p>根据三点共面，张成的空间是这两个向量所确定的面</p>
+</li>
+<li><p>对于三维空间，三个向量张成的空间是什么？</p>
+<p>如果三个向量不共面，则张成的空间是整个三维空间，这时这三个向量<em><strong>线性无关（linearly independent）</strong></em></p>
+<p>如果三个向量共面，则引入的第三个向量并不会使空间维数增加，因为这三个向量是<em><strong>线性相关（linearly dependent）</strong></em>的，第三个向量已经落在了由前两个向量张成的空间里，可以由前两个向量线性表示</p>
+</li>
+<li><p>由此引出基的严格定义（From维基百科）：</p>
+<p>A basis <em>B</em> of a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Vector_space">vector space</a>  <em>V</em> over a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Field_(mathematics)">field</a>  <em>F</em> (such as the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Real_numbers">real numbers</a> R or the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Complex_number">complex numbers</a> C) is a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Linear_independence">linearly independent</a> subset of <em>V</em> that <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Linear_span">spans</a>  <em>V</em>.</p>
+<p><strong>向量空间的一个基是张成该空间的一个线性无关V的子集</strong></p>
+<p>This means that, a subset B of <em>V</em> is a basis if it satisfies the two following conditions:</p>
+<ul>
+<li><p>the <em>linear independence</em> property:</p>
+<p>for every finite subset {<em>b</em>1, …, <em>bn</em>} of B and every <em>a</em>1, …, <em>an</em> in <strong>F</strong>, if <em>a</em>1<em>b</em>1 + ⋅⋅⋅ + <em>anbn</em> &#x3D; 0, then necessarily <em>a</em>1 &#x3D; ⋅⋅⋅ &#x3D; <em>an</em> &#x3D; 0;</p>
+</li>
+<li><p>the <em>spanning</em> property:</p>
+<p>for every (vector) <em>v</em> in <em>V</em>, it is possible to choose <em>v</em>1, …, <em>vn</em> in <strong>F</strong> and <em>b</em>1, …, <em>bn</em> in B such that <em>v</em> &#x3D; <em>v</em>1<em>b</em>1 + ⋅⋅⋅ + <em>vnbn</em>.</p>
+</li>
+</ul>
+<p>The <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Scalar_(mathematics)">scalars</a>  <em>vi</em> are called the coordinates of the vector <em>v</em> with respect to the basis <em>B</em>, and by the first property they are uniquely determined.</p>
+<p>标量vi是向量v关于基B的坐标，根据第一个性质，vi是唯一确定的</p>
+</li>
+</ul>
+<h3 id="矩阵与线性变换（Matrices-and-Linear-transformations）"><a href="#矩阵与线性变换（Matrices-and-Linear-transformations）" class="headerlink" title="矩阵与线性变换（Matrices and Linear transformations）"></a><strong>矩阵与线性变换（Matrices and Linear transformations）</strong></h3><ul>
+<li><p>线性变换其实只是函数（function）的另一种说法</p>
+<p>用“线性变换”而不是“线性函数”，是为了表示“移动”的概念，因为线性变换可以让向量移动到另一个位置</p>
+</li>
+<li><p>线性变换</p>
+<p>（二维平面）直线仍然是直线、保持原点不动、保持网格线平行且等距</p>
+</li>
+<li><p>矩阵的积</p>
+<p>对应的两个线性变换相继作用</p>
+<p>从右向左读，就像函数一样</p>
+<p>Matrix: A×B×X，X先与B相乘，再与A相乘 &#x2F; X先做关于B的线性变化，再做关于A的线性变换</p>
+<p>Function: f(g(x))，g是关于变量x的函数，而f是关于g的函数</p>
+</li>
+<li><p>矩阵不具有交换律（Commutative property）：</p>
+<p>A×B≠B×A</p>
+<p>但是从右往左读的，具有结合律（Associative property）：</p>
+<p>(A×B)×C&#x3D;A×(B×C)</p>
+</li>
+<li><p>线性变换，其实就是矩阵相乘，AX&#x3D;Y，其中X为输入向量（nx1矩阵），Y为输出向量（nx1矩阵），A为与某线性变换对应的mxn矩阵</p>
+</li>
+</ul>
+<h3 id="行列式（Determinant）"><a href="#行列式（Determinant）" class="headerlink" title="行列式（Determinant）"></a>行列式（Determinant）</h3><ul>
+<li><p>线性变换有时会使空间延伸，有时会压缩空间，所以需要探讨空间（面积&#x2F;体积&#x2F;…）变化了多少倍</p>
+<p>考虑如下矩阵</p>
+<pre><code>1 0
+0 1
+</code></pre>
+</li>
+<li><p>线性变化的行列式（The determinant of a transformation）</p>
+<p>行列式就是用来表示线性变换对空间的扩张&#x2F;压缩程度的度量</p>
+<p>记作det(A)</p>
+</li>
+<li><p>但是行列式有负值，怎么理解?</p>
+<p>定向（Orientation）如果不变，则为正值，如果变化，行列式为负值，其绝对值是扩张&#x2F;压缩的倍数</p>
+<p>对于二维空间，i-hat本来在j-hat的顺时针90度方向，线性变换后，i-hat-landed在j-hat-landed的逆时针方向，这时定向（Orientation）改变了，所以行列式取负值</p>
+<p>对于三维空间，i-hat、j-hat、z-hat的方向符合右手定则，如果线性变换后仍满足右手定则，则定向（Orientation）不变，行列式为正值</p>
+</li>
+</ul>
+<h3 id="逆矩阵、列空间、秩、零空间（Inverse-matrices-Column-space-Rank-Null-space）"><a href="#逆矩阵、列空间、秩、零空间（Inverse-matrices-Column-space-Rank-Null-space）" class="headerlink" title="逆矩阵、列空间、秩、零空间（Inverse matrices, Column space, Rank, Null space）"></a>逆矩阵、列空间、秩、零空间（Inverse matrices, Column space, Rank, Null space）</h3><ul>
+<li><p>计算方法在Essence of Linear Algebra中不会重点讲解，可以自行搜索高斯消元法和行阶梯形</p>
+</li>
+<li><p>考虑一个线性方程组（linear system of equations ）：</p>
+<p>AX&#x3D;Y</p>
+<p>对于向量X^T&#x3D;(x1, x2, x3, …, xn)，乘以系数矩阵A后得到向量Y^T</p>
+<p>别忘了矩阵的乘法就是对向量进行线性变换，所以通过线性变换（A）可以把X“变换”到Y</p>
+<p>那么如何把Y“变换”到X？这就相当于<strong>线性变换的逆变换</strong>：</p>
+<p>X&#x3D;A^(-1)×Y</p>
+</li>
+<li><p>单位矩阵</p>
+<p>两个线性变换相继作用相当于矩阵的乘法，所以一个矩阵的逆（矩阵）乘以这个矩阵本身，相当于“什么也不做”</p>
+<p>这时把它们的积称为<strong>单位矩阵</strong>：</p>
+<p>A^(-1)×A&#x3D;E</p>
+</li>
+<li><p>逆矩阵恒存在吗？</p>
+<p>显然不是，当det(A)&#x3D;0时，线性变换把原空间压缩（降维）了，没法把压缩的空间解压缩</p>
+<p>对于二维：如果det(A)&#x3D;0，则线性变换把平面压缩成了一条线（或一个点），你无法将一条线“解压缩”为一个平面，因为平面是无数线的集合，没法用这一条线去表示这无数的、方向各异的线，线性变换使得二维平面的度量——面积压缩为0</p>
+<p>对于三维：如果det(A)&#x3D;0，则线性变换把三维空间压缩成了一个面（或一条线甚至一个点），你也无法将一个面“解压缩”为一个三维空间，因为线性变换使得三维空间的度量——体积压缩为0</p>
+</li>
+<li><p>行列式为0（即det(A)&#x3D;0）时，线性方程组一定无解？</p>
+<p>不一定，有可能Y正好落在线性变换压缩后的空间中</p>
+<p>对于二维：det(A)&#x3D;0，线性变换把空间从平面压缩为线，有可能Y正好在这条线上，所以有解</p>
+<p>对于三维：det(A)&#x3D;0，线性变换把空间从三维空间压缩为面，有可能Y正好在这个面上，所以有解</p>
+</li>
+<li><p>对于同维向量空间，不同的det(A)&#x3D;0，产生线性变换的效果一样吗？</p>
+<p>不一样，比如对于三维空间，有可能线性变换使三维空间压缩为二维空间（即平面），也有可能压缩得更厉害，成了一维空间（即直线）</p>
+</li>
+<li><p>如何度量呢？——————<strong>用秩来度量</strong></p>
+<p>如果线性变换使所有向量都落在同一条线上，则说这个线性变换的秩为1</p>
+<p>如果线性变换使所有向量都落在同一平面上，则说这个线性变换的秩为2</p>
+<p>如果线性变换使所有向量都落在同一三维空间上，则说这个线性变换的秩为3</p>
+<p>…</p>
+<p>所以，<strong>秩（Rank）代表着线性变换后空间的维数（Number of dimensions in the output）</strong></p>
+<p>如果det(A)≠0：</p>
+<p>对于2x2矩阵，线性变换最多只能从平面变换到平面，所以最大的秩为2</p>
+<p>对于3x3矩阵，线性变换最多只能从空间变换到空间，所以最大的秩为3</p>
+<p>如果det(A)&#x3D;0：</p>
+<p>线性变换一定会使原空间<strong>降维</strong></p>
+</li>
+<li><p>列空间：所有可能的输出向量构成的集合</p>
+<p>线性变换使基向量发生变换，变换后的基向量张成的空间就是所有可能的变换结果</p>
+<p><strong>列空间就是矩阵的列所张成的空间</strong></p>
+<p>于是，<strong>秩就是列空间的维数</strong></p>
+<blockquote>
+<p>列空间可以告诉我们线性方程组何时有解何时无解</p>
+</blockquote>
+</li>
+<li><p>当秩达到最大值时，意味着秩与列数相等，这时成为满秩（Full rank）</p>
+</li>
+<li><p>零空间（Null space）&#x2F; 核（Kernel）</p>
+<p>零向量一定在列空间中，因为线性变换必须保持原点不变</p>
+<p>对于满秩变换，唯一能在变换后落在原点的就是零向量本身</p>
+<p>对于非满秩变换，会有一系列向量在变换后成为零向量</p>
+<ul>
+<li><p>对于平面，非满秩变换，意味着det(A)&#x3D;0，变换后成为一条直线，在原来的平面一定存在一条直线，该直线上的所有向量变换后的向量为零向量（用动画想象一下如何从平面压缩到直线就知道了）</p>
+</li>
+<li><p>对于三维空间，非满秩变换，意味着det(A)&#x3D;0，变换后成为一个平面（或一条直线），在原来的三维空间中一定存在一个平面（或一条直线），该平面（或一条直线）上的所有向量变换后的向量为零向量</p>
+</li>
+</ul>
+<p><strong>这些变换后为零向量的向量，称为矩阵的零空间或核</strong></p>
+<blockquote>
+<p>对于线性方程组，如果Y为零向量，则系数矩阵A的零空间就是这个线性方程组的所有可行解，或者说这个线性方程组的所有可行解构成了系数矩阵A的零空间</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="非方阵"><a href="#非方阵" class="headerlink" title="非方阵"></a>非方阵</h3><ul>
+<li><p>3x2矩阵的几何意义就是把二维空间映射到三维空间上</p>
+<p>矩阵有两列，表明输入空间有两个基向量</p>
+<p>矩阵有三行，表明每一个基向量在变换后都用三个独立的坐标来描述</p>
+<p>其列空间的维数为2，如果满秩的话也为2</p>
+</li>
+<li><p>2x3矩阵的几何意义就是把三维空间映射到二维空间上</p>
+<p>矩阵有三列，表明输入空间有三个基向量</p>
+<p>矩阵有二行，表明每一个基向量在变换后都用二个独立的坐标来描述</p>
+<p>其列空间的维数为2，如果满秩的话也为2</p>
+</li>
+</ul>
+<h3 id="点积与对偶性（Dot-product-and-duality）"><a href="#点积与对偶性（Dot-product-and-duality）" class="headerlink" title="点积与对偶性（Dot product and duality）"></a>点积与对偶性（Dot product and duality）</h3><ul>
+<li><p>两个向量的点积，就是对应坐标的积之和</p>
+<p>两个向量的方向在同一侧时，点积为正</p>
+<p>两个向量的方向在相反侧时，点积为负</p>
+<p>两个向量的方向垂直时，点积为0</p>
+</li>
+<li><p>点积在几何上的解释就是一个向量在另一个向量方向上的投影（projection），再乘以另一个向量，得到一个标量（scalar）</p>
+</li>
+<li><p>如何理解点积具有交换性呢？</p>
+<p>假设两个向量共线，那么投影就是本身，这时就是普通的乘法，具有交换性：</p>
+<p>|v||w|&#x3D;|w||v|</p>
+<p>假设两个向量不共线，再假设两个向量是同等长度，那么可以找到一条对称线，无论是哪个向量“主动”投影过去，点积肯定是相同的：</p>
+<p>v·v&#x3D;v·v</p>
+<p>假定其中一个向量缩放了n倍，点积的结果也是原来的n倍：</p>
+<p>(nv)·v&#x3D;n(v·v)</p>
+<p>因为n可取任意值，推广到任意长度的向量，于是点积具有交换性：</p>
+<p>v·w&#x3D;w·v</p>
+</li>
+<li><p>为何对应坐标的积之和可以和投影联系起来?</p>
+<p>回想矩阵的知识，1x2矩阵（线性变换）乘以2x1矩阵（某向量有两个坐标），得到1x1矩阵，也就是标量，这不就是向量的点积吗？</p>
+<p>两个向量点积，就是把其中一个向量转化为线性变换</p>
+<p>很巧妙地用到了对偶性的知识，笔记不好做，看视频吧</p>
+</li>
+<li><p>一个向量的对偶是由它定义的线性变换</p>
+</li>
+<li><p>一个多维空间到一维空间的线性变换的对偶是多维空间中某个特定向量</p>
+</li>
+<li><p><strong>向量不仅仅是空间中的箭头，还是线性变换的物质载体</strong></p>
+</li>
+</ul>
+<h3 id="叉积（Cross-product）"><a href="#叉积（Cross-product）" class="headerlink" title="叉积（Cross product）"></a>叉积（Cross product）</h3><p>叉积的标准介绍：</p>
+<ul>
+<li><p>两个向量的叉积可以生成另一个向量，记作：</p>
+<p>v×w&#x3D;p</p>
+<p>新生成的向量满足：</p>
+<p>p&#x3D;det(k;v;w)&#x3D;平行四边形，其中v、w是列向量在各个维度的坐标（不带方向），k为一组基向量（带方向，如i-hat、j-hat、k-hat），p的方向垂直于平行四边形，用右手定则确定</p>
+<p>对于三维空间，行列式det(k;v;w)如下类似：</p>
+<pre><code>i-hat    v1    w1
+j-hat    v2    w2
+k-hat    v3    w3
+</code></pre>
+<p>故</p>
+<pre><code>  det(k;v;w)=(v2w3-v3w2)i-hat + (v1w3+v3w1)j-hat + (v1w2+v2w1)z-hat
+</code></pre>
+</li>
+<li><p>叉积何时为正，何时为负？</p>
+<p>巧妙记忆：xoy直角坐标系，v为x，w为y，这时叉积为正v×w&gt;0；否则叉积为负v×w&lt;0</p>
+<p>于是有，v×w&#x3D;-w×v</p>
+</li>
+</ul>
+<p>从线性变换的角度看叉积：</p>
+<ul>
+<li><p>考虑三维空间，我们已经知道vxw&#x3D;p，得到的新向量p可以用如下行列式描述：</p>
+<pre><code>  |p|=det(k;v;w)=(v2w3-v3w2)i-hat + (v1w3-v3w1)j-hat + (v1w2-v2w1)z-hat
+</code></pre>
+<p><strong>为什么要引入三个基向量呢</strong>？</p>
+</li>
+<li><p>先不着急回答这个问题，先用三个变量xyz代替三个基变量，考虑函数：f([x,y,z]^T)&#x3D;det([ [x,y,z]^T, [v1,v2,v3]^T, [w1,w2,w3]^T]) ，这个函数描述了任意一个向量，通过向量v与w的组合后，所输出的新向量，<strong>本质上是三维空间到一维空间的线性变换</strong></p>
+<p>明显，这个函数是线性的，所以可以使用对偶性——线性变换与其对偶向量是一一对应的</p>
+</li>
+<li><p>接下来的任务就是寻找这个对偶向量，首先观察函数，输入是三维向量，输出是一维，于是可以构造一个从三维到一维的线性变换，根据前面的知识，这个线性变换和一个1x3矩阵对应：</p>
+<pre><code>[?,?,?][x,y,z]^T = det([ [x,y,z]^T, [v1,v2,v3]^T, [w1,w2,w3]^T])
+</code></pre>
+<p>而根据点积的对偶性——两个（列）向量的点积等价于其中一个向量“躺下来”变为线性变换乘以另一个向量所构成的矩阵，于是，我们可以把1x3矩阵“立起来”变成一个向量，再与[x,y,z]^T进行点积运算：</p>
+<pre><code> [?,?,?]^T﹒[x,y,z]^T = det([ [x,y,z]^T, [v1,v2,v3]^T, [w1,w2,w3]^T])
+</code></pre>
+<p>”立起来“的向量设为p&#x3D;(p1,p2,p3)^T，于是上式可改写为：</p>
+<pre><code>  [p1,p2,p3]^T﹒[x,y,z]^T = det([ [x,y,z]^T, [v1,v2,v3]^T, [w1,w2,w3]^T])
+</code></pre>
+<p>根据简单的计算，易知：</p>
+<pre><code>   p1=v2w3-v3w2
+  p2=v1w3-v3w1
+  p3=v1w2-v2w1
+</code></pre>
+</li>
+</ul>
+<p>于是可以回答之前的问题：<strong>叉积中引入三个基变量是为了表示叉积的结果是一个（三维）向量</strong></p>
+<h3 id="基变换"><a href="#基变换" class="headerlink" title="基变换"></a>基变换</h3><ul>
+<li><p>永远别忘了线性变换可以用矩阵描述，基变换也是一种线性变换，<em>而且是不降维的线性变换</em></p>
+</li>
+<li><p>从一种基变换到另一种基，可用唯一的矩阵描述，相反，如果要反过来，则用这个矩阵的逆即可</p>
+</li>
+<li><p>假设用甲的基向量表示某个向量为[x0,y0]^T，用乙的基向量表示这个向量为[xj,yj]^T，那么如果用甲的<strong>坐标</strong>来表示这个向量为A矩阵，则有如下基变换公式</p>
+<pre><code>  A[xj,yj]^T = [x0,y0]^T
+</code></pre>
+</li>
+<li><p>那如果甲做了某种线性变换，甲的基向量也会变化，如果甲乙对应的基变换不变，那么对应的乙的基向量如何变化呢？假设在甲的线性变换之前，用乙的基向量描述某个向量为j-hat，在甲的线性变换之后，用乙的基向量描述这个向量为j’-hat</p>
+<pre><code>           基变换			线性变换			逆线性变换
+  j-hat --------&gt; i-hat --------&gt; i&#39;-hat --------&gt; j&#39;-hat
+</code></pre>
+<p>计算方法很简单，每经历一个变换都左乘变换所对应的矩阵即可</p>
+</li>
+</ul>
+<h3 id="特征向量与特征值（Eigenvectors-and-Eigenvalues）"><a href="#特征向量与特征值（Eigenvectors-and-Eigenvalues）" class="headerlink" title="特征向量与特征值（Eigenvectors and Eigenvalues）"></a>特征向量与特征值（Eigenvectors and Eigenvalues）</h3><ul>
+<li><p>前提知识：线性变换（对应矩阵）、行列式（线性变换&#x2F;矩阵的面积变化倍数）、线性方程组、基变换</p>
+</li>
+<li><p>经过线性变换后，某些向量<em><strong>仍</strong></em>留在它们所张成的空间里，这些特殊的向量就称为变换的“<strong>特征向量</strong>”，而每个特征向量都有一个对应的值，称为”<strong>特征值</strong>“，用来表示特征向量在变换中拉伸或压缩的比例因子，对于不同的特征向量，特征值有可能相同有可能不同</p>
+</li>
+<li><p>特征向量有啥用？</p>
+<p>举个例子，在三维空间里面，不同的（满秩）线性变换具有不同的特征向量，根据特征向量的定义——仍留在它们所张成的空间里，所以这些向量并没有动，<strong>也就是对称轴</strong>！</p>
+<p>再举个例子，三维空间的旋转，显然用作图的方法要比矩阵的表示更加清晰，而旋转也是一种线性变换，对称轴上的向量并没有被拉伸或压缩，所以<strong>旋转对应的特征值为1</strong>！</p>
+</li>
+<li><p>如何求解特征值？</p>
+<p>假设变换矩阵为A，特征向量为V，对应的特征值为𝞴，根据特征向量、特征值的含义，不难理解以下等式：</p>
+<pre><code>    AV = 𝞴V
+</code></pre>
+<p>等式左边是矩阵相乘，右边是向量数乘（𝞴是一个常数），看起来怪怪的，为了理解，可以将𝞴看作如下的矩阵：</p>
+<pre><code>    𝞴 0 0
+    0 𝞴 0
+    0 0 𝞴
+</code></pre>
+<p>又可写成𝞴与单位矩阵I（或者叫做E）的乘积：</p>
+<pre><code>        ⎡1 0 0⎤ 
+    𝞴 * ⎢0 1 0⎥
+        ⎣0 0 1⎦
+</code></pre>
+<p>于是等式可变形为：</p>
+<pre><code>    (A-𝞴I)V=0
+</code></pre>
+<p>ok，现在的认为就是寻找非零向量V，使上式成立</p>
+<p>对于非零向量V而言，**(A-𝞴I)相当于是一个降维的线性变换**，把向量V从n维降到了0维（零向量），这就意味着：</p>
+<pre><code>     det(A-𝞴I) = 0
+</code></pre>
+<p>这里可以得到一个关于𝞴的多项式，称为<em><strong>特征多项式</strong></em>！</p>
+<blockquote>
+<p>这里没理解的话，复习行列式那节！</p>
+</blockquote>
+</li>
+<li><p>当然，有可能不存在特征向量与特征值，比如二维线性变换的旋转，这个时候没有实数意义上的特征值</p>
+</li>
+<li><p><strong>如果基向量恰好是特征向量，那么线性变换对应的矩阵一定是一个对角矩阵，对角元就是特征值！</strong></p>
+<p>所以，对角矩阵的连乘，可以很容易计算，比如求如下矩阵的2018次幂与向量(x,y)^T的乘积：</p>
+<pre><code>  3 0
+  0 2
+</code></pre>
+<p>易知𝞴&#x3D;3、𝞴&#x3D;2，于是最后答案是(3^2018×x, 2^2018×y)</p>
+</li>
+<li><p>对于某种线性变换，能否通过基变换，使得新基向量是特征向量呢？</p>
+<p>假设线性变换矩阵为A，基变换矩阵为P，逆基变换矩阵自然为P^(-1)，</p>
+<p>则必有：</p>
+<pre><code>    P^(-1)AP = 对角矩阵
+</code></pre>
+<p>一组基向量（同样是特征向量）构成的集合被称为一组<strong>特征基（Eigenbasis）</strong></p>
+<p>所以，如果要计算非对角矩阵的2018次幂，一个个去计算是难以想象的，但是可以先把非对角矩阵A化为对角矩阵，对角矩阵求2018次幂很容易，再反推回原来的非对角矩阵A的2018次幂</p>
+<p>即，在原基向量中做n次重复的线性变换很麻烦，但是如果通过基变换后，新基向量是这个线性变换的特征向量，就可以做到快速求解，最后再逆基变换就得到原来的答案</p>
+<p>这里有个前提，因为全空间是基向量所张成的空间，这就意味着这种线性变换的特征向量一定要足够多，并不是所有线性变换都可以<strong>相似对角化</strong>的</p>
+</li>
+</ul>
+<h3 id="抽象向量空间"><a href="#抽象向量空间" class="headerlink" title="抽象向量空间"></a>抽象向量空间</h3><ul>
+<li><p>把“向量”的概念抽象出来，看看哪些东西符合“向量”的特征？</p>
+<p>根据向量的加法和向量的数乘，不难想象函数符合“向量”的特征</p>
+<p>比如导数，就是把一个函数“变换”为另一个函数，可以理解为把向量线性变换到另一个向量上去，<strong>而且求导是线性运算</strong></p>
+<p>线性算子和线性变换是同一个东西！</p>
+</li>
+<li><p>线性变换保持向量加法运算和数乘运算</p>
+<p>Linear transformations preserve addition and scalar multiplication</p>
+</li>
+<li><p>多项式空间，基函数是1、x、x2、x3、…，这个基函数集是无穷大的，任何一个多项式空间中的元素（即某个确定的多项式）可以由基函数线性组合表示，并且维数是无穷大的</p>
+<p>导数的矩阵描述：</p>
+<pre><code>  0 1 0 0 0 ...
+  0 0 2 0 0 ...
+  0 0 0 3 0 ...
+  ...
+</code></pre>
+</li>
+<li><p>所以线性代数和函数是有很大联系的：</p>
+<p>线性变换–线性算子</p>
+<p>点积–内积</p>
+<p>特征向量–特征函数</p>
+</li>
+<li><p>向量空间，公理满足八个条件（矩阵分析ch1有讲到），只有定义满足这8个条件，就符合了向量空间的特征</p>
+<p>所以，向量到底是什么，它的形式并不重要，主要看它构成的向量空间</p>
+</li>
+</ul>
+<h2 id="理解矩阵——孟岩"><a href="#理解矩阵——孟岩" class="headerlink" title="理解矩阵——孟岩"></a><a target="_blank" rel="noopener" href="https://blog.csdn.net/myan/article/details/647511">理解矩阵——孟岩</a></h2><h3 id="矩阵是什么？"><a href="#矩阵是什么？" class="headerlink" title="矩阵是什么？"></a>矩阵是什么？</h3><ul>
+<li><p>容纳运动是空间的本质特征，“空间”是容纳运动的一个对象集合，而变换则规定了对应空间的运动</p>
+</li>
+<li><p>在线性空间中选定基之后，向量刻画对象，矩阵刻画对象的运动，用矩阵与向量的乘法施加运动。</p>
+</li>
+<li><p><strong>矩阵的本质是运动的描述</strong></p>
+</li>
+</ul>
+<h3 id="矩阵与变换有什么关系"><a href="#矩阵与变换有什么关系" class="headerlink" title="矩阵与变换有什么关系"></a>矩阵与变换有什么关系</h3><ul>
+<li><p>矩阵是线性空间里“跃迁”的描述</p>
+</li>
+<li><p>所谓变换，其实就是空间里从一个点（元素&#x2F;对象）到另一个点（元素&#x2F;对象）的跃迁，用“跃迁”这个词太物理了，换成正牌的数学术语——变换</p>
+</li>
+<li><p><strong>矩阵是线性空间里的变换的描述</strong>，在一个线性空间中，只要我们选定一组基，那么对于任何一个线性变换，都能够用一个确定的矩阵来加以描述</p>
+</li>
+<li><p>既然一个线性变换可以在不同基下有不同的描述（即不同矩阵），那怎么知道这是同一个线性变换？</p>
+<p>只要满足A与B相似即可！</p>
+<p>A &#x3D; P-1BP</p>
+<h4 id="本质：把P看成基变换，B看成线性变换，P-1看成逆基变换，所以线性变换A是线性变换B的另一种表示！"><a href="#本质：把P看成基变换，B看成线性变换，P-1看成逆基变换，所以线性变换A是线性变换B的另一种表示！" class="headerlink" title="本质：把P看成基变换，B看成线性变换，P-1看成逆基变换，所以线性变换A是线性变换B的另一种表示！"></a><strong>本质：把P看成基变换，B看成线性变换，P-1看成逆基变换，所以线性变换A是线性变换B的另一种表示！</strong></h4></li>
+</ul>
+<h3 id="矩阵与坐标系有什么关系？"><a href="#矩阵与坐标系有什么关系？" class="headerlink" title="矩阵与坐标系有什么关系？"></a>矩阵与坐标系有什么关系？</h3><ul>
+<li><p>矩阵是由一组向量组成的，如果矩阵非奇异（可逆），那么组成这个矩阵的那一组向量也就是线性无关的了，也就可以成为度量线性空间的一个坐标系，所以，<strong>矩阵描述了一个坐标系</strong></p>
+</li>
+<li><p>固定坐标系下一个对象的变换等价于固定对象所处的坐标系变换</p>
+</li>
+<li><p><strong>因为运动是相对的！</strong></p>
+</li>
+<li><p>考虑 Ma&#x3D;b ，有以下两种理解：</p>
+<ul>
+<li><p>向量a经过矩阵M所描述的变换，变成了向量b</p>
+</li>
+<li><p>向量a在坐标系M的度量下得到的度量结果为a，在另一个坐标系I（单位矩阵）的度量下度量结果为b</p>
+</li>
+</ul>
+</li>
+<li><p>在M为坐标系的意义下，如果把M放在一个向量a的前面，形成Ma的样式，我们可以认为这是对向量a的一个环境声明</p>
+<blockquote>
+<p>“注意了！这里有一个向量，它在坐标系M中度量，得到的度量结果可以表达为a。可是它在别的坐标系里度量的话，就会得到不同的结果。为了明确，我把M放在前面，让你明白，这是该向量在坐标系M中度量的结果。”</p>
+</blockquote>
+</li>
+<li><p>再看 Ma&#x3D;b，其中的b并不是孤零零的，可以看成 Ma&#x3D;Ib，在单位坐标系，也就是我们通常说的直角坐标系I中，有一个向量，度量的结果是b</p>
+<blockquote>
+<p>“在M坐标系里量出来的向量a，跟在I坐标系里量出来的向量b，其实根本就是一个向量啊！”</p>
+</blockquote>
+</li>
+<li><p>我们平时说一个向量是[2 3 5 7 ]T，隐含了这个向量在I坐标系中的度量结果是[2 3 5 7 ]T</p>
+</li>
+<li><p>同样地，M矩阵所描述的坐标系，也是由一个基构成的，而这个基也是由向量组成的，同样存在这组向量在哪个向量下度量的问题。也就是说，表述一个矩阵的一般方法，也应该要指明其所处的基准坐标系。所谓M，其实是 IM，也就是说，M中那组基的度量是在 I 坐标系中得出的。从这个视角来看，M×N也不是什么矩阵乘法了，而是声明了一个在M坐标系中量出的另一个坐标系N，其中M本身是在I坐标系中度量出来的。</p>
+</li>
+<li><p><strong>对坐标系施加变换的方法，就是让表示那个坐标系的矩阵与表示那个变化的矩阵相乘</strong></p>
+</li>
+</ul>
+<h3 id="矩阵的乘法"><a href="#矩阵的乘法" class="headerlink" title="矩阵的乘法"></a>矩阵的乘法</h3><p>1. 从变换的观点看，对坐标系N施加M变换，就是把组成坐标系N的每一个向量施加M变换。<br>​<br> 2. 从坐标系的观点看，在M坐标系中表现为N的另一个坐标系，这也归结为，对N坐标系基的每一个向量，把它在I坐标系中的坐标找出来，然后汇成一个新的矩阵。<br>​<br> 3. 至于矩阵乘以向量为什么要那样规定，那是因为一个在M中度量为a的向量，如果想要恢复在I中的真像，就必须分别与M中的每一个向量进行內积运算。</pre></p>
+<hr>
+<p>作者：myan 来源：CSDN 原文：<a target="_blank" rel="noopener" href="https://blog.csdn.net/myan/article/details/1865397">https://blog.csdn.net/myan/article/details/1865397</a>  版权声明：本文为博主原创文章，转载请附上博文链接！</p>
+<blockquote>
+<p>原文发表于 <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/80218dbc9f8b">https://www.jianshu.com/p/80218dbc9f8b</a>, by 2018.12.05 09:06:07</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="http://example.com">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2018/12/05/Linear%20Algebra/">http://example.com/2018/12/05/Linear%20Algebra/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E5%AD%A6/">数学</a><a class="post-meta__tags" href="/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/">线性代数</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2019/12/10/%E4%BB%8E%E6%B1%87%E7%BC%96%E8%A7%92%E5%BA%A6%E6%9D%A5%E7%9C%8B%E8%A7%A3%E5%BC%95%E7%94%A8%E4%B8%8E%E8%87%AA%E5%A2%9E/" title="从汇编角度来看解引用与自增"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">从汇编角度来看解引用与自增</div></div></a></div><div class="next-post pull-right"><a href="/2018/05/30/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E6%8A%95%E8%B5%84%E5%BF%83%E7%90%86%E5%AD%A6/" title="读书笔记——投资心理学"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">读书笔记——投资心理学</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Essence-of-Linear-Algebra"><span class="toc-number">1.</span> <span class="toc-text">Essence of Linear Algebra</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91%E9%87%8F%EF%BC%88Vector%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">向量（Vector）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E6%80%A7%E7%BB%84%E5%90%88%E3%80%81%E5%BC%A0%E6%88%90%E7%9A%84%E7%A9%BA%E9%97%B4%E5%92%8C%E5%9F%BA%EF%BC%88Linear-combination%E3%80%81span-and-base%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">线性组合、张成的空间和基（Linear combination、span and base）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A9%E9%98%B5%E4%B8%8E%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2%EF%BC%88Matrices-and-Linear-transformations%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">矩阵与线性变换（Matrices and Linear transformations）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%8C%E5%88%97%E5%BC%8F%EF%BC%88Determinant%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">行列式（Determinant）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%86%E7%9F%A9%E9%98%B5%E3%80%81%E5%88%97%E7%A9%BA%E9%97%B4%E3%80%81%E7%A7%A9%E3%80%81%E9%9B%B6%E7%A9%BA%E9%97%B4%EF%BC%88Inverse-matrices-Column-space-Rank-Null-space%EF%BC%89"><span class="toc-number">1.5.</span> <span class="toc-text">逆矩阵、列空间、秩、零空间（Inverse matrices, Column space, Rank, Null space）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E%E6%96%B9%E9%98%B5"><span class="toc-number">1.6.</span> <span class="toc-text">非方阵</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%82%B9%E7%A7%AF%E4%B8%8E%E5%AF%B9%E5%81%B6%E6%80%A7%EF%BC%88Dot-product-and-duality%EF%BC%89"><span class="toc-number">1.7.</span> <span class="toc-text">点积与对偶性（Dot product and duality）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%89%E7%A7%AF%EF%BC%88Cross-product%EF%BC%89"><span class="toc-number">1.8.</span> <span class="toc-text">叉积（Cross product）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E5%8F%98%E6%8D%A2"><span class="toc-number">1.9.</span> <span class="toc-text">基变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E5%BE%81%E5%90%91%E9%87%8F%E4%B8%8E%E7%89%B9%E5%BE%81%E5%80%BC%EF%BC%88Eigenvectors-and-Eigenvalues%EF%BC%89"><span class="toc-number">1.10.</span> <span class="toc-text">特征向量与特征值（Eigenvectors and Eigenvalues）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%BD%E8%B1%A1%E5%90%91%E9%87%8F%E7%A9%BA%E9%97%B4"><span class="toc-number">1.11.</span> <span class="toc-text">抽象向量空间</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%90%86%E8%A7%A3%E7%9F%A9%E9%98%B5%E2%80%94%E2%80%94%E5%AD%9F%E5%B2%A9"><span class="toc-number">2.</span> <span class="toc-text">理解矩阵——孟岩</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A9%E9%98%B5%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">矩阵是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A9%E9%98%B5%E4%B8%8E%E5%8F%98%E6%8D%A2%E6%9C%89%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB"><span class="toc-number">2.2.</span> <span class="toc-text">矩阵与变换有什么关系</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%AC%E8%B4%A8%EF%BC%9A%E6%8A%8AP%E7%9C%8B%E6%88%90%E5%9F%BA%E5%8F%98%E6%8D%A2%EF%BC%8CB%E7%9C%8B%E6%88%90%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2%EF%BC%8CP-1%E7%9C%8B%E6%88%90%E9%80%86%E5%9F%BA%E5%8F%98%E6%8D%A2%EF%BC%8C%E6%89%80%E4%BB%A5%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2A%E6%98%AF%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2B%E7%9A%84%E5%8F%A6%E4%B8%80%E7%A7%8D%E8%A1%A8%E7%A4%BA%EF%BC%81"><span class="toc-number">2.2.1.</span> <span class="toc-text">本质：把P看成基变换，B看成线性变换，P-1看成逆基变换，所以线性变换A是线性变换B的另一种表示！</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A9%E9%98%B5%E4%B8%8E%E5%9D%90%E6%A0%87%E7%B3%BB%E6%9C%89%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F"><span class="toc-number">2.3.</span> <span class="toc-text">矩阵与坐标系有什么关系？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A9%E9%98%B5%E7%9A%84%E4%B9%98%E6%B3%95"><span class="toc-number">2.4.</span> <span class="toc-text">矩阵的乘法</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章">建站第一篇文章</a><time datetime="2023-05-09T16:25:27.000Z" title="Created 2023-05-10 00:25:27">2023-05-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/06/19/%E3%80%8AJava8%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E3%80%8B%E2%80%94%E2%80%94%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" title="Java8函数式编程">Java8函数式编程</a><time datetime="2022-06-19T04:55:29.000Z" title="Created 2022-06-19 12:55:29">2022-06-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/10/Effective%20C++%20&amp;&amp;%20More%20Effective%20C++/" title="Effective C++ &amp;&amp; More Effective C++">Effective C++ &amp;&amp; More Effective C++</a><time datetime="2022-05-10T04:51:41.000Z" title="Created 2022-05-10 12:51:41">2022-05-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/03/29/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84C++%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%8D%A2%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" title="多线程场景下的C++字符串转换最佳实践">多线程场景下的C++字符串转换最佳实践</a><time datetime="2022-03-29T08:00:00.000Z" title="Created 2022-03-29 16:00:00">2022-03-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/10/09/%E3%80%8AJava%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E5%8D%B7%E4%B8%80%E3%80%8B%E2%80%94%E2%80%94%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" title="《Java核心技术卷一》——读书笔记">《Java核心技术卷一》——读书笔记</a><time datetime="2021-10-08T23:51:43.000Z" title="Created 2021-10-09 07:51:43">2021-10-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 一个廖少少</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
