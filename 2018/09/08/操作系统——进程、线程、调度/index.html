@@ -1,0 +1,690 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>操作系统——进程、线程、调度 | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本文为学习笔记，一部分来自于《现代操作系统》 荷兰 Andrew S. Tanenbaum著，一部分来自于浙江大学李善平教授主讲的《操作系统》课程，网址：http:&#x2F;&#x2F;www.icourses.cn&#x2F;coursestatic&#x2F;course_6801.html   #进程  进程：资源分配的最小单位  定义：一个进程就是一个正在执行程序的实例；进程是某种类型的活动，它有程序、输入、输出以及状态">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统——进程、线程、调度">
+<meta property="og:url" content="http://example.com/2018/09/08/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B%E3%80%81%E8%B0%83%E5%BA%A6/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="本文为学习笔记，一部分来自于《现代操作系统》 荷兰 Andrew S. Tanenbaum著，一部分来自于浙江大学李善平教授主讲的《操作系统》课程，网址：http:&#x2F;&#x2F;www.icourses.cn&#x2F;coursestatic&#x2F;course_6801.html   #进程  进程：资源分配的最小单位  定义：一个进程就是一个正在执行程序的实例；进程是某种类型的活动，它有程序、输入、输出以及状态">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2018-09-08T05:11:56.000Z">
+<meta property="article:modified_time" content="2023-05-10T13:18:32.164Z">
+<meta property="article:author" content="一个廖少少">
+<meta property="article:tag" content="操作系统">
+<meta property="article:tag" content="进程">
+<meta property="article:tag" content="线程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2018/09/08/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B%E3%80%81%E8%B0%83%E5%BA%A6/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '操作系统——进程、线程、调度',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2023-05-10 21:18:32'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">19</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">7</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">操作系统——进程、线程、调度</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2018-09-08T05:11:56.000Z" title="Created 2018-09-08 13:11:56">2018-09-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-05-10T13:18:32.164Z" title="Updated 2023-05-10 21:18:32">2023-05-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="操作系统——进程、线程、调度"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>本文为学习笔记，一部分来自于《现代操作系统》 荷兰 Andrew S. Tanenbaum著，一部分来自于浙江大学李善平教授主讲的《操作系统》课程，网址：<a target="_blank" rel="noopener" href="http://www.icourses.cn/coursestatic/course_6801.html">http://www.icourses.cn/coursestatic/course_6801.html</a></p>
+</blockquote>
+<ul>
+<li><p>#进程</p>
+<ul>
+<li><p>进程：资源分配的最小单位</p>
+</li>
+<li><p>定义：一个进程就是一个正在执行程序的实例；进程是某种类型的活动，它有程序、输入、输出以及状态</p>
+</li>
+<li><p>严格说，某个瞬间，CPU只能运行一个进程，一个程序运行了两次，那么就算运行了两次进程，进程可以拥有多个线程</p>
+</li>
+<li><p>守护进程（daemon）：运行在后台的进程</p>
+</li>
+<li><p>创建进程：</p>
+<ul>
+<li><p>UNIX：fork</p>
+<ul>
+<li><p>父进程与子进程拥有相同的存储映像（image）</p>
+</li>
+<li><p>fork系统调用创建一个新（子）进程</p>
+</li>
+<li><p>fork之后，exec系统调用装入一个新程序</p>
+</li>
+<li><p>父进程与子进程只有pid不一样，其他资源都一样，父进程的pid&gt;0，子进程的pid&#x3D;0</p>
+</li>
+<li><p>fork后执行父进程还是子进程，取决于内核所使用的调度算法</p>
+</li>
+</ul>
+</li>
+<li><p>Windows：CreateProcess</p>
+</li>
+</ul>
+</li>
+<li><p>进程的终止（可以让该进程的所有后辈进程都随之终止，也可以不这样做）：</p>
+<ul>
+<li><p>正常退出（自愿）</p>
+<ul>
+<li><p>UNIX：exit</p>
+</li>
+<li><p>Windows：ExitProcess</p>
+</li>
+</ul>
+</li>
+<li><p>出错退出（自愿）</p>
+</li>
+<li><p>严重错误（非自愿）</p>
+</li>
+<li><p>被其他进程杀死（非自愿）</p>
+<ul>
+<li><p>UNIX：kill</p>
+</li>
+<li><p>Windows：TerminateProcess</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>进程的状态：</p>
+<ul>
+<li><p>运行态（此进程实际占用CPU）</p>
+</li>
+<li><p>就绪态（可运行，但因其他进程正在运行而暂时停止）</p>
+</li>
+<li><p>阻塞态（除非某种外部事件发生，否则进程不能运行）</p>
+</li>
+</ul>
+<ol>
+<li><p>进程为等待而阻塞</p>
+</li>
+<li><p>调度程序选择另一个进程</p>
+</li>
+<li><p>调度程序选择这个进程</p>
+</li>
+<li><p>出现有效输入（外部事件）</p>
+</li>
+</ol>
+</li>
+<li><p>为了实现进程模型，操作系统维护着一张表格（一个结构数组），即进程表（process table）</p>
+</li>
+<li><p>每个进程占用一个进程表项，该表项包含了进程状态的重要信息，包括程序计数器、堆栈指针、内存分配状况、所打开文件的状态、帐号和调度信息</p>
+</li>
+<li><p>CPU利用率&#x3D;1－pⁿ</p>
+<ul>
+<li><p>一个进程等待I&#x2F;O操作的时间与其停留在内存中的时间比为p</p>
+</li>
+<li><p>内存中同时有n个进程</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>#线程</p>
+<ul>
+<li><p>线程：“轻量级的进程”(lightweight process)</p>
+</li>
+<li><p>为什么多线程？</p>
+<ul>
+<li><p>并行实体共享同一个地址空间和所有可用数据的能力</p>
+</li>
+<li><p>线程比进程更轻量级，所以它们比进程更容易、更快创建，也更容易撤销</p>
+</li>
+<li><p>拥有多个线程允许这样活动彼此重叠进行，从而会加快应用程序执行速度</p>
+<ul>
+<li><p>Windows 多线程</p>
+</li>
+<li><p>Linux 单线程</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>线程模型</strong>：</p>
+<ul>
+<li><p>多个线程共享同一个地址空间和其他资源，比如共享全局变量</p>
+</li>
+<li><p>进程中的不同线程不像不同进程之间那样存在很大的独立性</p>
+</li>
+<li><p>严格来说，同一时刻只有一个线程占用CPU，但高速切换给人带来并行运行的假象</p>
+</li>
+<li><p>线程与进程一样，也具有三种状态，运行态、就绪态、阻塞态，并且转化关系也一样（见上文的图）</p>
+</li>
+<li><p>每个线程都有其自己的堆栈，其中有一帧，供各个被调用但还没返回的过程中使用，在该帧存放了相应过程的局部变量以及过程调用完成之后使用的返回地址</p>
+</li>
+<li><p>常见的线程调用：thread_yield，它允许线程自动放弃CPU从而让另一个线程运行，因为不同于进程，线程无法利用时钟中断强制让出CPU</p>
+</li>
+</ul>
+</li>
+<li><p>###线程和进程的区别：</p>
+<ul>
+<li><p><strong>调度</strong> ：在引入线程的操作系统中，线程是调度和分配的基本单位 ，进程是资源拥有的基本单位 。把传统进程的两个属性分开，线程便能轻装运行，从而可显著地提高系统的并发程度。 在同一进程中，线程的切换不会引起进程的切换；在由一个进程中的线程切换到另一个进程中的线程时，才会引起进程的切换。</p>
+</li>
+<li><p><strong>并发性</strong> ：在引入线程的操作系统中，不仅进程之间可以并发执行，而且在一个进程中的多个线程之间亦可并发执行，因而使操作系统具有更好的并发性，从而能更有效地使用系统资源和提高系统吞吐量。</p>
+</li>
+<li><p><strong>拥有资源</strong> ：不论是传统的操作系统，还是设有线程的操作系统，进程都是拥有资源的一个独立 单位，它可以拥有自己的资源。 一般地说，线程自己不拥有系统资源（只有一些必不可少的资源），但它可以访问其隶属进程的资源。</p>
+</li>
+<li><p><strong>系统开销</strong>： 由于在创建或撤消进程时，系统都要为之分配或回收资源，因此，操作系统所付出的开销将显著地大于在创建或撤消线程时的开销。 进程切换的开销也远大于线程切换的开销。</p>
+</li>
+</ul>
+</li>
+<li><p>实现线程包：在<strong>用户空间</strong>中和在<strong>内核</strong>中</p>
+<ol>
+<li><p>内核级线程：</p>
+<ul>
+<li>线程的创建、撤销和切换等，都需要内核直接实现，即内核了解每一个作为可调度实体的线程。</li>
+</ul>
+<ol start="2">
+<li><p>这些线程可以在全系统内进行资源的竞争。</p>
+</li>
+<li><p>内核空间内为每一个内核支持线程设置了一个<strong>线程控制块（PCB）</strong>，内核根据该控制块，感知线程的存在，并进行控制。</p>
+</li>
+<li><p>在一定程度上类似于进程，只是创建、调度的开销要比进程小。有的统计是1：10</p>
+</li>
+</ol>
+<ul>
+<li><p>内核线程的优点：</p>
+<ol>
+<li><p>不需要任何新的、非阻塞的系统调用；</p>
+</li>
+<li><p>当有多个处理机时，一个进程的多个线程可以同时执行。</p>
+</li>
+</ol>
+</li>
+<li><p>内核线程的缺点：</p>
+<ol>
+<li>由内核进行调度，如果线程的操作比较多，就会带来很大的开销。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>用户级线程：</p>
+<ul>
+<li>用户级线程仅存在于用户空间。——&gt;对比内核(3)</li>
+</ul>
+<ol start="2">
+<li><p>内核并不能看到用户线程。——&gt;重要的区别</p>
+</li>
+<li><p>内核资源的分配仍然是按照进程进行分配的；各个用户线程只能在进程内进行资源竞争。</p>
+</li>
+</ol>
+<ul>
+<li><p>用户进程的优点：</p>
+<ol>
+<li>线程的调度不需要内核直接参与，控制简单；具有较好的可扩展性。</li>
+</ol>
+</li>
+<li><p>内核线程的缺点：</p>
+<ol>
+<li><p>资源调度按照进程进行，多个处理机下，同一个进程中的线程只能在同一个处理机下分时复用；</p>
+</li>
+<li><p>如果有一个线程引起页面故障，由于内核不知道有线程的存在，通常会把整个进程阻塞直到磁盘I&#x2F;O完成为止，尽管其他线程是可以运行的。</p>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>多线程设计不是并行设计（而是切换进行）</p>
+</li>
+</ul>
+</li>
+<li><p>#进程间通信（线程类似）</p>
+<ul>
+<li><p>三个问题：</p>
+<ul>
+<li><p>如何传递消息？</p>
+</li>
+<li><p>确保多个进程在关键活动时不会交叉</p>
+</li>
+<li><p>正确的顺序</p>
+</li>
+</ul>
+</li>
+<li><p><strong>竞争条件（race condition）</strong>：两个或多个进程读写某些共享数据，而最后结果取决于进程运行时的精确时序</p>
+</li>
+<li><p><strong>互斥（mutual exclusion）</strong>：解决竞争条件的手段，确保当一个进程在使用一个共享变量或文件时，其他进程不能做同样的操作</p>
+</li>
+<li><p><strong>临界区域（critical region）</strong>：对共享内存进行访问的程序片段称作临界区域，或临界区（critical section）</p>
+</li>
+<li><p>解决并发的方案，需要满足4个条件：</p>
+<ol>
+<li><p>空闲让进</p>
+</li>
+<li><p>忙则等待</p>
+</li>
+<li><p>有限等待</p>
+</li>
+<li><p>让权等待（阻塞的进程把CPU让给其他进程）</p>
+</li>
+</ol>
+</li>
+<li><p><strong>忙等待互斥的5种方法</strong>：</p>
+<ol>
+<li><p>屏蔽中断：进程进入临界区后立即屏蔽所有中断，因为CPU只有在发生中断时才会进行进程切换，所以可以实现互斥。</p>
+<ul>
+<li>结论：对于操作系统而言是很用的，但是对于用户进程而言则不是一个合适的方法，因为把屏蔽中断的权力交给用户不明智</li>
+</ul>
+</li>
+<li><p>锁变量：软件解决方案，这把锁实际就是个变量，可用0来表示当前进程可以进入临界区，1表示已有进程在临界区中。</p>
+<ul>
+<li>最后还是有可能两个进程同时进入临界区</li>
+</ul>
+</li>
+<li><p>严格轮换法：</p>
+<ul>
+<li><p>虽然可以实现互斥，但不能让权等待</p>
+</li>
+<li><p>忙等待（busy waiting）：连续测试一个变量直到某个值出现为止</p>
+</li>
+</ul>
+</li>
+<li><p>Peterson解法：忙等待的一种，不能让权等待</p>
+</li>
+<li><p>TSL指令：需要硬件支持，同属于忙等待，不能让权等待</p>
+</li>
+</ol>
+</li>
+<li><p>生产者-消费者问题</p>
+<ul>
+<li><p>描述：两个进程共享一个公共的固定大小的缓冲区，其中一个是生产者，将信息放入缓冲区；另一个是消费者，从缓冲区中取出消息。</p>
+</li>
+<li><p>问题1：当缓冲区已满时，生产者还想向其中放入一个新的数据项要怎么办？</p>
+<ul>
+<li>解决：让生产者睡眠，待消费者从缓冲区中取出一个或多个数据项时再唤醒它。</li>
+</ul>
+</li>
+<li><p>问题2：当缓冲区为空时，消费者想从中取出一个数据项怎么办？</p>
+<ul>
+<li>解决：让消费者睡眠，待生产者放入数据项后再唤醒它</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>代码：</p>
+<pre><code>  #define N 100
+  int count = 0;
+  void producer(void)
+  &#123;
+       int item;
+       while(TRUE)&#123;
+            item = produce_item();
+            if(count == N)sleep();
+            insert_item(item);
+            count = count + 1;
+            if(count == 1)wakeup(consumer);
+       &#125;
+  &#125;
+  void consumer(void)
+  &#123;
+       int item;
+       while(TRUE)&#123;
+            if(count == 0)sleep();
+            item = remove_item();
+            count = count - 1;
+            if(count == N-1)wakeup(producer);
+            consume_item(item);
+       &#125;
+  &#125;
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p><strong>进程间通信（IPC：Interprocess Communication）</strong>：提供一套进程通信、进程同步的机制</p>
+</li>
+<li><p>消息系统：进程间相互通信的途径，不需要共享变量的介入</p>
+</li>
+<li><p><strong>信号量（semaphore）</strong>：使用一个整型变量来累计唤醒次数，供以后使用，取值可以为0（表示没有保存下来的唤醒操作），或者为正值（表示有一个或多个唤醒操作）</p>
+</li>
+<li><p><strong>互斥量（mutex）</strong>：如果不需要信号量的计数能力，可以简化，称作互斥量，它仅仅适用于管理共享资源或一小段代码，因为实现容易且高效，所以在实现用户空间线程包时特别有用</p>
+</li>
+<li><p>互斥量有两种取值，解锁（取0）和加锁（取其他值）</p>
+</li>
+</ul>
+</li>
+<li><p>#调度</p>
+<ul>
+<li><p><strong>调度程序（scheduler）</strong>：当多进程同时竞争CPU时，只要有超过两个的进程处于就绪态，那么单CPU必须选择下一个要运行的进程，完成选择工作的程序称为调度程序（另称CPU调度器）</p>
+</li>
+<li><p>CPU分配器（Dispatcher）：调度器决定了将CPU分配给谁，然后分配器将CPU控制权交给该进程，操作内容通常包括：</p>
+<ul>
+<li><p><strong>上下文切换（switching context）</strong>：这通常是一种额外开销（overhead），切换时间取决于CPU硬件支持力度</p>
+</li>
+<li><p>从内核态（kernel mode）转移至用户态（user mode）</p>
+</li>
+</ul>
+</li>
+<li><p>调度算法（scheduling algorithm）：调度程序所使用的算法</p>
+</li>
+<li><p><strong>进程行为</strong>：进程的行为一般分为I&#x2F;O和计算（CPU），根据占用时间不同，分为I&#x2F;O密集型（I&#x2F;O burst）进程和CPU密集型（CPU burst）进程</p>
+</li>
+<li><p>有必要指出：随着CPU变得越来越跨，更多进程倾向于I&#x2F;O密集型，因为CPU的改进比磁盘快得多</p>
+</li>
+<li><p>何时调度：</p>
+<ol>
+<li><p>创建一个新进程之后，需要决定是运行父进程还是子进程（调度程序可以合法选择）</p>
+</li>
+<li><p>当一个进程退出时必须作出调度决策</p>
+</li>
+<li><p>当一个进程阻塞在I&#x2F;O和信号量上或由于其他原因阻塞时，必须选择另一个进程运行</p>
+</li>
+<li><p>在一个I&#x2F;O中断发生时，必须作出调度决策</p>
+</li>
+</ol>
+</li>
+<li><p>调度算法分为两类：</p>
+<ol>
+<li><p><strong>非抢占式（nonpreemptive）调度算法</strong>：挑选一个进程让它一直执行直至被阻塞或自动释放CPU（在这种情况下，该进程若交出CPU都是自愿的）</p>
+</li>
+<li><p><strong>抢占式（preemptive）调度算法</strong>：挑选一个进程让它运行某个固定时间的最大值，结束时会被挂起，调度程序会选择另一个合适的进程来运行（优先级高的先调度），必须要有可用的时钟来发生时钟中断，不然只能用非抢占式调度算法</p>
+</li>
+</ol>
+</li>
+<li><p>衡量调度程序（调度算法）好坏的几个指标：</p>
+<ul>
+<li><p>吞吐量（throughout）：系统每小时完成的作业数量</p>
+</li>
+<li><p>周转时间（turnaround time）：从一个批处理作业提交时刻开始直到该作业完成时刻位置的统计平均时间</p>
+</li>
+<li><p>CPU利用率（CPU Utilization）</p>
+</li>
+<li><p>等待时间</p>
+</li>
+</ul>
+</li>
+<li><p>###<strong>调度算法（批处理、交互式、实时）</strong>：</p>
+<ul>
+<li><p>批处理系统：</p>
+<ul>
+<li><p><strong>先来先服务（FCFS：first-come first-served）</strong></p>
+<ul>
+<li><p>容易理解：建立一个队列，选取进程运行时，从队列头部选取，添加进程时，添加到队列的尾部</p>
+</li>
+<li><p>但是通过例子可以发现，短进程比长进程先执行，平均等待时间会缩短</p>
+</li>
+</ul>
+</li>
+<li><p><strong>最短作业优先法（shortest job first）</strong></p>
+<ul>
+<li><p>前提：预知进入就绪队列的进程执行时间</p>
+</li>
+<li><p>原理：假设有4个进程，其运行时间分别为a，b，c，d，第一个进程在a时刻结束，第二个进程在a+b时刻结束，以此类推，平均周转时间为（4a+3b+2c+d）&#x2F;4，可以看到a对平均值的影响最大，所以a应该取最小值才好，这样平均周转时间才能取到最小值</p>
+</li>
+<li><p>抢占式SJF算法：当一个进程进入就绪队列，如果它的CPU时间小于当前拥有CPU的进程的剩余“预估”时间，前者抢占后者的CPU，称为 Shortest-Remaining-Time-First(SRTF)，不能实现</p>
+</li>
+<li><p>SJF算法是最优的算法</p>
+</li>
+<li><p>SJF有致命缺陷，如何预估进入就绪队列的进程的执行时间？</p>
+<ul>
+<li><p>不可能准确地预测，比如需要用户输入，这是不可知的</p>
+</li>
+<li><p>只能根据过去的CPU burst cycle来预测</p>
+</li>
+</ul>
+</li>
+<li><p>HRN（Highest response Ratio Next）</p>
+<ul>
+<li><p>HRN &#x3D; （W + T）&#x2F; T</p>
+</li>
+<li><p>W为等待时间，T代表预估CPU时间</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>交互式系统：</p>
+<ul>
+<li><p><strong>轮转调度（Round Robin，RR）</strong></p>
+<ul>
+<li><p><strong>时间片（quantum）</strong>：每个进程被分配一个时间段，即允许该进程在该时间段中运行，如果在时间片结束时该进程还在运行，则将剥夺CPU给下一个进程，如果该进程在时间片结束前阻塞或结束，则CPU立即切换</p>
+</li>
+<li><p>假设n个就绪进程，时间片q，每个就绪进程得到1&#x2F;n的CPU时间，任何就绪进程最多等待(n-1)q单位时间</p>
+</li>
+<li><p>平均周转时间通常优于SJF</p>
+</li>
+<li><p>响应时间一定优于SJF</p>
+</li>
+<li><p>性能分析：</p>
+<ul>
+<li><p>q如果很大，则FIFO</p>
+</li>
+<li><p>q如果很小，则进程切换，或称上下文切换（context switch）开销太大，所谓上下文切换是：从一个进程切换到另一个进程是需要一定的时间的，所以q必须远远大于上下文切换时间</p>
+</li>
+</ul>
+</li>
+<li><p>结论：时间片设得太短会导致过多的进程切换，降低了CPU的效率；而设得太长有可能引起对短的交互请求的响应时间变长，通常将时间片设为20ms~50ms是合理的这种</p>
+</li>
+</ul>
+</li>
+<li><p><strong>优先级调度（Priority Schedule）</strong></p>
+<ul>
+<li><p>每个进程都有一个优先数（priority number），通常是整数</p>
+</li>
+<li><p>Scheduler每次会选取就绪队列中，优先级最高的进程执行</p>
+</li>
+<li><p>当优先级定义为“进程需要的CPU时间”时，SJF算法就是优先级调度</p>
+</li>
+<li><p>优先级可由系统动态确定，例如：有些进程为I&#x2F;O密集型，其多数时间在等待I&#x2F;O操作，当这样的进程需要CPU时，应尽快地给它CPU，已便它能很快地执行完CPU操作然后去等待I&#x2F;O操作，下一个进程就可以同时进入CPU。如何实现这样的效果呢？一个简单算法：其优先级设为1&#x2F;f，f为该进程在上一个时间片所占的部分。</p>
+</li>
+<li><p><strong>进程饥饿（Starvation）</strong>：优先级较低的进程可能永远得不到CPU</p>
+</li>
+<li><p>解决：Aging思想，优先级要考虑就绪进程在就绪队列里的等待时间，因此，若一个进程在就绪队列中等待，那它的优先级会单调递增</p>
+</li>
+</ul>
+</li>
+<li><p><strong>多级队列（Multilevel Queue）</strong></p>
+<ul>
+<li><p>把就绪队列拆分成几个队列</p>
+</li>
+<li><p>每个队列有其自己的调度算法，比如前台就绪队列需交互性，采用轮转法，后台就绪队列需批处理，采用先来先服务法</p>
+</li>
+<li><p>CPU怎么在队列间分配？</p>
+<ul>
+<li><p>固定优先权法，例如，先前台队列，再后台队列</p>
+</li>
+<li><p>时间片办法，例如，80%的CPU时间给前台队列，20%的CPU时间给后台进程</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>多级反馈队列（Multilevel Feedback Queue）</strong></p>
+<ul>
+<li><p>基于多级队列，但另外考虑了进程在就绪队列之间可以迁移</p>
+</li>
+<li><p>定义这样的算法应该着重考虑：</p>
+<ul>
+<li><p>队列个数</p>
+</li>
+<li><p>每级队列的调度算法</p>
+</li>
+<li><p>如何将就绪进程升级至高层次队列</p>
+</li>
+<li><p>如何将就绪进程降低至低层次队列</p>
+</li>
+<li><p>当一个就绪进程进入就绪队列时，应该去哪一级？</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>实时调度</strong></p>
+<ul>
+<li><p>硬实时（hard real time）调度：调度机制确保一个关键任务能在指定时间前完成</p>
+</li>
+<li><p>软实时（soft real time）调度：调度机制尽量给予关键任务最高优先级，尽量在指定时间前完成</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>调度算法目标：1）公平；2）保持系统素有部分尽可能忙碌；</p>
+<ul>
+<li><p>批处理：1）吞吐量；2）周转时间；3）CPU利用率。</p>
+</li>
+<li><p>交互式：1）最小响应时间；2）均衡性。</p>
+</li>
+<li><p>实时：1）满足截止时间；2）可预测性。</p>
+</li>
+</ul>
+</li>
+<li><p>调度算法评估：</p>
+<ul>
+<li><p>确定模型法（Deterministic modeling）：采用事先设定的特定负荷，计算在给定负荷下每个算法的性能</p>
+</li>
+<li><p>排队模型（Queueing models）</p>
+</li>
+<li><p>编程实现该算法，观察其执行情况</p>
+</li>
+<li><p>仿真</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>本文落笔于 2018-09-08</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="http://example.com">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2018/09/08/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B%E3%80%81%E8%B0%83%E5%BA%A6/">http://example.com/2018/09/08/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B%E3%80%81%E8%B0%83%E5%BA%A6/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a><a class="post-meta__tags" href="/tags/%E8%BF%9B%E7%A8%8B/">进程</a><a class="post-meta__tags" href="/tags/%E7%BA%BF%E7%A8%8B/">线程</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2018/12/05/Linear%20Algebra/" title="Linear Algebra"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">Linear Algebra</div></div></a></div><div class="next-post pull-right"><a href="/2018/05/30/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E6%8A%95%E8%B5%84%E5%BF%83%E7%90%86%E5%AD%A6/" title="读书笔记——投资心理学"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">读书笔记——投资心理学</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">19</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">7</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章">建站第一篇文章</a><time datetime="2023-05-09T16:25:27.000Z" title="Created 2023-05-10 00:25:27">2023-05-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20Parallel%20Stream%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E4%BC%98%E5%8C%96RT%E4%B8%8E%E4%B8%B2%E8%81%94traceid/" title="微服务架构下的Java Parallel Stream实践——优化RT与串联traceid">微服务架构下的Java Parallel Stream实践——优化RT与串联traceid</a><time datetime="2023-02-19T05:03:49.000Z" title="Created 2023-02-19 13:03:49">2023-02-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/11/07/Git%20Cheatsheet/" title="Git Cheatsheet">Git Cheatsheet</a><time datetime="2022-11-07T05:23:39.000Z" title="Created 2022-11-07 13:23:39">2022-11-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/08/19/IDE%20Cheatsheet/" title="IDE Cheatsheet">IDE Cheatsheet</a><time datetime="2022-08-19T07:06:43.000Z" title="Created 2022-08-19 15:06:43">2022-08-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/08/19/GDB%20Cheatsheet/" title="GDB Cheatsheet">GDB Cheatsheet</a><time datetime="2022-08-19T05:27:07.000Z" title="Created 2022-08-19 13:27:07">2022-08-19</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 一个廖少少</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
