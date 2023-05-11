@@ -1,0 +1,362 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>阿里云表格存储介绍 | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本文所有内容均来自于阿里云官网  简介TableStore是阿里云自研的多模型结构化数据存储，提供海量结构化数据存储和快速查询和分析服务，其分布式存储和索引引擎能够支持PB级存储，千万TPS以及毫秒级延迟的服务能力。 存储引擎与索引引擎在OTS的服务端有两个引擎，存储引擎和索引引擎，他们的数据结构和底层原理都是不同的，即表引擎(Table)和多元索引引擎(Searchindex) 全托管表格存储">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阿里云表格存储介绍">
+<meta property="og:url" content="https://edisonleolhl.github.io/2021/08/05/%E9%98%BF%E9%87%8C%E4%BA%91%E8%A1%A8%E6%A0%BC%E5%AD%98%E5%82%A8%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="本文所有内容均来自于阿里云官网  简介TableStore是阿里云自研的多模型结构化数据存储，提供海量结构化数据存储和快速查询和分析服务，其分布式存储和索引引擎能够支持PB级存储，千万TPS以及毫秒级延迟的服务能力。 存储引擎与索引引擎在OTS的服务端有两个引擎，存储引擎和索引引擎，他们的数据结构和底层原理都是不同的，即表引擎(Table)和多元索引引擎(Searchindex) 全托管表格存储">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://edisonleolhl.github.io/images/avatar.jpeg">
+<meta property="article:published_time" content="2021-08-05T03:17:38.000Z">
+<meta property="article:modified_time" content="2023-05-11T11:18:24.225Z">
+<meta property="article:author" content="一个廖少少">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="分布式">
+<meta property="article:tag" content="存储">
+<meta property="article:tag" content="阿里云">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://edisonleolhl.github.io/images/avatar.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://edisonleolhl.github.io/2021/08/05/%E9%98%BF%E9%87%8C%E4%BA%91%E8%A1%A8%E6%A0%BC%E5%AD%98%E5%82%A8%E4%BB%8B%E7%BB%8D/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '阿里云表格存储介绍',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-11 19:18:24'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/cover.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">阿里云表格存储介绍</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-08-05T03:17:38.000Z" title="发表于 2021-08-05 11:17:38">2021-08-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-11T11:18:24.225Z" title="更新于 2023-05-11 19:18:24">2023-05-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="阿里云表格存储介绍"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>本文所有内容均来自于阿里云官网</p>
+</blockquote>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>TableStore是阿里云自研的多模型结构化数据存储，提供海量结构化数据存储和快速查询和分析服务，其分布式存储和索引引擎能够支持PB级存储，千万TPS以及毫秒级延迟的服务能力。</p>
+<h3 id="存储引擎与索引引擎"><a href="#存储引擎与索引引擎" class="headerlink" title="存储引擎与索引引擎"></a>存储引擎与索引引擎</h3><p>在OTS的服务端有两个引擎，存储引擎和索引引擎，他们的数据结构和底层原理都是不同的，即表引擎(Table)和多元索引引擎(Searchindex)</p>
+<h3 id="全托管"><a href="#全托管" class="headerlink" title="全托管"></a>全托管</h3><p>表格存储是一种全托管的结构化数据存储。使用表格存储您只需专注于业务研发，无需担心软硬件预置、配置、故障、集群扩展、安全等问题，在保证高服务可用性的同时，极大地减少了管理及运维成本。</p>
+<h3 id="多模型"><a href="#多模型" class="headerlink" title="多模型"></a>多模型</h3><ul>
+<li>Wide column模型：一款经典模型，目前绝大部分半结构化、结构化数据都存储在Wide column模型系统中。</li>
+<li>Timeline模型：表格存储自研模型，主要用于消息数据，适用于IM、Feed和物联网设备消息下推等消息系统中消息的存储和同步，目前已被广泛使用。（syncserver的推送位点）</li>
+<li>Timestream模型：适用于时序数据、时空数据等核心数据场景。</li>
+<li>Grid模型：适用于科学大数据的存储和查询场景。</li>
+</ul>
+<h3 id="无缝扩展"><a href="#无缝扩展" class="headerlink" title="无缝扩展"></a>无缝扩展</h3><p>数据分片&amp;负载均衡实现无缝扩展，通过调整数据分区配置更多存储，单表不少于1PB或一万亿条记录</p>
+<h3 id="查询能力强"><a href="#查询能力强" class="headerlink" title="查询能力强"></a>查询能力强</h3><p>除了支持主键查询，表格存储还支持二级索引、多元索引。</p>
+<ul>
+<li>二级索引：相当于给数据表提供了另外一种排序方式，即对查询条件预 先设计了一种数据分布，可加快数据查询的效率。</li>
+<li>多元索引：基于倒排索引和列式存储，支持多字段自由组合查询、模糊查询、地理位置查询、全文检索等，可解决大数据的复杂查询难题。</li>
+<li>SQL查询：兼容MySQL的查询语法</li>
+</ul>
+<h3 id="数据强一致（三副本）"><a href="#数据强一致（三副本）" class="headerlink" title="数据强一致（三副本）"></a>数据强一致（三副本）</h3><h3 id="高并发（千万级）"><a href="#高并发（千万级）" class="headerlink" title="高并发（千万级）"></a>高并发（千万级）</h3><h2 id="Wide-Column模型术语"><a href="#Wide-Column模型术语" class="headerlink" title="Wide Column模型术语"></a>Wide Column模型术语</h2><h3 id="主键与分区键"><a href="#主键与分区键" class="headerlink" title="主键与分区键"></a>主键与分区键</h3><p>主键(Primary Key)：表中的每一行由主键（PK）唯一确定，主键可包含1~4个主键列，建表时必须指定主键列，且后面无法再更改</p>
+<p>分区键(Partition Key)：数据分区的划分粒度为主键的第一列，该列即为数据分区键。拥有相同数据分区键的行必然在同一个数据分区中。OTS会根据分区键列值的范围来进行分区的操作，通过分区来达到数据访问负载均衡的目的。</p>
+<p>分区：</p>
+<ul>
+<li>当表的大小逐渐增大后，表会分裂，由原来的一个分区自动分裂成多个分区。</li>
+<li>触发分裂的因素会有很多，其中一个很关键的因素就是数据量。</li>
+<li>分裂后，每个分区会负责某个独立的分片键范围，每个分区管理的分片键范围都是无重合的，且范围是连续的。</li>
+<li>后端会根据写入数据行的分片键的范围，来定位到是哪个分片。</li>
+</ul>
+<h4 id="如何设定一个好的分区键？"><a href="#如何设定一个好的分区键？" class="headerlink" title="如何设定一个好的分区键？"></a>如何设定一个好的分区键？</h4><p>建表时，分区键的选择是很重要的，会影响当表数据量很大时访问的性能。应用程序在选择分区键时，应该遵循以下基本原则：</p>
+<ul>
+<li>不要使用拥有固定值或取值范围较小的属性，如客户性别（Male&#x2F;Female）。</li>
+<li>尽量避免使用按自然序排序后会有明显访问热点的属性，如在查询最新数据场景中使用时间戳（TimeStamp）作为分区键。</li>
+<li>尽量使用按自然序排序后访问热点比较分散的属性，如UserID。</li>
+</ul>
+<h4 id="如果无法预估访问热点，该怎么做？"><a href="#如果无法预估访问热点，该怎么做？" class="headerlink" title="如果无法预估访问热点，该怎么做？"></a>如果无法预估访问热点，该怎么做？</h4><p>建议在写入分区键之前，根据应用程序的特点进行一次哈希（Hash）。如在写入一行数据时，将UserID通过简单的哈希算法生成一个哈希值，然后在哈希值后拼接UserID作为分区键的值存入表格存储的表。通过这种轻量级的操作可以有效地解决部分访问热点问题。但是需要特别注意的是，由于分区键的值是由哈希值和实际值拼接的，应用程序将无法使用分区键进行范围读取的操作（getRange）。</p>
+<h3 id="稀疏的属性列"><a href="#稀疏的属性列" class="headerlink" title="稀疏的属性列"></a>稀疏的属性列</h3><p>OTS的表是稀疏的，每一行可以有不同的列，可以动态增加或者减少属性列，创建表时无需为表的属性列定义严格的SCHEMA。</p>
+<h3 id="多版本、生命周期、有效版本偏差"><a href="#多版本、生命周期、有效版本偏差" class="headerlink" title="多版本、生命周期、有效版本偏差"></a>多版本、生命周期、有效版本偏差</h3><p>多版本(multi-version)：每条记录的不同列可以有不同版本，使用timestamp(ms)作为版本号(version)，timestamp可以是写入服务器的时间，也可以由用户自己指定</p>
+<p>使用timestamp作为version，两全其美：</p>
+<ol>
+<li>是递增的</li>
+<li>表明更新时间，</li>
+</ol>
+<p>最大版本数（max-version)：每个属性列最多保存的版本个数，符合FIFO</p>
+<p>生命周期(TTL)：某个属性的version，经过TTL时间后，由系统后台自动销毁</p>
+<p>两个特殊场景，进一步理解生命周期：</p>
+<ol>
+<li>写入TTL过期的version时，经过计算，OTS会直接拒绝写入请求</li>
+<li>将表的TTL设小，再恢复原来的TTL值，最久远的若干条记录有可能就被系统回收了</li>
+</ol>
+<h3 id="宽行模型与关系模型的区别"><a href="#宽行模型与关系模型的区别" class="headerlink" title="宽行模型与关系模型的区别"></a>宽行模型与关系模型的区别</h3><ul>
+<li>Wide column模型：三维结构（行、列和时间）、schema-free、宽行、多版本数据以及生命周期管理。</li>
+<li>关系模型：二维（行、列）以及固定的Schema。</li>
+</ul>
+<h2 id="Wide-Column存储引擎"><a href="#Wide-Column存储引擎" class="headerlink" title="Wide Column存储引擎"></a>Wide Column存储引擎</h2><p>OTS的存储可以用一个巨大的SortedMap来表示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SortedMap&lt;PrimaryKey, List&lt;Column&gt;&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询操作"><a href="#查询操作" class="headerlink" title="查询操作"></a>查询操作</h3><p>从本质上来说，OTS只提供两种查询：</p>
+<ul>
+<li>单行查询：GetRow</li>
+<li>范围查询：GetRange</li>
+</ul>
+<h4 id="主键的比较"><a href="#主键的比较" class="headerlink" title="主键的比较"></a>主键的比较</h4><p>按照主键列的定义顺序，依次比较，相同则比较下一列，所有主键列都相同才代表主键相等</p>
+<p>类型	比较规则<br>整型(Integer)	有符号长整型比较<br>布尔型(Boolean)	布尔型比较<br>字符串型(String)	字典序比较<br>字节型(Binary)	字典序比较</p>
+<p>举个简单的例子，假设一个表有3列主键列，分别是：整型、字符串型和整型：</p>
+<ul>
+<li>(10, ‘abc’, 10) &#x3D;&#x3D; (10, ‘abc’, 10) 所有主键列均相等</li>
+<li>(10, ‘abc’, 10) &lt; (11, ‘abc’, 10) 第一列主键列比较出大小</li>
+<li>(10, ‘bbc’, 0) &gt; (10, ‘abc’, 10) 第一列主键列相等，第二列主键列比较出大小，即使第三列主键列也不同。</li>
+</ul>
+<h4 id="单行查询"><a href="#单行查询" class="headerlink" title="单行查询"></a>单行查询</h4><p>单行查询必须指定行的主键，根据上一章描述的比较规则，在表格存储内部查找到相同主键的行，并根据指定的查询条件，返回整行或者部分列。</p>
+<h4 id="范围查询"><a href="#范围查询" class="headerlink" title="范围查询"></a>范围查询</h4><p>范围查询必须指定两个主键，一个作为范围的起始（包含），一个作为范围的终止（不包含）。在表格存储内部，会根据上面章节提到的主键的比较规则，返回大于等于起始主键且小于终止主键的所有的行。</p>
+<p>误区：范围查询等于条件查询</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">举例：</span><br><span class="line">假设表有三个主键: [PK1(INTEGER), PK2(STRING), PK3(INTEGER)]</span><br><span class="line"></span><br><span class="line">给定的查询范围为: </span><br><span class="line">    起始主键：[PK1 = 10, PK2 = <span class="string">&#x27;h&#x27;</span>, PK3 = 5]</span><br><span class="line">    终止主键：[PK1 = 15, PK2 = <span class="string">&#x27;z&#x27;</span>, PK3 = 9]</span><br><span class="line">    </span><br><span class="line">很多用户会将这个查询条件误解为：</span><br><span class="line">    10 &lt;= PK1 &lt; 15 and <span class="string">&#x27;h&#x27;</span> &lt;= PK2 &lt; <span class="string">&#x27;z&#x27;</span> and 5 &lt;= PK3 &lt; 9</span><br><span class="line">    </span><br><span class="line">而正确的理解应该是：</span><br><span class="line">    起始主键 &lt;= 行主键 &lt; 终止主键</span><br></pre></td></tr></table></figure>
+
+<p>如果按照条件查询，下表所有行都不符合范围，但是实际上，2、3、4、5行是符合范围的</p>
+<p>行号	PK1	PK2	PK3<br>1	10	‘a’	0<br>起始主键	10	‘h’	5<br>2	11	‘a’	0<br>3	11	‘b’	0<br>4	12	‘a’	0<br>5	12	‘c’	0<br>终止主键	15	‘z’	9<br>6	15	‘z’	10<br>7	16	‘a’	0<br>8	16	‘a’	1</p>
+<h3 id="全局二级索引-GlobalIndex"><a href="#全局二级索引-GlobalIndex" class="headerlink" title="全局二级索引(GlobalIndex)"></a>全局二级索引(GlobalIndex)</h3><p>术语</p>
+<ul>
+<li>索引表：对主表某些列数据的索引，只能读不能写。</li>
+<li>预定义列：表格存储为Schema-free模型，原则上一行数据可以写入任意列，无需在schema中指定。但是也可以在建表时预先定义一些列，以及其类型。</li>
+<li>单列索引：只为某一个列建立索引。</li>
+<li>组合索引：多个列组合排序，组合索引中包含组合索引列1，列2。</li>
+<li>索引表属性列：被映射到索引表非PK列中的主表预定义列。</li>
+<li>索引列补齐：自动将没有出现在索列中的主表PK列补充到索引表PK中。</li>
+</ul>
+<p>使用</p>
+<ul>
+<li>GlobalIndex使用的是额外的一张TableStore表来实现的，所以索引表的数据模型与TableStore的表完全一致。用户可以指定任意列（原表的主键列或属性列）作为索引表的主键。</li>
+<li>举例：<br>假设原表有以下几列：<ul>
+<li>一列主键X</li>
+<li>三列属性列Q、W、E<br>我们创建GlobalIndex的主键为Q、X（索引列补齐：原表的主键列会加在属性列后面，为了防止重复），通过索引表可实现如下查询组合：</li>
+<li>Q范围查询，X范围查询</li>
+<li>指定Q的值，X范围查询</li>
+<li>指定Q和X的值</li>
+</ul>
+</li>
+</ul>
+<p>理解</p>
+<ul>
+<li>为何叫二级索引？当用户创建一张表时，其所有PK列构成了该表的“一级索引”</li>
+<li>全局二级索引支持在指定列上建立索引，生成的索引表中数据按用户指定的索引列进行排序，主表的每一笔写入都将自动异步更新到索引表（延迟一般是毫秒级别）。</li>
+<li>在许多场景下，将极大的提高查询的效率。</li>
+</ul>
+<h3 id="多元索引-SearchIndex"><a href="#多元索引-SearchIndex" class="headerlink" title="多元索引(SearchIndex)"></a>多元索引(SearchIndex)</h3><p>GlobalIndex虽然查询能力上有所增强，但是在某些查询功能上还是无法满足需求，比如分词查询、多字段自由组合查询、模糊查询、地理位置查询等。为了支持更多的查询能力，OTS增加了多元索引能力</p>
+<ul>
+<li>极强的索引能力：需要支持多字段组合查询，模糊查询，时空等多维查询等，这些需求只能通过倒排索引和其他类似索引解决。</li>
+<li>轻量级分析能力：需要支持排序、统计、聚合等轻量级分析能力，这些能力在众多场景下都有大量的需求，目前很多产品的这部分能力诉求都没能得到很好地满足。</li>
+</ul>
+<h4 id="索引能力"><a href="#索引能力" class="headerlink" title="索引能力"></a>索引能力</h4><ol>
+<li>倒排索引：是搜索系统中多种查询能力的基础结构，可以极大优化查询功能。基于此，TableStore提供了倒排索引能力，用户为某些属性列建立了倒排索引后，可以基于这些倒排索引实现多字段自由组合的ad-hoc查询，同时也不用担心性别，年龄，枚举等选择性较差的字段的问题了。</li>
+<li>多维空间索引：是一种用于地理位置等多维空间查询的数据结构，一般都用于时空数据场景，可以极大提高空间查询的性能。TableStore也提供了多维空间索引，目前基于多维空间索引提供了地理位置的查询能力，包括“附近的人”、“矩形、多边形等范围内的点”等常见的地理查询，为大数据筛选、车联网和移动应用提供更丰富的一站式数据查询能力。</li>
+</ol>
+<h4 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h4><ul>
+<li>写入延迟：与GlobalIndex类似，数据同步到SearchIndex也是异步的。由于SearchIndex内部实现的原因，数据写入到SearchIndex有一个索引构建的过程。所以除了同步链路的延迟，还需要加上索引构建的延迟，整个延迟在秒级别。</li>
+<li>模糊查询：模糊查询时关系型数据库的一个强大功能，基于like语法可以实现很多易用性极高的功能，但是在分布式数据库中的时候，比如HBase，这个能力没法提供。现在TableStore提供了模糊查询能力，只要为该属性列创建倒排索引，该字段就可以被模糊查询。</li>
+<li>前缀查询：有了模糊查询能力后，TableStore也提供了前缀查询功能。</li>
+</ul>
+<h4 id="全局二级索引与多元索引的对比"><a href="#全局二级索引与多元索引的对比" class="headerlink" title="全局二级索引与多元索引的对比"></a>全局二级索引与多元索引的对比</h4><p>GlobalIndex（全局二级索引）	SearchIndex（多元索引）<br>查询灵活性	只可以使用创建索引时的给出的索引组合进行查询，如果需要其他组合则需要再创建新的索引表	可以对索引字段做任意组合查询<br>大范围扫描	支持，性能与原生TableStore一致	支持，但性能不及全局二级索引<br>数据可见延迟	毫秒级	秒级<br>分词查询	不支持	支持<br>GEO地理位置查询	不支持	支持<br>数据一致性	最终一致	最终一致</p>
+<h3 id="OTS和HBase的异同"><a href="#OTS和HBase的异同" class="headerlink" title="OTS和HBase的异同"></a>OTS和HBase的异同</h3><p>OTS与HBase一样，都从谷歌的BigTable汲取了灵感，而HBase是目前开源届比较知名的实现，注意这里比较的是OTS的WideColumn模型，其他模型如Timeline与Hbase是不一样的，不用考虑异同。</p>
+<h4 id="BigTable和Hbase是什么？"><a href="#BigTable和Hbase是什么？" class="headerlink" title="BigTable和Hbase是什么？"></a>BigTable和Hbase是什么？</h4><ul>
+<li><p>Bigtable 是一个分布式, 多维, 映射表. 表中的数据通过一个行关键字（Row Key）、一个列关键字（Column Key）以及一个时间戳（Time Stamp）进行索引. 在Bigtable中一共有三级索引. 行关键字为第一级索引，列关键字为第二级索引，时间戳为第三级索引。</p>
+<p>  Bigtable的存储逻辑可以表示为：</p>
+<pre><code>  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(row:string, column:string, time:int64)→string</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>HBase 是一个开源的、分布式的、版本化的 NoSQL 数据库（也即非关系型数据库），它利用 Hadoop 分布式文件系统（Hadoop Distributed File System，HDFS）提供分布式数据存储。主要适用于海量明细数据（十亿、百亿）的随机实时查询。HBase表中的每个列都归属于某个列族，列族必须作为表模式(schema)定义的一部分预先给出，列名以列族作为前缀，每个“列族”都可以有多个列成员(column)；如course:math, course:english, 新的列族成员（列）可以随后按需、动态加入；</p>
+</li>
+</ul>
+<h4 id="关于主键的异同"><a href="#关于主键的异同" class="headerlink" title="关于主键的异同"></a>关于主键的异同</h4><ul>
+<li>HBase只支持一个值，也就是HBase的RowKey，通常对应比如业务唯一值（如商品ID），如果需要使用多个列作为联合主键的时候，需要手动拼接多个列，将拼接后的字符串作为一个RowKey。</li>
+<li>OTS支持最多4个列作为联合主键，但是第一个列会作为OTS划分数据存储的分区键，同一个分区下可以使用OTS提供的一些特性，比如分区内事务。多个列作为主键时，在底层会按照主键有序存储，因此支持按照主键（列）的范围查询。</li>
+<li>小结：OTS的多列主键不仅避免了业务层去做主键的拆与合，还能提供比较灵活的查询场景的支持。但是这种查询也是有局限性的，由于OTS的联合主键底层采用的是类似于SortedMap的存储结构，因此只能支持精确的单行查询，以及基于主键的顺序和逆序扫描，既然OTS支持了主键的这些查询，这就意味着我们在设计主键的时候，需要花更多的精力去琢磨主键的设计。</li>
+</ul>
+<h4 id="关于数据类型的异同"><a href="#关于数据类型的异同" class="headerlink" title="关于数据类型的异同"></a>关于数据类型的异同</h4><ul>
+<li>HBase的主键(RowKey)的数据类型为字符串(String)，所有列的底层类型都是BinaryBytes。</li>
+<li>OTS支持多种基本数据类型，主键支持String，Integer，Binary，属性列支持String，Integer，Double，Boolean，Binary。</li>
+<li>小结：从存储的高效性上来看肯定是统一的BinaryByte更直接更高效，但是支持多样的数据类型让OTS的存储数据可以直观可视化，也为OTS通过属性列来建立多元索引提供了前提。</li>
+</ul>
+<h4 id="关于数据版本和生命周期"><a href="#关于数据版本和生命周期" class="headerlink" title="关于数据版本和生命周期"></a>关于数据版本和生命周期</h4><ul>
+<li>HBase支持系统自生成时间戳作为版本号来标识数据版本，也支持自定义时间戳来作为版本号。同时支持在列族(ColumnFamily)粒度和单元格(Cell)粒度设置TTL(Time To Live)，过期后自动清理。</li>
+<li>OTS对数据版本的支持和HBase并无二异（同样也有多版本、生命周期等概念），OTS支持在表粒度上设置TTL，过期后所有的属性列都会过期，这是和HBase不太相同的一点，因为OTS没有列族的概念，而HBase一个Row可以配置多个列族。因此HBase可以对不同的列族设置不同的TTL生命周期。</li>
+<li>小结：在这一点上，二者基本没太大差别，生命周期很好理解，数据版本在很多场景下可以做幂等性校验，同时因为数据版本永远是后插入的值一定要大于等于之前已插入的值。因此也可以用来保证数据的一致性。</li>
+</ul>
+<h4 id="其他比较"><a href="#其他比较" class="headerlink" title="其他比较"></a>其他比较</h4><ul>
+<li>OTS是使用HTTP协议的，底层的分布式文件系统使用的是盘古。为了尽可能在用户使用保证傻瓜化，OTS对于很多运维相关的功能都不支持，比如Region管理，Table管理等。</li>
+<li>HBase使用的是TCP协议，底层的分布式文件系统使用的是HDFS。</li>
+</ul>
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><p>OTS提供了两种方式来写入数据,一是同步批量写入,返回值中即可直接获取写入状态,如果一次写入200行,但是有1条数据写入失败,你可以直接在返回值中获取并进行后续处理.二是异步写入+CallBack的方式,后者适合数量量很大的场景,</p>
+<h3 id="读接口"><a href="#读接口" class="headerlink" title="读接口"></a>读接口</h3><ul>
+<li>主键精确读:GetRow</li>
+<li>主键批量读:BatchGetRow</li>
+<li>主键范围读:GetRange</li>
+<li>索引查询:search</li>
+</ul>
+<p>假设主键列为A,B,属性列为C,D,E,F 全局二级索引列为C,A,B 多元索引列为D,E,F</p>
+<h4 id="基于主键"><a href="#基于主键" class="headerlink" title="基于主键"></a>基于主键</h4><ul>
+<li>主键点查(精确查询):通过已知主键,精确读取一行,效率最高,SQL类比where A&#x3D;a and B &#x3D;1<ul>
+<li>where A &#x3D; a and B&#x3D; b</li>
+</ul>
+</li>
+<li>主键范围查:从开始主键到结束主键,支持正序和逆序(这种查询需要满足最左前缀原则)<br>○ where A &#x3D; a<br>○ where A between a and c<br>○ where A &#x3D; a and B &gt; 1<br>○ 查询范围在A&#x3D;a and B&#x3D;1(最小值)和 A&#x3D;D and B&#x3D;5(最大值)之间的数据</li>
+</ul>
+<h4 id="基于全局二级索引"><a href="#基于全局二级索引" class="headerlink" title="基于全局二级索引"></a>基于全局二级索引</h4><p>全局二级索引结构等同于主表结构,区别在于只包含索引列,通过全局二级索引定位到主键,在通过主键从主键表中定位到具体的数据行.</p>
+<p>全局二级索引的意义就在于希望通过主键外的某个列来查询数据.二级索引列需要包含主键列,一般是普通列A+主键列</p>
+<ul>
+<li>主键点查<ul>
+<li>where C &#x3D; c and A &#x3D;a and B&#x3D;b</li>
+</ul>
+</li>
+<li>主键范围查<ul>
+<li>where C&#x3D;c</li>
+<li>where C&#x3D;c and A&#x3D;a</li>
+<li>where C&#x3D;c and A &gt; a</li>
+<li>where C&#x3D;c and A&gt;a and B &lt; b</li>
+<li>where C&gt;c</li>
+<li>…..</li>
+</ul>
+</li>
+</ul>
+<h4 id="基于多元索引"><a href="#基于多元索引" class="headerlink" title="基于多元索引"></a>基于多元索引</h4><p>多元索引使用倒排索引,BKD树等结构,具备丰富的查询能力,支持按任意多个多元索引列做组合查询,聚合统计,排序分页等,在使用上,理论上来说,只需要建立一个多元索引，将所有可能查询的列加入到这个多元索引中即可，加入的顺序也没有要求,但要注意,索引列最多只能有20个</p>
+<ul>
+<li>where D&#x3D;d order by E DESC limit 1,10</li>
+<li>where D&#x3D; d order by C ASC</li>
+<li>select sum(d) from 表名 where E&gt;e</li>
+<li>……</li>
+</ul>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="存储量对查询速度有影响吗？"><a href="#存储量对查询速度有影响吗？" class="headerlink" title="存储量对查询速度有影响吗？"></a>存储量对查询速度有影响吗？</h3><p>对于单行查询和范围查询，查询的速度不在于数据量有多少。</p>
+<p>表格存储作为NoSQL数据库，其数据量可以随集群的规模线性扩展，并且对单行和范围查询的速度不会有任何影响。即使数据规模达到亿级或者百亿级，查询速度都不会变。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p>表格存储数据模型和查询操作：<a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/38621">https://developer.aliyun.com/article/38621</a></p>
+<p>深入对比 HBase 与阿里云的表格存储服务：<a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/69547?spm=ata.21736010.0.0.41546874SbHkAA">https://developer.aliyun.com/article/69547?spm=ata.21736010.0.0.41546874SbHkAA</a></p>
+<p>TableStore索引功能详解：<a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/692837?spm=ata.21736010.0.0.41546874SbHk">https://developer.aliyun.com/article/692837?spm=ata.21736010.0.0.41546874SbHk</a></p>
+<blockquote>
+<p>本文落笔于 2021-08-05</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io/2021/08/05/%E9%98%BF%E9%87%8C%E4%BA%91%E8%A1%A8%E6%A0%BC%E5%AD%98%E5%82%A8%E4%BB%8B%E7%BB%8D/">https://edisonleolhl.github.io/2021/08/05/%E9%98%BF%E9%87%8C%E4%BA%91%E8%A1%A8%E6%A0%BC%E5%AD%98%E5%82%A8%E4%BB%8B%E7%BB%8D/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://edisonleolhl.github.io" target="_blank">一知半解</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><a class="post-meta__tags" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a><a class="post-meta__tags" href="/tags/%E5%AD%98%E5%82%A8/">存储</a><a class="post-meta__tags" href="/tags/%E9%98%BF%E9%87%8C%E4%BA%91/">阿里云</a></div><div class="post_share"><div class="social-share" data-image="/images/avatar.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/08/19/GDB%20Cheatsheet/" title="GDB Cheatsheet"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">GDB Cheatsheet</div></div></a></div><div class="next-post pull-right"><a href="/2021/07/25/Shell%20Cheatsheet/" title="Shell Cheatsheet"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Shell Cheatsheet</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/06/06/%E3%80%8A%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%AF%86%E9%9B%86%E5%9E%8B%E5%BA%94%E7%94%A8%E3%80%8B%E7%9A%84%E7%AC%94%E8%AE%B0/" title="《设计数据密集型应用》的笔记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-06</div><div class="title">《设计数据密集型应用》的笔记</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/edisonleolhl"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/edisonleolhl" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:edisonleolhl@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">这个家伙很懒，什么都没写~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%B8%8E%E7%B4%A2%E5%BC%95%E5%BC%95%E6%93%8E"><span class="toc-number">1.1.</span> <span class="toc-text">存储引擎与索引引擎</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A8%E6%89%98%E7%AE%A1"><span class="toc-number">1.2.</span> <span class="toc-text">全托管</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.3.</span> <span class="toc-text">多模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E7%BC%9D%E6%89%A9%E5%B1%95"><span class="toc-number">1.4.</span> <span class="toc-text">无缝扩展</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E8%83%BD%E5%8A%9B%E5%BC%BA"><span class="toc-number">1.5.</span> <span class="toc-text">查询能力强</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BC%BA%E4%B8%80%E8%87%B4%EF%BC%88%E4%B8%89%E5%89%AF%E6%9C%AC%EF%BC%89"><span class="toc-number">1.6.</span> <span class="toc-text">数据强一致（三副本）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E5%B9%B6%E5%8F%91%EF%BC%88%E5%8D%83%E4%B8%87%E7%BA%A7%EF%BC%89"><span class="toc-number">1.7.</span> <span class="toc-text">高并发（千万级）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Wide-Column%E6%A8%A1%E5%9E%8B%E6%9C%AF%E8%AF%AD"><span class="toc-number">2.</span> <span class="toc-text">Wide Column模型术语</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E9%94%AE%E4%B8%8E%E5%88%86%E5%8C%BA%E9%94%AE"><span class="toc-number">2.1.</span> <span class="toc-text">主键与分区键</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%AE%BE%E5%AE%9A%E4%B8%80%E4%B8%AA%E5%A5%BD%E7%9A%84%E5%88%86%E5%8C%BA%E9%94%AE%EF%BC%9F"><span class="toc-number">2.1.1.</span> <span class="toc-text">如何设定一个好的分区键？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E6%97%A0%E6%B3%95%E9%A2%84%E4%BC%B0%E8%AE%BF%E9%97%AE%E7%83%AD%E7%82%B9%EF%BC%8C%E8%AF%A5%E6%80%8E%E4%B9%88%E5%81%9A%EF%BC%9F"><span class="toc-number">2.1.2.</span> <span class="toc-text">如果无法预估访问热点，该怎么做？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A8%80%E7%96%8F%E7%9A%84%E5%B1%9E%E6%80%A7%E5%88%97"><span class="toc-number">2.2.</span> <span class="toc-text">稀疏的属性列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E7%89%88%E6%9C%AC%E3%80%81%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E3%80%81%E6%9C%89%E6%95%88%E7%89%88%E6%9C%AC%E5%81%8F%E5%B7%AE"><span class="toc-number">2.3.</span> <span class="toc-text">多版本、生命周期、有效版本偏差</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%BD%E8%A1%8C%E6%A8%A1%E5%9E%8B%E4%B8%8E%E5%85%B3%E7%B3%BB%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.4.</span> <span class="toc-text">宽行模型与关系模型的区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Wide-Column%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-number">3.</span> <span class="toc-text">Wide Column存储引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C"><span class="toc-number">3.1.</span> <span class="toc-text">查询操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BB%E9%94%AE%E7%9A%84%E6%AF%94%E8%BE%83"><span class="toc-number">3.1.1.</span> <span class="toc-text">主键的比较</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%95%E8%A1%8C%E6%9F%A5%E8%AF%A2"><span class="toc-number">3.1.2.</span> <span class="toc-text">单行查询</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%8C%83%E5%9B%B4%E6%9F%A5%E8%AF%A2"><span class="toc-number">3.1.3.</span> <span class="toc-text">范围查询</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A8%E5%B1%80%E4%BA%8C%E7%BA%A7%E7%B4%A2%E5%BC%95-GlobalIndex"><span class="toc-number">3.2.</span> <span class="toc-text">全局二级索引(GlobalIndex)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E5%85%83%E7%B4%A2%E5%BC%95-SearchIndex"><span class="toc-number">3.3.</span> <span class="toc-text">多元索引(SearchIndex)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E8%83%BD%E5%8A%9B"><span class="toc-number">3.3.1.</span> <span class="toc-text">索引能力</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%90%86%E8%A7%A3"><span class="toc-number">3.3.2.</span> <span class="toc-text">理解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%A8%E5%B1%80%E4%BA%8C%E7%BA%A7%E7%B4%A2%E5%BC%95%E4%B8%8E%E5%A4%9A%E5%85%83%E7%B4%A2%E5%BC%95%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="toc-number">3.3.3.</span> <span class="toc-text">全局二级索引与多元索引的对比</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OTS%E5%92%8CHBase%E7%9A%84%E5%BC%82%E5%90%8C"><span class="toc-number">3.4.</span> <span class="toc-text">OTS和HBase的异同</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#BigTable%E5%92%8CHbase%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">3.4.1.</span> <span class="toc-text">BigTable和Hbase是什么？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E4%B8%BB%E9%94%AE%E7%9A%84%E5%BC%82%E5%90%8C"><span class="toc-number">3.4.2.</span> <span class="toc-text">关于主键的异同</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%BC%82%E5%90%8C"><span class="toc-number">3.4.3.</span> <span class="toc-text">关于数据类型的异同</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E7%89%88%E6%9C%AC%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">3.4.4.</span> <span class="toc-text">关于数据版本和生命周期</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E6%AF%94%E8%BE%83"><span class="toc-number">3.4.5.</span> <span class="toc-text">其他比较</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98"><span class="toc-number">4.</span> <span class="toc-text">实战</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%BB%E6%8E%A5%E5%8F%A3"><span class="toc-number">4.1.</span> <span class="toc-text">读接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E4%B8%BB%E9%94%AE"><span class="toc-number">4.1.1.</span> <span class="toc-text">基于主键</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E5%85%A8%E5%B1%80%E4%BA%8C%E7%BA%A7%E7%B4%A2%E5%BC%95"><span class="toc-number">4.1.2.</span> <span class="toc-text">基于全局二级索引</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E5%A4%9A%E5%85%83%E7%B4%A2%E5%BC%95"><span class="toc-number">4.1.3.</span> <span class="toc-text">基于多元索引</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-number">5.</span> <span class="toc-text">附录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E9%87%8F%E5%AF%B9%E6%9F%A5%E8%AF%A2%E9%80%9F%E5%BA%A6%E6%9C%89%E5%BD%B1%E5%93%8D%E5%90%97%EF%BC%9F"><span class="toc-number">5.1.</span> <span class="toc-text">存储量对查询速度有影响吗？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">5.2.</span> <span class="toc-text">参考资料</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/" title="Java新特性">Java新特性</a><time datetime="2023-05-11T03:29:22.000Z" title="发表于 2023-05-11 11:29:22">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章">建站第一篇文章</a><time datetime="2023-05-09T16:25:27.000Z" title="发表于 2023-05-10 00:25:27">2023-05-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20Parallel%20Stream%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E4%BC%98%E5%8C%96RT%E4%B8%8E%E4%B8%B2%E8%81%94traceid/" title="微服务架构下的Java Parallel Stream实践——优化RT与串联traceid">微服务架构下的Java Parallel Stream实践——优化RT与串联traceid</a><time datetime="2023-02-19T05:03:49.000Z" title="发表于 2023-02-19 13:03:49">2023-02-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/06/19/%E3%80%8AJava8%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E3%80%8B%E2%80%94%E2%80%94%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" title="Java8函数式编程">Java8函数式编程</a><time datetime="2022-06-19T04:55:29.000Z" title="发表于 2022-06-19 12:55:29">2022-06-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/11/Python%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="Python基础知识">Python基础知识</a><time datetime="2022-05-11T03:24:34.000Z" title="发表于 2022-05-11 11:24:34">2022-05-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 一个廖少少</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

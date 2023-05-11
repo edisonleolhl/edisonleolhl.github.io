@@ -1,0 +1,527 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Shell Cheatsheet | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="shell是提供与内核沟通接口的命令解释器程序，但实际上shell是这种解释器的统称，Linux系统的shell种类很多，包括Bourne shell（简称sh）、Bourne Again shell（简称bash）、C shell（简称csh）、K shell（简称ksh）、Shell for Root等等。 sh和bash都是Linux系统shell的一种，其中bash命令是sh命令的超集，大">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shell Cheatsheet">
+<meta property="og:url" content="https://edisonleolhl.github.io/2021/07/25/Shell%20Cheatsheet/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="shell是提供与内核沟通接口的命令解释器程序，但实际上shell是这种解释器的统称，Linux系统的shell种类很多，包括Bourne shell（简称sh）、Bourne Again shell（简称bash）、C shell（简称csh）、K shell（简称ksh）、Shell for Root等等。 sh和bash都是Linux系统shell的一种，其中bash命令是sh命令的超集，大">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://edisonleolhl.github.io/images/avatar.jpeg">
+<meta property="article:published_time" content="2021-07-25T03:25:32.000Z">
+<meta property="article:modified_time" content="2023-05-11T11:50:38.953Z">
+<meta property="article:author" content="一个廖少少">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://edisonleolhl.github.io/images/avatar.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://edisonleolhl.github.io/2021/07/25/Shell%20Cheatsheet/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Shell Cheatsheet',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-11 19:50:38'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/cover.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Shell Cheatsheet</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-07-25T03:25:32.000Z" title="发表于 2021-07-25 11:25:32">2021-07-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-11T11:50:38.953Z" title="更新于 2023-05-11 19:50:38">2023-05-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/cheatsheet/">cheatsheet</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Shell Cheatsheet"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>shell是提供与内核沟通接口的命令解释器程序，但实际上shell是这种解释器的统称，Linux系统的shell种类很多，包括Bourne shell（简称sh）、Bourne Again shell（简称bash）、C shell（简称csh）、K shell（简称ksh）、Shell for Root等等。</p>
+<p>sh和bash都是Linux系统shell的一种，其中bash命令是sh命令的超集，大多数sh脚本都可以在bash下运行。Linux系统中预设默认使用的就是bash。</p>
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p>Linux提供的Shell解析器有：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[atguigu@hadoop101 ~]$ cat /etc/shells </span><br><span class="line">/bin/sh</span><br><span class="line">/bin/bash</span><br><span class="line">/sbin/nologin</span><br><span class="line">/bin/dash</span><br><span class="line">/bin/tcsh</span><br><span class="line">/bin/csh</span><br></pre></td></tr></table></figure>
+
+<h3 id="执行方式"><a href="#执行方式" class="headerlink" title="执行方式"></a>执行方式</h3><p>shell脚本以<code>#!/bin/bash</code>开头（指定解析器）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建脚本</span></span><br><span class="line">[linux@localhost datas]$ cat helloworld.sh </span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line">echo &quot;hello huangxb&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">执行脚本方式1(显式调用bash解释器，sh会转而调用bash)</span></span><br><span class="line">[linux@localhost datas]$ bash helloworld.sh </span><br><span class="line">hello huangxb</span><br><span class="line">[linux@localhost datas]$ sh helloworld.sh </span><br><span class="line">hello huangxb</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">执行脚本方式2（隐式调用bash解释器，但需添加执行权限）</span></span><br><span class="line">[linux@localhost datas]$ ./helloworld.sh</span><br><span class="line">-bash: ./helloworld.sh: 权限不够</span><br><span class="line">[linux@localhost datas]$ ll   </span><br><span class="line">total 8</span><br><span class="line">-rw-r--r--  1 apple  staff    31B  7  7 16:49 helloworld.sh</span><br><span class="line">[linux@localhost datas]$ chmod 755 helloworld.sh # 改变为可执行</span><br><span class="line">[linux@localhost datas]$ ll                     </span><br><span class="line">total 8</span><br><span class="line">-rwxr-xr-x  1 apple  staff    31B  7  7 16:49 helloworld.sh</span><br><span class="line">[linux@localhost datas]$ ./helloworld.sh        </span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>python脚本以<code>#!/usr/bin/python</code>开头（指定python解析器）<br>执行python脚本只能显式调用python解释器：<code>[linux@localhost datas]$ python helloworld.py</code></p>
+</blockquote>
+<h3 id="screen后台管理"><a href="#screen后台管理" class="headerlink" title="screen后台管理"></a>screen后台管理</h3><p>开启一个由screen管理的终端，此时出现一个新终端</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">[xxxxx]$ </span><span class="language-bash">screen -S first</span></span><br><span class="line"><span class="meta prompt_">[xxxxx]$ </span><span class="language-bash"><span class="keyword">do</span> something</span></span><br></pre></td></tr></table></figure>
+
+<p>如果这个终端不小心关闭，这可以重新登录screen找到这个终端</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">[xxxxx]$ </span><span class="language-bash">screen -list</span></span><br><span class="line">There is a screen on:</span><br><span class="line">        28025.first     (Detached)</span><br><span class="line">1 Socket in /var/folders/bp/llgj_f3x2nq58g_1fqb8j0vr0000gn/T/.screen.</span><br><span class="line"><span class="meta prompt_">[xxxxx]$ </span><span class="language-bash">screen -r 28025</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">又回到之前的终端信息</span></span><br></pre></td></tr></table></figure>
+
+<p>若想退出screen管理的这个这个终端，在该终端下键入<code>ctrl+d</code>即可</p>
+<p>screen -S xxx -&gt; 新建一个叫xxx的session</p>
+<p>screen -ls -&gt; 列出当前所有的session</p>
+<p>screen -r xxx -&gt; 回到xxx这个session</p>
+<p>screen -d xxx -&gt; 远程detach某个session</p>
+<p>screen -R 　先试图恢复离线的作业。若找不到离线的作业，即建立新的screen作业。</p>
+<p>screen -d -r xxx -&gt; 结束当前session并回到xxx这个session</p>
+<p>在每个screen session 下，所有命令都以 ctrl+a(C-a) 开始：</p>
+<ul>
+<li><code>[</code> -&gt; 进入 copy mode，在 copy mode 下可以回滚、搜索、复制就像用使用 vi 一样，ctrl+c退出该模式</li>
+<li><code>n</code> -&gt; Next，切换到下一个 window </li>
+<li><code>p</code> -&gt; Previous，切换到前一个 window</li>
+</ul>
+<h3 id="tmux"><a href="#tmux" class="headerlink" title="tmux"></a>tmux</h3><blockquote>
+<p>摘自：<a target="_blank" rel="noopener" href="https://pragmaticpineapple.com/gentle-guide-to-get-started-with-tmux/">https://pragmaticpineapple.com/gentle-guide-to-get-started-with-tmux/</a></p>
+</blockquote>
+<p>ctrl+b：进入tmux命令模式，tmux的命令都要先加上ctrl+b</p>
+<p>ctrl+b  +  ?：如果忘记了tmux命令，可以用该命令</p>
+<h4 id="pane-management"><a href="#pane-management" class="headerlink" title="pane management"></a>pane management</h4><p>ctrl+b  +  “：水平创建一个pane</p>
+<p>ctrl+b  +  %：垂直创建一个pane</p>
+<p>ctrl+b  +  LeftArrow&#x2F;Right&#x2F;Up&#x2F;Down：在pane之间移动光标</p>
+<p>ctrl+d：关闭pane</p>
+<h4 id="window-management"><a href="#window-management" class="headerlink" title="window management"></a>window management</h4><p>ctrl+b  +  c：创建window</p>
+<blockquote>
+<p>底部有各window的名称（默认是序号，从0开始）与该window正在运行的任务，带星号*的window是当前焦点所在window，带折号-的window是最后一个window</p>
+</blockquote>
+<p>ctrl+b  +  0&#x2F;1&#x2F;2：前往第0&#x2F;1&#x2F;2号window</p>
+<p>ctrl+b  +  p&#x2F;n：前往previous window&#x2F;前往next window</p>
+<h4 id="sessions"><a href="#sessions" class="headerlink" title="sessions"></a>sessions</h4><p>tmux ls：列出所有session</p>
+<p>ctrl+b  +  d：退出tmux当前session</p>
+<p>tmux new -s heythere：创建名为heythere的session</p>
+<p>tmux  attach -t heythere：连接名为heythere的session</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">tmux <span class="built_in">ls</span></span></span><br><span class="line">0: 4 windows (created Thu Aug 12 20:08:22 2021) (attached)</span><br><span class="line">1: 1 windows (created Thu Aug 12 20:15:03 2021)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">The first session marked with 0 shows that we have four windows open, and we are attached to it. But the second session marked with 1 (one) is not attached</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="wc"><a href="#wc" class="headerlink" title="wc"></a>wc</h3><ol>
+<li><p>命令格式：<br>wc [选项]文件…</p>
+</li>
+<li><p>命令功能：<br>统计指定文件中的字节数、字数、行数，并将统计结果显示输出。该命令统计指定文件中的字节数、字数、行数。如果没有给出文件名，则从标准输入读取。wc同时也给出所指定文件的总统计数。</p>
+</li>
+<li><p>命令参数：<br>-c 统计字节数。<br>-l 统计行数。<br>-m 统计字符数。这个标志不能与 -c 标志一起使用。<br>-w 统计字数。一个字被定义为由空白、跳格或换行字符分隔的字符串。<br>-L 打印最长行的长度。<br>–help 显示帮助信息<br>–version 显示版本信息</p>
+</li>
+</ol>
+<p>　　例子: 在文件a中统计 hello 出现的行数:<br>　　<br>grep hello a | wc -l<br>　　在文件a中统计hello出现的次数:</p>
+<p>grep -o hello a | wc -l</p>
+<h3 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">grep xxx xxx.log     #文件查找</span><br><span class="line">grep xxx xxx.log yyy.log #多文件查找</span><br><span class="line">grep xxx /home/admin -r -n #目录下查找所有符合关键字的文件</span><br><span class="line">grep xxx xxx.log -i  # 大小写不敏感搜索</span><br><span class="line">grep xxx --include *.&#123;vm,java&#125; #指定文件后缀</span><br><span class="line">grep xxx --exclude *.&#123;vm,java&#125; #反匹配</span><br><span class="line">grep xxx xxx.log -C 3：打印匹配行，并打印上下各三行</span><br></pre></td></tr></table></figure>
+
+<p>日志文件很大，想从中grep某个字段耗时很久，这时可以用tac命令从后往前查：tac xxx.log | grep xxx</p>
+<h3 id="cp"><a href="#cp" class="headerlink" title="cp"></a>cp</h3><p>复制时自动创建不存在的子目录：<a target="_blank" rel="noopener" href="http://www.dreamwu.com/post-1346.html">http://www.dreamwu.com/post-1346.html</a></p>
+<blockquote>
+<p>cp: with –parents, the destination must be a directory</p>
+</blockquote>
+<h3 id="du"><a href="#du" class="headerlink" title="du"></a>du</h3><p>du -h -d 1    展示当前目录所有文件及文件夹的大小，深度为1就是指当前目录</p>
+<h3 id="tail"><a href="#tail" class="headerlink" title="tail"></a>tail</h3><p>最常用的tail -f</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tail -300f shopbase.log #倒数300行并进入实时监听文件写入模式</span><br></pre></td></tr></table></figure>
+
+<h3 id="find"><a href="#find" class="headerlink" title="find"></a>find</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">find /home/admin -size +2500k # 搜索目录下超过2500k的文件，+号改-号就变成搜索小于2500k的文件</span><br><span class="line">find /home/admin -atime -1  1天内访问过的文件</span><br><span class="line">find /home/admin -ctime -1  1天内状态改变过的文件    </span><br><span class="line">find /home/admin -mtime -1  1天内修改过的文件</span><br><span class="line">find /home/admin -amin -1  1分钟内访问过的文件</span><br><span class="line">find /home/admin -cmin -1  1分钟内状态改变过的文件    </span><br><span class="line">find /home/admin -mmin -1  1分钟内修改过的文件</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p> linux下文件的创建时间、访问时间、修改时间和改变时间：<a target="_blank" rel="noopener" href="https://blog.csdn.net/zyz511919766/article/details/14452027">https://blog.csdn.net/zyz511919766/article/details/14452027</a></p>
+</blockquote>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="uptime"><a href="#uptime" class="headerlink" title="uptime"></a>uptime</h3><ul>
+<li>最后三个数字是1、5、15分钟内的平均负载，可以通过这个变化趋势判断负载的变化</li>
+<li>平均负载是指数衰减移动平均数</li>
+<li>平均负载大于CPU数量，表示CPU不足以服务线程，有些线程在等待，一个有64颗CPU的系统的平均负载为128，这意味着平均每个CPU上有一个线程在运行，还有一个线程在等待</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash"><span class="built_in">uptime</span></span></span><br><span class="line">17:25:02 up 304 days, 19:57,  1 user,  load average: 7.28, 7.34, 7.40</span><br></pre></td></tr></table></figure>
+
+<h3 id="vmstat"><a href="#vmstat" class="headerlink" title="vmstat"></a>vmstat</h3><ul>
+<li><p>虚拟内存统计信息，第一行是系统启动启动以来的总结信息</p>
+<ul>
+<li>swpd：交换出的内存量，单位KB，下同</li>
+<li>free：空闲的可用内存</li>
+<li>buff：用于缓冲缓存的内存</li>
+<li>cache：用于页缓存的内存</li>
+<li><strong>si：换入的内存（换页）</strong></li>
+<li><strong>so：换出的内存（换页）</strong></li>
+<li>r：运行队列长度——可运行线程总数</li>
+<li>us：用户态时间</li>
+<li>sy：系统态时间</li>
+<li>id：空闲</li>
+<li>wa：等待I&#x2F;O，即线程被阻塞等待磁盘I&#x2F;O的CPU空闲时间</li>
+</ul>
+</li>
+<li><p>如果si和so列一直非0，那么系统正存在内存压力，可以用其他工具研究什么在消耗内存</p>
+</li>
+<li><p>vmstat参数-S可将输出设置为MB，这样会对齐方便阅读</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">vmstat 1</span></span><br><span class="line">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----</span><br><span class="line"> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st</span><br><span class="line"> 7  0      0 46135660 1618864 58485956    0    0     5    62    0    0  6  0 93  0  0</span><br><span class="line"> 7  0      0 46135380 1618868 58485960    0    0     0   104 32964 49973 22  0 77  0  0</span><br><span class="line"> 7  0      0 46135420 1618868 58485960    0    0     0    12 32842 49997 22  0 77  0  0</span><br><span class="line"> 7  0      0 46135412 1618868 58485964    0    0     0     0 33431 50544 22  0 77  0  0</span><br><span class="line"> 7  0      0 46135436 1618868 58485968    0    0     0    16 33263 49721 22  0 77  0  0</span><br></pre></td></tr></table></figure>
+
+<h3 id="mpstat"><a href="#mpstat" class="headerlink" title="mpstat"></a>mpstat</h3><ul>
+<li><p>多处理器统计信息，报告每个CPU的统计信息</p>
+<ul>
+<li>CPU：逻辑CPU ID，或者ALL表示总结信息</li>
+<li><strong>%usr：用户态时间</strong></li>
+<li>%nice：以nice优先级运行的进程用户态时间</li>
+<li><strong>%sys：系统态时间（内核）</strong></li>
+<li>%iowait：I&#x2F;O等待</li>
+<li>%irq：硬件中断CPU用量</li>
+<li>%soft：软件中断CPU用量</li>
+<li>%quest：花在访客虚拟机的时间</li>
+<li><strong>%idle：空闲</strong></li>
+</ul>
+</li>
+<li><p>%usr+%sys达到100%，则说明跑满！</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">mpstat -P ALL</span></span><br><span class="line">05:35:23 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle</span><br><span class="line">05:35:23 PM  all    6.45    0.00    0.38    0.07    0.00    0.01    0.00    0.00    0.00   93.08</span><br><span class="line">05:35:23 PM    0    7.95    0.00    0.80    1.03    0.00    0.29    0.00    0.00    0.00   89.94</span><br><span class="line">05:35:23 PM    1    7.82    0.00    0.32    0.02    0.00    0.00    0.00    0.00    0.00   91.83</span><br><span class="line">05:35:23 PM    2    6.69    0.00    0.51    0.27    0.00    0.00    0.00    0.00    0.00   92.53</span><br><span class="line">05:35:23 PM    3    6.39    0.00    0.29    0.02    0.00    0.00    0.00    0.00    0.00   93.30</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="sar"><a href="#sar" class="headerlink" title="sar"></a>sar</h3><ul>
+<li>系统活动报告，system activity information</li>
+</ul>
+<h3 id="ps"><a href="#ps" class="headerlink" title="ps"></a>ps</h3><ul>
+<li><p>进程状态</p>
+</li>
+<li><p>源于BSD的风格</p>
+<ul>
+<li>a：所有用户</li>
+<li>u：扩展信息</li>
+<li>x：没有终端的进程</li>
+</ul>
+</li>
+<li><p>源于SVR4</p>
+<ul>
+<li>-e：所有进程</li>
+<li>-f：完整信息</li>
+</ul>
+</li>
+<li><p>TIME：进程自创建开始消耗的CPU总时间（用户态+系统态），小时:分钟:秒</p>
+</li>
+<li><p>%MEM：主存使用（物理内存、RSS）占总内存的百分比</p>
+</li>
+<li><p>RSS：常驻集合大小（KB）</p>
+<blockquote>
+<p>包括系统库在内的映射共享段，如果把所有RSS列求和，可能会超过系统的内存总和，这是因为重复计算了这部分共享内存</p>
+</blockquote>
+</li>
+<li><p>VSZ：虚拟内存大小（KB）</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">ps aux</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">ps aux  | <span class="built_in">head</span></span></span><br><span class="line">USER        PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND</span><br><span class="line">root          1  0.0  0.0 199236  5076 ?        Ss    2021  57:21 /usr/lib/systemd/systemd --switched-root --system --deserialize 21</span><br><span class="line">root          2  0.0  0.0      0     0 ?        S     2021   0:14 [kthreadd]</span><br><span class="line">root          3  0.0  0.0      0     0 ?        S     2021  11:11 [ksoftirqd/0]</span><br><span class="line">root          5  0.0  0.0      0     0 ?        S&lt;    2021   0:00 [kworker/0:0H]</span><br><span class="line">root          7  0.1  0.0      0     0 ?        S     2021 502:21 [rcu_sched]</span><br><span class="line">root          8  0.0  0.0      0     0 ?        S     2021   2:44 [rcu_bh]</span><br><span class="line">root          9  0.0  0.0      0     0 ?        S     2021 116:51 [rcuos/0]</span><br><span class="line">root         10  0.0  0.0      0     0 ?        S     2021   0:54 [rcuob/0]</span><br><span class="line">root         11  0.0  0.0      0     0 ?        S     2021   0:26 [migration/0]</span><br></pre></td></tr></table></figure>
+
+<h3 id="top"><a href="#top" class="headerlink" title="top"></a>top</h3><ul>
+<li><p>最消耗CPU的任务，默认按照CPU用量排序</p>
+</li>
+<li><p>TIME+：1:36.53代表在CPU上的时间总计为1分36.53秒</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">top</span></span><br><span class="line">top - 17:58:46 up 304 days, 20:31,  1 user,  load average: 7.45, 7.46, 7.53</span><br><span class="line">Tasks: 518 total,   8 running, 494 sleeping,   0 stopped,  16 zombie</span><br><span class="line"><span class="meta prompt_">%</span><span class="language-bash">Cpu(s): 22.3 us,  0.3 sy,  0.0 ni, 77.4 <span class="built_in">id</span>,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span></span><br><span class="line">KiB Mem : 13146870+total, 46123176 free, 25231976 used, 60113548 buff/cache</span><br><span class="line">KiB Swap:        0 total,        0 free,        0 used. 10480180+avail Mem</span><br><span class="line"></span><br><span class="line">   PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意top命令本身也是非常消耗CPU的！</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="time"><a href="#time" class="headerlink" title="time"></a>time</h3><ul>
+<li><p>用来运行命令并报告CPU用量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">time <span class="built_in">echo</span> <span class="string">&quot;hello&quot;</span></span></span><br><span class="line">hello</span><br><span class="line"></span><br><span class="line">real	0m0.000s</span><br><span class="line">user	0m0.000s</span><br><span class="line">sys	0m0.000s</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="perf"><a href="#perf" class="headerlink" title="perf"></a>perf</h3><ul>
+<li>原名为Linux性能计数器，现在是Linux性能事件</li>
+</ul>
+<h3 id="iostat"><a href="#iostat" class="headerlink" title="iostat"></a>iostat</h3><ul>
+<li><p>汇总单个磁盘的统计信息，通常是调查磁盘IO问题使用的第一个命令</p>
+</li>
+<li><p>-c：显示CPU报告</p>
+</li>
+<li><p>-d：显示磁盘报告</p>
+</li>
+<li><p>-k&#x2F;-m：以KB&#x2F;MB显示</p>
+</li>
+<li><p>-x：输出扩展信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">iostat</span></span><br><span class="line">[内核版本 主机名 日期 架构 CPU数量]</span><br><span class="line"></span><br><span class="line">avg-cpu:  %user   %nice %system %iowait  %steal   %idle</span><br><span class="line">           6.49    0.00    0.39    0.07    0.00   93.04</span><br><span class="line"></span><br><span class="line">Device:            tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn</span><br><span class="line">vda              18.83         7.56       258.81  199523373 6833818632</span><br><span class="line">vdb              15.41       159.75      1708.72 4218061185 45118703004</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h3><ul>
+<li>网络统计书许<ul>
+<li>默认：列出连接socket的信息</li>
+<li>-a：列出所有socket的信息</li>
+<li>-s：网络栈统计信息</li>
+<li>-i：网络接口信息</li>
+<li>-r：列出路由表</li>
+<li>-n：不解析IP地址为主机名</li>
+<li>-c：连续模式，每秒输出最新的统计信息到终端</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">网络接口、MTU、接收（RX-）、传输（TX-）指标</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">OK成功传输包，ERR错误数据包，DRP丢包，OVR超限</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">netstat -i</span></span><br><span class="line">Kernel Interface table</span><br><span class="line">Iface      MTU    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg</span><br><span class="line">docker0   1500        0      0      0 0             0      0      0      0 BMU</span><br><span class="line">eth0      1500 1041533454      0      0 0      1046421328      0      0      0 BMRU</span><br><span class="line">lo       65536 298561690      0      0 0      298561690      0      0      0 LRU</span><br></pre></td></tr></table></figure>
+
+<h3 id="ifconfig"><a href="#ifconfig" class="headerlink" title="ifconfig"></a>ifconfig</h3><ul>
+<li>即能手动设置网络接口，也可以列出所有网络接口的当前配置，数据与netstat -i一致</li>
+<li>ifconfig已经被ip命令淘汰</li>
+</ul>
+<h3 id="ip"><a href="#ip" class="headerlink" title="ip"></a>ip</h3><ul>
+<li>配置网络接口和路由，并且观测它们的状态和统计信息，数据与netstat -i一致</li>
+</ul>
+<h3 id="lsof"><a href="#lsof" class="headerlink" title="lsof"></a>lsof</h3><ul>
+<li>按进程ID列出包括socket细节在内的打开文件</li>
+</ul>
+<h3 id="ss"><a href="#ss" class="headerlink" title="ss"></a>ss</h3><ul>
+<li>socket统计信息</li>
+</ul>
+<p>ddddddddd</p>
+<p>dd</p>
+<p>d</p>
+<p>d</p>
+<p>d</p>
+<p>d</p>
+<p>d</p>
+<p>dd</p>
+<p>d</p>
+<p>d</p>
+<p>d</p>
+<p>d</p>
+<p>d</p>
+<p>d</p>
+<h2 id="shell编程"><a href="#shell编程" class="headerlink" title="shell编程"></a>shell编程</h2><h3 id="shell变量"><a href="#shell变量" class="headerlink" title="shell变量"></a>shell变量</h3><ul>
+<li>定义变量时，变量名不加美元符号$</li>
+<li>定义变量时，<strong>变量名和等号之间不能有空格</strong></li>
+<li>使用一个定义过的变量只要在变量名加上美元符号$即可</li>
+<li>shell变量分为局部变量（变量前面加local）和全局变量（变量前面不添加），局部变量的可见范围是代码块或函数内，全局变量则全局可见，和别的语言类似。</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">name=chenying</span><br><span class="line">echo $name</span><br><span class="line">echo $&#123;name&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="shell字符串"><a href="#shell字符串" class="headerlink" title="shell字符串"></a>shell字符串</h3><ul>
+<li>字符串可以用单引号，也可以用双引号。</li>
+<li>单引号里的任何字符都会原样输出，单引号字符串中的变量是无效的，也不能出现单独一个的单引号（对单引号使用转义符后也不行），但可成对出现，作为字符串拼接使用。</li>
+<li>双引号里可以有变量，双引号里可以出现转义字符。</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">name=&#x27;Isabella&#x27;</span><br><span class="line">str=&quot;Hello, I know you are \&quot;$name\&quot;! \n&quot;</span><br><span class="line">echo -e $str # echo -e 表示使用转义功能，如果不加-e，则不会输出换行符，会直接输出\n</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Hello, I know you are <span class="string">&quot;Isabella&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+<h4 id="拼接字符串"><a href="#拼接字符串" class="headerlink" title="拼接字符串"></a>拼接字符串</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">name=&#x27;Isabella&#x27;</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">使用双引号拼接</span></span><br><span class="line">a=&quot;hello, &quot;$name&quot; !&quot;</span><br><span class="line">b=&quot;hello, $&#123;name&#125; !&quot;</span><br><span class="line">echo $a $b</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">hello, Isabella ! hello, Isabella !</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">使用单引号拼接</span></span><br><span class="line">a1=&#x27;hello, &#x27;$name&#x27; !&#x27;</span><br><span class="line">b1=&#x27;hello, $&#123;name&#125; !&#x27;</span><br><span class="line">echo $a1 $b1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">hello, Isabella ! hello, <span class="variable">$&#123;name&#125;</span> !</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="获取字符串长度"><a href="#获取字符串长度" class="headerlink" title="获取字符串长度"></a>获取字符串长度</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">string=&quot;Isabella&quot;</span><br><span class="line">echo $&#123;#string&#125; #输出 8</span><br></pre></td></tr></table></figure>
+
+<h4 id="截取字符串"><a href="#截取字符串" class="headerlink" title="截取字符串"></a>截取字符串</h4><p>此栗子从字符串第 3 个字符开始截取 6 个字符：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">string=&quot;abcdefghijklmn&quot;</span><br><span class="line">echo $&#123;string:2:6&#125; # 输出 cdefgh</span><br></pre></td></tr></table></figure>
+
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>用括号来表示数组，数组元素用”空格”符号分割开，既可以一次性定义，也可以一个个定义，可以使用不连续的下标，下标范围也没有限制</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">定义数组name</span></span><br><span class="line">name=(name1 name2 name3)</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">定义数组ary</span></span><br><span class="line">ary[0]=name1</span><br><span class="line">ary[1]=name2</span><br><span class="line">ary[3]=name3</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">读取格式：<span class="variable">$&#123;数组名[下标]&#125;</span></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">读取name的第0个元素</span></span><br><span class="line">echo $&#123;name[0]&#125;</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">使用@符号可以获取数组中的所有元素</span></span><br><span class="line">echo $&#123;name[@]&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="获取数组长度"><a href="#获取数组长度" class="headerlink" title="获取数组长度"></a>获取数组长度</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">取得数组元素的个数</span></span><br><span class="line">length=$&#123;#name[@]&#125;</span><br><span class="line">echo $length</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">或者</span></span><br><span class="line">length=$&#123;#name[*]&#125;</span><br><span class="line">echo $length</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">取得数组单个元素的长度</span></span><br><span class="line">lengthn=$&#123;#name[n]&#125;</span><br><span class="line">echo $length</span><br></pre></td></tr></table></figure>
+
+<h3 id="传递参数"><a href="#传递参数" class="headerlink" title="传递参数"></a>传递参数</h3><p>脚本内获取参数的格式为：$n。n 代表一个数字，1 为执行脚本的第一个参数，2 为执行脚本的第二个参数，以此类推。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line">echo &quot;第一个参数为：$1&quot;;</span><br><span class="line">echo &quot;第二个参数为：$2&quot;;</span><br><span class="line">echo &quot;第三个参数为：$3&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>执行.&#x2F;test.sh a b c，输出结果为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">第一个参数为：a</span><br><span class="line">第二个参数为：b</span><br><span class="line">第三个参数为：c</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用expr表达式计算"><a href="#使用expr表达式计算" class="headerlink" title="使用expr表达式计算"></a>使用expr表达式计算</h3><ul>
+<li>加+ 减- 乘* 除&#x2F; 取余% 赋值&#x3D; 相等&#x3D;&#x3D; 不相等!&#x3D;</li>
+<li>表达式和运算符之间要有空格，例如 1+1 是不对的，必须写成1 + 1；</li>
+<li>整个表达式要被 &#96;&#96; 包含；</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">a=10</span><br><span class="line">b=20</span><br><span class="line"></span><br><span class="line">val=`expr $a + $b`</span><br><span class="line">echo &quot;a + b : $val&quot;</span><br><span class="line"></span><br><span class="line">val=`expr $a - $b`</span><br><span class="line">echo &quot;a - b : $val&quot;</span><br><span class="line"></span><br><span class="line">val=`expr $a \* $b`</span><br><span class="line">echo &quot;a * b : $val&quot;</span><br><span class="line"></span><br><span class="line">val=`expr $b / $a`</span><br><span class="line">echo &quot;b / a : $val&quot;</span><br><span class="line"></span><br><span class="line">val=`expr $b % $a`</span><br><span class="line">echo &quot;b % a : $val&quot;</span><br><span class="line"></span><br><span class="line">if [ $a == $b ]</span><br><span class="line">then</span><br><span class="line">   echo &quot;a 等于 b&quot;</span><br><span class="line">fi</span><br><span class="line">if [ $a != $b ]</span><br><span class="line">then</span><br><span class="line">   echo &quot;a 不等于 b&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a + b : 30</span><br><span class="line">a - b : -10</span><br><span class="line">a * b : 200</span><br><span class="line">b / a : 2</span><br><span class="line">b % a : 0</span><br><span class="line">a 不等于 b</span><br></pre></td></tr></table></figure>
+
+<h3 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h3><h4 id="if-else条件分支"><a href="#if-else条件分支" class="headerlink" title="if-else条件分支"></a>if-else条件分支</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">判断两个变量是否相等</span></span><br><span class="line">a=10</span><br><span class="line">b=20</span><br><span class="line">if [ $a == $b ]</span><br><span class="line">then</span><br><span class="line">   echo &quot;a 等于 b&quot;</span><br><span class="line">elif [ $a -gt $b ]</span><br><span class="line">then</span><br><span class="line">   echo &quot;a 大于 b&quot;</span><br><span class="line">elif [ $a -lt $b ]</span><br><span class="line">then</span><br><span class="line">   echo &quot;a 小于 b&quot;</span><br><span class="line">else</span><br><span class="line">   echo &quot;没有符合的条件&quot;</span><br><span class="line">fi # a 小于 b</span><br></pre></td></tr></table></figure>
+
+<h4 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">1</span></span><br><span class="line">for((i=1;i&lt;=10;i++));  </span><br><span class="line">do</span><br><span class="line">echo $(expr $i \* 3 + 1);  </span><br><span class="line">done</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">2</span></span><br><span class="line">for i in $(seq 1 10)  </span><br><span class="line">do</span><br><span class="line">echo $(expr $i \* 3 + 1);  </span><br><span class="line">done</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">3</span></span><br><span class="line">for i in `seq 10`  </span><br><span class="line">do</span><br><span class="line">echo $(expr $i \* 3 + 1);  </span><br><span class="line">done</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">4</span></span><br><span class="line">for i in &#123;1..10&#125;  </span><br><span class="line">do  </span><br><span class="line">echo $(expr $i \* 3 + 1);  </span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">遍历当前文件目录中的所有文件</span></span><br><span class="line">for i in `ls`;  </span><br><span class="line">do</span><br><span class="line">echo $i is file name\! ;  </span><br><span class="line">done</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">遍历字符串中每个单词（默认以空格分隔）</span></span><br><span class="line">list=&quot;corgi is so cute !&quot;  </span><br><span class="line">for i in $list;  </span><br><span class="line">do  </span><br><span class="line">echo $i is block ;  </span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h4 id="while循环"><a href="#while循环" class="headerlink" title="while循环"></a>while循环</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while condition</span><br><span class="line">do</span><br><span class="line">    command</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h4 id="until循环"><a href="#until循环" class="headerlink" title="until循环"></a>until循环</h4><p>until 循环执行一系列命令直至条件为 true 时停止，与 while 循环在处理方式上刚好相反。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">until condition</span><br><span class="line">do</span><br><span class="line">    command</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h4 id="case"><a href="#case" class="headerlink" title="case"></a>case</h4><p>shell case语句为多选择语句。可以用case语句匹配一个值与一个模式，如果匹配成功，执行相匹配的命令，语法格式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">case 值 in</span><br><span class="line">模式1)</span><br><span class="line">    command1</span><br><span class="line">    command2</span><br><span class="line">    ...</span><br><span class="line">    commandN</span><br><span class="line">    ;;</span><br><span class="line">模式2）</span><br><span class="line">    command1</span><br><span class="line">    command2</span><br><span class="line">    ...</span><br><span class="line">    commandN</span><br><span class="line">    ;;</span><br><span class="line">esac #需要一个esac（就是case反过来）作为结束标记，每个case分支用右圆括号，用两个分号表示break</span><br></pre></td></tr></table></figure>
+
+<h4 id="跳出循环"><a href="#跳出循环" class="headerlink" title="跳出循环"></a>跳出循环</h4><p>在循环过程中，有时候需要在未达到循环结束条件时强制跳出循环，Shell使用两个命令来实现该功能：break和continue。</p>
+<h3 id="shell函数"><a href="#shell函数" class="headerlink" title="shell函数"></a>shell函数</h3><p>简化写法中function可以不写，语法格式</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function name() &#123;</span><br><span class="line">    statements</span><br><span class="line">    [return value]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="grep——擅长查找"><a href="#grep——擅长查找" class="headerlink" title="grep——擅长查找"></a>grep——擅长查找</h3><p>这里的模式，要么是字符（串），要么是正则表达式。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep [OPTIONS] PATTERN [FILE...]</span><br></pre></td></tr></table></figure>
+
+<p>grep常用选项如下：</p>
+<ul>
+<li>-c：仅列出文件中包含模式的行数。</li>
+<li>-i：忽略模式中的字母大小写。</li>
+<li>-l：列出带有匹配行的文件名。</li>
+<li>-n：在每一行的最前面列出行号。</li>
+<li>-v：列出没有匹配模式的行。</li>
+<li>-w：把表达式当做一个完整的单字符来搜寻，忽略那些部分匹配的行。</li>
+</ul>
+<h3 id="sed——擅长取行和替换"><a href="#sed——擅长取行和替换" class="headerlink" title="sed——擅长取行和替换"></a>sed——擅长取行和替换</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed [option]... &#x27;script&#x27; inputfile</span><br></pre></td></tr></table></figure>
+
+<p>sed常用选项如下：</p>
+<ul>
+<li>-e：可以在同一行里执行多条命令</li>
+<li>-f：后跟保存了sed指令的文件</li>
+<li>-i：直接对内容进行修改，<strong>不加-i时默认只是预览，不会对文件做实际修改</strong></li>
+<li>-n：sed默认会输出所有文本内容，使用-n参数后只显示处理过的行</li>
+</ul>
+<p>sed常用操作：</p>
+<ul>
+<li>a：向匹配行后面插入内容</li>
+<li>i：向匹配行前插入内容</li>
+<li>c：更改匹配行的内容</li>
+<li>d：删除匹配的内容</li>
+<li>s：替换掉匹配的内容</li>
+<li>p：打印出匹配的内容，通常与-n选项一起使用</li>
+<li>w：将匹配内容写入到其他地方。</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">输出长度不小于50个字符的行</span></span><br><span class="line">sed -n &#x27;/^.&#123;50&#125;/p&#x27;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">统计文件中有每个单词出现了多少次</span></span><br><span class="line">sed &#x27;s/ /\n/g&#x27; file | sort | uniq -c</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">在第2行后添加hello</span></span><br><span class="line">sed &#x27;2ahello&#x27; data.js</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">向匹配内容123后面添加hello，如果文件中有多行包括123，则每一行后面都会添加</span></span><br><span class="line">sed &#x27;/123/ahello&#x27; data.js</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">最后一行添加hello</span></span><br><span class="line">sed &#x27;$ahello&#x27; data.js</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">在匹配内容之前插入只需把a换成i</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">把文件的第1行替换为hello</span></span><br><span class="line">sed &#x27;1chello&#x27; data.js</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">删除第2行</span></span><br><span class="line">sed &#x27;2d&#x27; data.js</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">从第一行开始删除，每隔2行就删掉一行，即删除奇数行</span></span><br><span class="line">sed &#x27;1~2d&#x27; data.js</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">删除1~2行</span></span><br><span class="line">sed &#x27;1,2d&#x27; data.js</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">删除1~2之外的行</span></span><br><span class="line">sed &#x27;1,2!d&#x27; data.js</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">删除不匹配123或abc的行，/123\|abc/ 表示匹配123或abc ，！表示取反</span></span><br><span class="line">sed &#x27;/123\|abc/!d&#x27; data.js</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">替换每行第1个123为hello</span></span><br><span class="line">sed &#x27;s/123/hello/&#x27; data.js</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">替换每行第2个123为hello</span></span><br><span class="line">sed &#x27;s/123/hello/2&#x27; data.js</span><br></pre></td></tr></table></figure>
+
+<p>替换模式（操作为s）：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/5/22/16adeea79e660e4e?imageslim" alt="sedsub"></p>
+<ul>
+<li>g 默认只匹配行中第一次出现的内容，加上g，就可以全文替换了。常用。</li>
+<li>p 当使用了-n参数，p将仅输出匹配行内容。</li>
+<li>w 和上面的w模式类似，但是它仅仅输出有变换的行。</li>
+<li>i 这个参数比较重要，表示忽略大小写。</li>
+<li>e 表示将输出的每一行，执行一个命令。不建议使用，可以使用xargs配合完成这种功能。</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">一行命令替换多处内容，不加-e只能替换第一处的内容</span></span><br><span class="line">sed -e &#x27;s/abc/qqq/g&#x27; -e &#x27;s/123/999/g&#x27; data.js</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">替换，后面的内容为空</span></span><br><span class="line">sed &#x27;s/,.*//g&#x27; data.js</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">把文件中的每一行，使用引号包围起来。&amp;是替位符</span></span><br><span class="line">sed &#x27;s/.*/&quot;&amp;&quot;/&#x27; file</span><br></pre></td></tr></table></figure>
+
+<h3 id="awk——擅长取列"><a href="#awk——擅长取列" class="headerlink" title="awk——擅长取列"></a>awk——擅长取列</h3><p>awk支持用户自定义函数和动态正则表达式等先进功能，是linux&#x2F;unix下的一个强大编程工具</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">awk [options] &#x27;script&#x27; var=value file(s)</span><br><span class="line">awk [options] -f scriptfile var=value file(s)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-F fs：fs 指定输入分隔符，fs可以时字符串或正则表达式</li>
+<li>-v var&#x3D;value：赋值一个用户定义变量，将外部变量传递给awk</li>
+<li>-f scriptfile：从脚本文件中读取awk命令</li>
+</ul>
+<p>一般的开发语言，数组下标是以0开始的，但awk的列$是以1开始的，而0指的是原始字符串。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">对于csv这种文件来说，分隔的字符是,。AWK使用-F参数去指定。以下代码打印csv文件中的第1和第2列。</span></span><br><span class="line">awk -F &quot;,&quot;  &#x27;&#123;print $1,$2&#125;&#x27; file</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用sh-x调试shell脚本"><a href="#使用sh-x调试shell脚本" class="headerlink" title="使用sh -x调试shell脚本"></a>使用sh -x调试shell脚本</h3><p>sh -x的作用：</p>
+<ul>
+<li>“-x”选项可用来跟踪脚本的执行，是调试shell脚本的强有力工具。</li>
+<li>“-x”选项使shell在执行脚本的过程中把它实际执行的每一个命令行显示出来，并且在行首显示一个”+”号。</li>
+<li>“+”号后面显示的是经过了变量替换之后的命令行的内容，有助于分析实际执行的是什么命令。</li>
+</ul>
+<p>利用shell内置的环境变量调试：</p>
+<ul>
+<li>$LINENO：代表shell脚本的当前行号，类似于C语言中的内置宏__LINE__</li>
+<li>$FUNCNAME：函数的名字，类似于C语言中的内置宏__func__,但宏__func__ 只能代表当前所在的函数名，而$FUNCNAME的功能更强大，它是一个数组变量，其中包含了整个调用链上所有的函数的名字，故变量${FUNCNAME [0]}代表shell脚本当前正在执行的函数的名字，而变量${FUNCNAME[1]}则代表调用函数${FUNCNAME[0]}的函数的名字，余者可以依此类推。</li>
+<li>$PS4：主提示符变量$PS1和第二级提示符变量$PS2比较常见，而$PS4的值将被显示在“-x”选项输出的每一条命令的前面。在Bash Shell中，缺省的$PS4的值是”+”号。</li>
+<li>利用$PS4这一特性，通过使用一些内置变量来重定义$PS4的值，我们就可以增强”-x”选项的输出信 息。例如先执行export PS4&#x3D;’+{$LINENO:${FUNCNAME[0]}} ‘, 然后再使用“-x”选项来执行脚本，就能在每一条实际执行的命令前面显示其行号以及所属的函数名。</li>
+</ul>
+<blockquote>
+<p>本文落笔与 2021-07-25</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io/2021/07/25/Shell%20Cheatsheet/">https://edisonleolhl.github.io/2021/07/25/Shell%20Cheatsheet/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://edisonleolhl.github.io" target="_blank">一知半解</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/shell/">shell</a></div><div class="post_share"><div class="social-share" data-image="/images/avatar.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/08/05/%E9%98%BF%E9%87%8C%E4%BA%91%E8%A1%A8%E6%A0%BC%E5%AD%98%E5%82%A8%E4%BB%8B%E7%BB%8D/" title="阿里云表格存储介绍"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">阿里云表格存储介绍</div></div></a></div><div class="next-post pull-right"><a href="/2021/06/06/%E3%80%8A%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%AF%86%E9%9B%86%E5%9E%8B%E5%BA%94%E7%94%A8%E3%80%8B%E7%9A%84%E7%AC%94%E8%AE%B0/" title="《设计数据密集型应用》的笔记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">《设计数据密集型应用》的笔记</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/edisonleolhl"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/edisonleolhl" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:edisonleolhl@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">这个家伙很懒，什么都没写~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F"><span class="toc-number">1.1.</span> <span class="toc-text">执行方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#screen%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86"><span class="toc-number">1.2.</span> <span class="toc-text">screen后台管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tmux"><span class="toc-number">1.3.</span> <span class="toc-text">tmux</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pane-management"><span class="toc-number">1.3.1.</span> <span class="toc-text">pane management</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#window-management"><span class="toc-number">1.3.2.</span> <span class="toc-text">window management</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sessions"><span class="toc-number">1.3.3.</span> <span class="toc-text">sessions</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#wc"><span class="toc-number">1.4.</span> <span class="toc-text">wc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#grep"><span class="toc-number">1.5.</span> <span class="toc-text">grep</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cp"><span class="toc-number">1.6.</span> <span class="toc-text">cp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#du"><span class="toc-number">1.7.</span> <span class="toc-text">du</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tail"><span class="toc-number">1.8.</span> <span class="toc-text">tail</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#find"><span class="toc-number">1.9.</span> <span class="toc-text">find</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#uptime"><span class="toc-number">2.1.</span> <span class="toc-text">uptime</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vmstat"><span class="toc-number">2.2.</span> <span class="toc-text">vmstat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mpstat"><span class="toc-number">2.3.</span> <span class="toc-text">mpstat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sar"><span class="toc-number">2.4.</span> <span class="toc-text">sar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ps"><span class="toc-number">2.5.</span> <span class="toc-text">ps</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#top"><span class="toc-number">2.6.</span> <span class="toc-text">top</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#time"><span class="toc-number">2.7.</span> <span class="toc-text">time</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#perf"><span class="toc-number">2.8.</span> <span class="toc-text">perf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iostat"><span class="toc-number">2.9.</span> <span class="toc-text">iostat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#netstat"><span class="toc-number">2.10.</span> <span class="toc-text">netstat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ifconfig"><span class="toc-number">2.11.</span> <span class="toc-text">ifconfig</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ip"><span class="toc-number">2.12.</span> <span class="toc-text">ip</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lsof"><span class="toc-number">2.13.</span> <span class="toc-text">lsof</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ss"><span class="toc-number">2.14.</span> <span class="toc-text">ss</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shell%E7%BC%96%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">shell编程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#shell%E5%8F%98%E9%87%8F"><span class="toc-number">3.1.</span> <span class="toc-text">shell变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shell%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">3.2.</span> <span class="toc-text">shell字符串</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%BC%E6%8E%A5%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">3.2.1.</span> <span class="toc-text">拼接字符串</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%95%BF%E5%BA%A6"><span class="toc-number">3.2.2.</span> <span class="toc-text">获取字符串长度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%88%AA%E5%8F%96%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">3.2.3.</span> <span class="toc-text">截取字符串</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E7%BB%84"><span class="toc-number">3.3.</span> <span class="toc-text">数组</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E6%95%B0%E7%BB%84%E9%95%BF%E5%BA%A6"><span class="toc-number">3.3.1.</span> <span class="toc-text">获取数组长度</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E9%80%92%E5%8F%82%E6%95%B0"><span class="toc-number">3.4.</span> <span class="toc-text">传递参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8expr%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AE%A1%E7%AE%97"><span class="toc-number">3.5.</span> <span class="toc-text">使用expr表达式计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6"><span class="toc-number">3.6.</span> <span class="toc-text">流程控制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#if-else%E6%9D%A1%E4%BB%B6%E5%88%86%E6%94%AF"><span class="toc-number">3.6.1.</span> <span class="toc-text">if-else条件分支</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#for%E5%BE%AA%E7%8E%AF"><span class="toc-number">3.6.2.</span> <span class="toc-text">for循环</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#while%E5%BE%AA%E7%8E%AF"><span class="toc-number">3.6.3.</span> <span class="toc-text">while循环</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#until%E5%BE%AA%E7%8E%AF"><span class="toc-number">3.6.4.</span> <span class="toc-text">until循环</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#case"><span class="toc-number">3.6.5.</span> <span class="toc-text">case</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B7%B3%E5%87%BA%E5%BE%AA%E7%8E%AF"><span class="toc-number">3.6.6.</span> <span class="toc-text">跳出循环</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shell%E5%87%BD%E6%95%B0"><span class="toc-number">3.7.</span> <span class="toc-text">shell函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#grep%E2%80%94%E2%80%94%E6%93%85%E9%95%BF%E6%9F%A5%E6%89%BE"><span class="toc-number">3.8.</span> <span class="toc-text">grep——擅长查找</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sed%E2%80%94%E2%80%94%E6%93%85%E9%95%BF%E5%8F%96%E8%A1%8C%E5%92%8C%E6%9B%BF%E6%8D%A2"><span class="toc-number">3.9.</span> <span class="toc-text">sed——擅长取行和替换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#awk%E2%80%94%E2%80%94%E6%93%85%E9%95%BF%E5%8F%96%E5%88%97"><span class="toc-number">3.10.</span> <span class="toc-text">awk——擅长取列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8sh-x%E8%B0%83%E8%AF%95shell%E8%84%9A%E6%9C%AC"><span class="toc-number">3.11.</span> <span class="toc-text">使用sh -x调试shell脚本</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/" title="Java新特性">Java新特性</a><time datetime="2023-05-11T03:29:22.000Z" title="发表于 2023-05-11 11:29:22">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章">建站第一篇文章</a><time datetime="2023-05-09T16:25:27.000Z" title="发表于 2023-05-10 00:25:27">2023-05-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20Parallel%20Stream%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E4%BC%98%E5%8C%96RT%E4%B8%8E%E4%B8%B2%E8%81%94traceid/" title="微服务架构下的Java Parallel Stream实践——优化RT与串联traceid">微服务架构下的Java Parallel Stream实践——优化RT与串联traceid</a><time datetime="2023-02-19T05:03:49.000Z" title="发表于 2023-02-19 13:03:49">2023-02-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/06/19/%E3%80%8AJava8%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E3%80%8B%E2%80%94%E2%80%94%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" title="Java8函数式编程">Java8函数式编程</a><time datetime="2022-06-19T04:55:29.000Z" title="发表于 2022-06-19 12:55:29">2022-06-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/11/Python%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="Python基础知识">Python基础知识</a><time datetime="2022-05-11T03:24:34.000Z" title="发表于 2022-05-11 11:24:34">2022-05-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 一个廖少少</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

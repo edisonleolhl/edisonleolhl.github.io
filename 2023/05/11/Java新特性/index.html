@@ -1,0 +1,262 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Java新特性 | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="JDK9到JDK17的新特性JDK9新特性（2017年9月）模块化 提供了List.of()、Set.of()、Map.of()和Map.ofEntries()等工厂方法 接口支持私有方法 Optional 类改进 多版本兼容Jar包 JShell工具 try-with-resources的改进 Stream API的改进 设置G1为JVM默认垃圾收集器 支持http2.0和websocket的A">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java新特性">
+<meta property="og:url" content="https://edisonleolhl.github.io/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="JDK9到JDK17的新特性JDK9新特性（2017年9月）模块化 提供了List.of()、Set.of()、Map.of()和Map.ofEntries()等工厂方法 接口支持私有方法 Optional 类改进 多版本兼容Jar包 JShell工具 try-with-resources的改进 Stream API的改进 设置G1为JVM默认垃圾收集器 支持http2.0和websocket的A">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://edisonleolhl.github.io/images/avatar.jpeg">
+<meta property="article:published_time" content="2023-05-11T03:29:22.000Z">
+<meta property="article:modified_time" content="2023-05-11T11:29:47.520Z">
+<meta property="article:author" content="一个廖少少">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://edisonleolhl.github.io/images/avatar.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://edisonleolhl.github.io/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Java新特性',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-11 19:29:47'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/cover.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Java新特性</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-11T03:29:22.000Z" title="发表于 2023-05-11 11:29:22">2023-05-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-11T11:29:47.520Z" title="更新于 2023-05-11 19:29:47">2023-05-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Java/">Java</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Java新特性"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="JDK9到JDK17的新特性"><a href="#JDK9到JDK17的新特性" class="headerlink" title="JDK9到JDK17的新特性"></a>JDK9到JDK17的新特性</h2><h3 id="JDK9新特性（2017年9月）"><a href="#JDK9新特性（2017年9月）" class="headerlink" title="JDK9新特性（2017年9月）"></a>JDK9新特性（2017年9月）</h3><p>模块化</p>
+<p>提供了List.of()、Set.of()、Map.of()和Map.ofEntries()等工厂方法</p>
+<p>接口支持私有方法</p>
+<p>Optional 类改进</p>
+<p>多版本兼容Jar包</p>
+<p>JShell工具</p>
+<p>try-with-resources的改进</p>
+<p>Stream API的改进</p>
+<p>设置G1为JVM默认垃圾收集器</p>
+<p>支持http2.0和websocket的API</p>
+<p>重要特性：主要是API的优化，如支持HTTP2的Client API、JVM采用G1为默认垃圾收集器。</p>
+<h3 id="JDK10新特性（2018年3月）"><a href="#JDK10新特性（2018年3月）" class="headerlink" title="JDK10新特性（2018年3月）"></a>JDK10新特性（2018年3月）</h3><p>局部变量类型推断，类似JS可以通过var来修饰局部变量，编译之后会推断出值的真实类型</p>
+<p>不可变集合的改进</p>
+<p>并行全垃圾回收器 G1，来优化G1的延迟</p>
+<p>线程本地握手，允许在不执行全局VM安全点的情况下执行线程回调，可以停止单个线程，而不需要停止所有线程或不停止线程</p>
+<p>Optional新增orElseThrow()方法</p>
+<p>类数据共享</p>
+<p>Unicode 语言标签扩展</p>
+<p>根证书</p>
+<p>重要特性：通过var关键字实现局部变量类型推断，使Java语言变成弱类型语言、JVM的G1垃圾回收由单线程改成多线程并行处理，降低G1的停顿时间。</p>
+<h3 id="JDK11新特性（2018年9月）（LTS版本）"><a href="#JDK11新特性（2018年9月）（LTS版本）" class="headerlink" title="JDK11新特性（2018年9月）（LTS版本）"></a>JDK11新特性（2018年9月）（LTS版本）</h3><p>增加一些字符串处理方法</p>
+<p>用于 Lambda 参数的局部变量语法</p>
+<p>Http Client重写，支持HTTP&#x2F;1.1和HTTP&#x2F;2 ，也支持 websockets</p>
+<p>可运行单一Java源码文件，如：java Test.java</p>
+<p>ZGC：可伸缩低延迟垃圾收集器，ZGC可以看做是G1之上更细粒度的内存管理策略。由于内存的不断分配回收会产生大量的内存碎片空间，因此需要整理策略防止内存空间碎片化，在整理期间需要将对于内存引用的线程逻辑暂停，这个过程被称为”Stop the world”。只有当整理完成后，线程逻辑才可以继续运行。（并行回收）</p>
+<p>支持 TLS 1.3 协议</p>
+<p>Flight Recorder（飞行记录器），基于OS、JVM和JDK的事件产生的数据收集框架</p>
+<p>对Stream、Optional、集合API进行增强</p>
+<p>重要特性：对于JDK9和JDK10的完善，主要是对于Stream、集合等API的增强、新增ZGC垃圾收集器。</p>
+<h3 id="JDK12新特性（2019年3月）"><a href="#JDK12新特性（2019年3月）" class="headerlink" title="JDK12新特性（2019年3月）"></a>JDK12新特性（2019年3月）</h3><p>Switch 表达式扩展，可以有返回值</p>
+<p>新增NumberFormat对复杂数字的格式化</p>
+<p>字符串支持transform、indent操作</p>
+<p>新增方法Files.mismatch(Path, Path)</p>
+<p>Teeing Collector</p>
+<p>支持unicode 11</p>
+<p>Shenandoah GC，新增的GC算法</p>
+<p>G1收集器的优化，将GC的垃圾分为强制部分和可选部分，强制部分会被回收，可选部分可能不会被回收，提高GC的效率</p>
+<p>重要特性：switch表达式语法扩展、G1收集器优化、新增Shenandoah GC垃圾回收算法。</p>
+<h3 id="JDK13新特性（2019年9月）"><a href="#JDK13新特性（2019年9月）" class="headerlink" title="JDK13新特性（2019年9月）"></a>JDK13新特性（2019年9月）</h3><p>Switch 表达式扩展，switch表达式增加yield关键字用于返回结果，作用类似于return，如果没有返回结果则使用break</p>
+<p>文本块升级 “”” ，引入了文本块，可以使用”””三个双引号表示文本块，文本块内部就不需要使用换行的转义字符</p>
+<p>SocketAPI 重构，Socket的底层实现优化，引入了NIO</p>
+<p>FileSystems.newFileSystem新方法</p>
+<p>ZGC优化，增强 ZGC 释放未使用内存，将标记长时间空闲的堆内存空间返还给操作系统，保证堆大小不会小于配置的最小堆内存大小，如果堆最大和最小内存大小设置一样，则不会释放内存还给操作系统</p>
+<p>重要特性：ZGC优化，释放内存还给操作系统、socket底层实现引入NIO。</p>
+<h3 id="JDK14新特性（2020年3月）"><a href="#JDK14新特性（2020年3月）" class="headerlink" title="JDK14新特性（2020年3月）"></a>JDK14新特性（2020年3月）</h3><p>instanceof模式匹配，instanceof类型匹配语法简化，可以直接给对象赋值，如if(obj instanceof String str),如果obj是字符串类型则直接赋值给了str变量</p>
+<p>引入Record类型，类似于Lombok 的@Data注解，可以向Lombok一样自动生成构造器、equals、getter等方法；</p>
+<p>Switch 表达式-标准化</p>
+<p>改进 NullPointerExceptions提示信息，打印具体哪个方法抛的空指针异常，避免同一行代码多个函数调用时无法判断具体是哪个函数抛异常的困扰，方便异常排查；</p>
+<p>删除 CMS 垃圾回收器</p>
+<h3 id="JDK15新特性（2020年9月）"><a href="#JDK15新特性（2020年9月）" class="headerlink" title="JDK15新特性（2020年9月）"></a>JDK15新特性（2020年9月）</h3><p>EdDSA 数字签名算法</p>
+<p>Sealed Classes（封闭类，预览），通过sealed关键字修饰抽象类限定只允许指定的子类才可以实现或继承抽象类，避免抽象类被滥用</p>
+<p>Hidden Classes（隐藏类）</p>
+<p>移除 Nashorn JavaScript引擎</p>
+<p>改进java.net.DatagramSocket 和 java.net.MulticastSocket底层实现</p>
+<h3 id="JDK16新特性（2021年3月）"><a href="#JDK16新特性（2021年3月）" class="headerlink" title="JDK16新特性（2021年3月）"></a>JDK16新特性（2021年3月）</h3><p>允许在 JDK C ++源代码中使用 C ++ 14功能</p>
+<p>ZGC性能优化，去掉ZGC线程堆栈处理从安全点到并发阶段</p>
+<p>增加 Unix 域套接字通道</p>
+<p>弹性元空间能力</p>
+<p>提供用于打包独立 Java 应用程序的 jpackage 工具</p>
+<p>JDK16相当于是将JDK14、JDK15的一些特性进行了正式引入，如instanceof模式匹配（Pattern matching）、record的引入等最终到JDK16变成了final版本。</p>
+<h3 id="JDK17新特性（2021年9月）（LTS版本）"><a href="#JDK17新特性（2021年9月）（LTS版本）" class="headerlink" title="JDK17新特性（2021年9月）（LTS版本）"></a>JDK17新特性（2021年9月）（LTS版本）</h3><p>Free Java License</p>
+<p>JDK 17 将取代 JDK 11 成为下一个长期支持版本</p>
+<p>Spring 6 和 Spring Boot 3需要JDK17</p>
+<p>移除实验性的 AOT 和 JIT 编译器</p>
+<p>恢复始终执行严格模式 (Always-Strict) 的浮点定义</p>
+<p>正式引入密封类sealed class，限制抽象类的实现</p>
+<p>统一日志异步刷新，先将日志写入缓存，然后再异步刷新</p>
+<p>虽然JDK17也是一个LTS版本，但是并没有像JDK8和JDK11一样引入比较突出的特性，主要是对前几个版本的整合和完善。</p>
+<h2 id="模块化-Java9"><a href="#模块化-Java9" class="headerlink" title="模块化 Java9"></a>模块化 Java9</h2><p>模块是新的结构，就像我们已经有包一样。使用新的模块化编程开发的应用程序可以看作是交互模块的集合，这些模块之间具有明确定义的边界和依赖关系。</p>
+<p>在java模块化编程中：</p>
+<ul>
+<li>一个模块通常只是一个 jar 文件，在根目录下有一个文件module-info.class。</li>
+<li>要使用模块，请将 jar 文件包含到modulepath而不是classpath. 添加到类路径的模块化 jar 文件是普通的 jar 文件，module-info.class文件将被忽略。</li>
+</ul>
+<p>总结：模块化的目的，是让jdk的各个组件可以被分拆，复用和替换重写</p>
+<h2 id="本地变量类型推断-Java10"><a href="#本地变量类型推断-Java10" class="headerlink" title="本地变量类型推断 Java10"></a>本地变量类型推断 Java10</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在Java 10之前版本中，我们想定义定义局部变量时。我们需要在赋值的左侧提供显式类型，并在赋值的右边提供实现类型：   </span></span><br><span class="line"><span class="type">MyObject</span> <span class="variable">value</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyObject</span>();</span><br><span class="line"><span class="comment">// 在Java 10中，提供了本地变量类型推断的功能，可以通过var声明变量：</span></span><br><span class="line"><span class="type">var</span> <span class="variable">value</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyObject</span>();</span><br></pre></td></tr></table></figure>
+
+<h2 id="语法糖"><a href="#语法糖" class="headerlink" title="语法糖"></a>语法糖</h2><h3 id="Collectors-teeing"><a href="#Collectors-teeing" class="headerlink" title="Collectors.teeing()"></a>Collectors.teeing()</h3><p>teeing 收集器已公开为静态方法Collectors::teeing。该收集器将其输入转发给其他两个收集器，然后将它们的结果使用函数合并。</p>
+<p>借鉴unix管道的思想</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Student&gt; list = Arrays.<span class="built_in">asList</span>(</span><br><span class="line">        <span class="keyword">new</span> <span class="built_in">Student</span>(<span class="string">&quot;唐一&quot;</span>, <span class="number">55</span>),</span><br><span class="line">        <span class="keyword">new</span> <span class="built_in">Student</span>(<span class="string">&quot;唐二&quot;</span>, <span class="number">60</span>),</span><br><span class="line">        <span class="keyword">new</span> <span class="built_in">Student</span>(<span class="string">&quot;唐三&quot;</span>, <span class="number">90</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">//平均分 总分</span></span><br><span class="line">String result = list.<span class="built_in">stream</span>().<span class="built_in">collect</span>(Collectors.<span class="built_in">teeing</span>(</span><br><span class="line">        Collectors.<span class="built_in">averagingInt</span>(Student::getScore),</span><br><span class="line">        Collectors.<span class="built_in">summingInt</span>(Student::getScore),</span><br><span class="line">        (s1, s2) -&gt; s1 + <span class="string">&quot;:&quot;</span> + s2));</span><br><span class="line"></span><br><span class="line"><span class="comment">//最低分  最高分</span></span><br><span class="line">String result2 = list.<span class="built_in">stream</span>().<span class="built_in">collect</span>(Collectors.<span class="built_in">teeing</span>(</span><br><span class="line">        Collectors.<span class="built_in">minBy</span>(Comparator.<span class="built_in">comparing</span>(Student::getScore)),</span><br><span class="line">        Collectors.<span class="built_in">maxBy</span>(Comparator.<span class="built_in">comparing</span>(Student::getScore)),</span><br><span class="line">        (s1, s2) -&gt; s1.<span class="built_in">orElseThrow</span>() + <span class="string">&quot;:&quot;</span> + s2.<span class="built_in">orElseThrow</span>()</span><br><span class="line">));</span><br><span class="line"></span><br><span class="line">System.out.<span class="built_in">println</span>(result);</span><br><span class="line">System.out.<span class="built_in">println</span>(result2);</span><br></pre></td></tr></table></figure>
+
+<h3 id="yield关键字（jdk13）"><a href="#yield关键字（jdk13）" class="headerlink" title="yield关键字（jdk13）"></a>yield关键字（jdk13）</h3><p>使用yield，我们现在可以有效地从 switch 表达式返回值，并能够更容易实现策略模式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SwitchTest</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">var</span> <span class="variable">me</span> <span class="operator">=</span> <span class="number">4</span>;</span><br><span class="line">        <span class="type">var</span> <span class="variable">operation</span> <span class="operator">=</span> <span class="string">&quot;平方&quot;</span>;</span><br><span class="line">        <span class="type">var</span> <span class="variable">result</span> <span class="operator">=</span> <span class="keyword">switch</span> (operation) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;加倍&quot;</span> -&gt; &#123;</span><br><span class="line">                <span class="keyword">yield</span> me * <span class="number">2</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;平方&quot;</span> -&gt; &#123;</span><br><span class="line">                <span class="keyword">yield</span> me * me;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">default</span> -&gt; me;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        System.out.println(result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="文本块改进（jdk13）"><a href="#文本块改进（jdk13）" class="headerlink" title="文本块改进（jdk13）"></a>文本块改进（jdk13）</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 早些时候，为了在我们的代码中嵌入 JSON，我们将其声明为字符串文字：</span></span><br><span class="line"><span class="type">String</span> <span class="variable">json</span>  <span class="operator">=</span> <span class="string">&quot;&#123;\r\n&quot;</span> + <span class="string">&quot;\&quot;name\&quot; : \&quot;lingli\&quot;,\r\n&quot;</span> + <span class="string">&quot;\&quot;website\&quot; : \&quot;https://www.alibaba.com/\&quot;\r\n&quot;</span> + <span class="string">&quot;&#125;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 现在让我们使用字符串文本块编写相同的 JSON ：</span></span><br><span class="line"><span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> <span class="string">&quot;&quot;&quot; </span></span><br><span class="line"><span class="string">&#123;     </span></span><br><span class="line"><span class="string">    &quot;name&quot; : &quot;Baeldung&quot;,     </span></span><br><span class="line"><span class="string">    &quot;website&quot; : &quot;https://www.alibaba.com/&quot; </span></span><br><span class="line"><span class="string">&#125; </span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="record记录类（jdk16正式）"><a href="#record记录类（jdk16正式）" class="headerlink" title="record记录类（jdk16正式）"></a>record记录类（jdk16正式）</h3><p>传统的Java应用程序通过创建一个类，通过该类的构造方法实例化类，并通过getter和setter方法访问成员变量或者设置成员变量的值。有了record关键字，你的代码会变得更加简洁。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * record 记录类</span></span><br><span class="line"><span class="comment"> * 你也可以覆写equals() hashCode() toString()方法，不用写get、set了</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> DAYANG</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">record</span> <span class="title class_">User</span><span class="params">(String name, Integer age)</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;User[&quot;</span> +</span><br><span class="line">                <span class="string">&quot;name=&#x27;&quot;</span> + name + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, age=&quot;</span> + age +</span><br><span class="line">                <span class="string">&#x27;]&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">hashCode</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h2><p>GC变化</p>
+<ul>
+<li>JDK9: 设置G1为JVM默认垃圾收集器</li>
+<li>JDK10：并行全垃圾回收器 G1，通过并行Full GC, 改善G1的延迟。目前对G1的full GC的实现采用了单线程-清除-压缩算法。JDK10开始使用并行化-清除-压缩算法。</li>
+<li>JDK11：推出ZGC新一代垃圾回收器（实验性）,目标是GC暂停时间不会超过10ms，既能处理几百兆的小堆，也能处理几个T的大堆。</li>
+<li>JDK14 ：删除CMS垃圾回收器;弃用 ParallelScavenge + SerialOld GC 的垃圾回收算法组合;将 zgc 垃圾回收器移植到 macOS 和 windows 平台</li>
+<li>JDk 15 : ZGC (JEP 377) 和Shenandoah (JEP 379) 不再是实验性功能。默认的 GC 仍然是G1。</li>
+<li>JDK16：增强ZGC，ZGC获得了 46个增强功能 和25个错误修复，控制stw时间不超过10毫秒</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/">https://edisonleolhl.github.io/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://edisonleolhl.github.io" target="_blank">一知半解</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/images/avatar.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">建站第一篇文章</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/edisonleolhl"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/edisonleolhl" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:edisonleolhl@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">这个家伙很懒，什么都没写~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#JDK9%E5%88%B0JDK17%E7%9A%84%E6%96%B0%E7%89%B9%E6%80%A7"><span class="toc-number">1.</span> <span class="toc-text">JDK9到JDK17的新特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK9%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%882017%E5%B9%B49%E6%9C%88%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">JDK9新特性（2017年9月）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK10%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%882018%E5%B9%B43%E6%9C%88%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">JDK10新特性（2018年3月）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%882018%E5%B9%B49%E6%9C%88%EF%BC%89%EF%BC%88LTS%E7%89%88%E6%9C%AC%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">JDK11新特性（2018年9月）（LTS版本）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK12%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%882019%E5%B9%B43%E6%9C%88%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">JDK12新特性（2019年3月）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK13%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%882019%E5%B9%B49%E6%9C%88%EF%BC%89"><span class="toc-number">1.5.</span> <span class="toc-text">JDK13新特性（2019年9月）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK14%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%882020%E5%B9%B43%E6%9C%88%EF%BC%89"><span class="toc-number">1.6.</span> <span class="toc-text">JDK14新特性（2020年3月）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK15%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%882020%E5%B9%B49%E6%9C%88%EF%BC%89"><span class="toc-number">1.7.</span> <span class="toc-text">JDK15新特性（2020年9月）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK16%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%882021%E5%B9%B43%E6%9C%88%EF%BC%89"><span class="toc-number">1.8.</span> <span class="toc-text">JDK16新特性（2021年3月）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK17%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%882021%E5%B9%B49%E6%9C%88%EF%BC%89%EF%BC%88LTS%E7%89%88%E6%9C%AC%EF%BC%89"><span class="toc-number">1.9.</span> <span class="toc-text">JDK17新特性（2021年9月）（LTS版本）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E5%8C%96-Java9"><span class="toc-number">2.</span> <span class="toc-text">模块化 Java9</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B%E6%8E%A8%E6%96%AD-Java10"><span class="toc-number">3.</span> <span class="toc-text">本地变量类型推断 Java10</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95%E7%B3%96"><span class="toc-number">4.</span> <span class="toc-text">语法糖</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Collectors-teeing"><span class="toc-number">4.1.</span> <span class="toc-text">Collectors.teeing()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#yield%E5%85%B3%E9%94%AE%E5%AD%97%EF%BC%88jdk13%EF%BC%89"><span class="toc-number">4.2.</span> <span class="toc-text">yield关键字（jdk13）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E6%9C%AC%E5%9D%97%E6%94%B9%E8%BF%9B%EF%BC%88jdk13%EF%BC%89"><span class="toc-number">4.3.</span> <span class="toc-text">文本块改进（jdk13）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#record%E8%AE%B0%E5%BD%95%E7%B1%BB%EF%BC%88jdk16%E6%AD%A3%E5%BC%8F%EF%BC%89"><span class="toc-number">4.4.</span> <span class="toc-text">record记录类（jdk16正式）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GC"><span class="toc-number">5.</span> <span class="toc-text">GC</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/" title="Java新特性">Java新特性</a><time datetime="2023-05-11T03:29:22.000Z" title="发表于 2023-05-11 11:29:22">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章">建站第一篇文章</a><time datetime="2023-05-09T16:25:27.000Z" title="发表于 2023-05-10 00:25:27">2023-05-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20Parallel%20Stream%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E4%BC%98%E5%8C%96RT%E4%B8%8E%E4%B8%B2%E8%81%94traceid/" title="微服务架构下的Java Parallel Stream实践——优化RT与串联traceid">微服务架构下的Java Parallel Stream实践——优化RT与串联traceid</a><time datetime="2023-02-19T05:03:49.000Z" title="发表于 2023-02-19 13:03:49">2023-02-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/06/19/%E3%80%8AJava8%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E3%80%8B%E2%80%94%E2%80%94%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" title="Java8函数式编程">Java8函数式编程</a><time datetime="2022-06-19T04:55:29.000Z" title="发表于 2022-06-19 12:55:29">2022-06-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/11/Python%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="Python基础知识">Python基础知识</a><time datetime="2022-05-11T03:24:34.000Z" title="发表于 2022-05-11 11:24:34">2022-05-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 一个廖少少</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
