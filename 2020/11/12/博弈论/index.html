@@ -1,0 +1,192 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>博弈论 | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="博弈论博弈论，又称为对策论（Game Theory），它是现代数学的一个新分支，也是运筹学的重要学科。博弈论研究的是具有竞争性质的现象，它考虑博弈中个体的倾向行为与实际行为，研究个体的行为所带来的影响。博弈论最早用于解释经济现象，比如垄断、生产，1944年出版的《博弈论和经济行为》引进了通用博弈的思想。1950年，纳什提出了后来被称为“纳什均衡”的概念。博弈论发展飞快，它成为经济学里广泛使用的数学">
+<meta property="og:type" content="article">
+<meta property="og:title" content="博弈论">
+<meta property="og:url" content="https://edisonleolhl.github.io/2020/11/12/%E5%8D%9A%E5%BC%88%E8%AE%BA/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="博弈论博弈论，又称为对策论（Game Theory），它是现代数学的一个新分支，也是运筹学的重要学科。博弈论研究的是具有竞争性质的现象，它考虑博弈中个体的倾向行为与实际行为，研究个体的行为所带来的影响。博弈论最早用于解释经济现象，比如垄断、生产，1944年出版的《博弈论和经济行为》引进了通用博弈的思想。1950年，纳什提出了后来被称为“纳什均衡”的概念。博弈论发展飞快，它成为经济学里广泛使用的数学">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://edisonleolhl.github.io/images/avatar.jpeg">
+<meta property="article:published_time" content="2020-11-12T06:50:16.000Z">
+<meta property="article:modified_time" content="2023-05-12T15:07:21.607Z">
+<meta property="article:author" content="一个廖少少">
+<meta property="article:tag" content="博弈论">
+<meta property="article:tag" content="纳什均衡">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://edisonleolhl.github.io/images/avatar.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://edisonleolhl.github.io/2020/11/12/%E5%8D%9A%E5%BC%88%E8%AE%BA/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '博弈论',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-12 23:07:21'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">47</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/cover.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">博弈论</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-11-12T06:50:16.000Z" title="发表于 2020-11-12 14:50:16">2020-11-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-12T15:07:21.607Z" title="更新于 2023-05-12 23:07:21">2023-05-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%B0%E5%AD%A6/">数学</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="博弈论"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="博弈论"><a href="#博弈论" class="headerlink" title="博弈论"></a>博弈论</h2><p>博弈论，又称为对策论（Game Theory），它是现代数学的一个新分支，也是运筹学的重要学科。博弈论研究的是具有竞争性质的现象，它考虑博弈中个体的倾向行为与实际行为，研究个体的行为所带来的影响。博弈论最早用于解释经济现象，比如垄断、生产，1944年出版的《博弈论和经济行为》引进了通用博弈的思想。1950年，纳什提出了后来被称为“纳什均衡”的概念。博弈论发展飞快，它成为经济学里广泛使用的数学分析工具之一，在生物、政治、军事、国际关系等学科都有广泛应用。经过前人不断探索，时至今日，博弈论已经发展成为一门比较完善的学科。</p>
+<p>通常情况，博弈模型主要由三要素组成：</p>
+<ol>
+<li><p>参与人：参与人是参与到博弈游戏的个体，每个参与人都有自己的决策权，如果参与人只有两位，则称为“两人博弈”，如果有更多的参与者，则称为“多人博弈”。参与人集合设为有限集。 </p>
+</li>
+<li><p>策略：在一场博弈中，参与人可以行使自己的决策权，选择一个实际可行的行动方案，这个行动方案称为“策略”，策略不是凭空想象地，必须从有限的策略空间中选出。每个参与者的策略空间不尽相同，用si表示参与人选择的某个策略，用Si表示参与人的策略空间。</p>
+</li>
+<li><p>收益（或称效用）：“参与人”执行“策略”获得相应的“收益”，收益一般体现在博弈结束时，每个参与人的收益可能不同，可能有得有失，参与人i执行策略的收益函数用ui(s)表示。</p>
+</li>
+</ol>
+<p>考虑一种简单的情况：两个流浪汉在争夺一块面包（假设流浪汉都是自私的），抢到的收益为+1，没抢到的收益为-1，那么这是一场双人零和博弈，即u1(s)+u2(s)&#x3D;0，这种博弈最关键的特征是收益的总和为0。两个饥肠辘辘流浪汉，其中任意一人能够填饱肚子，是以另一人的继续挨饿换来的，即一人的收益都来自于另一人的损失。</p>
+<p>从社会整体利益角度出发，我们显然更愿意见到正和博弈，正和博弈是指经过博弈后，双方利益都有所增加，或者至少是一方的利益增加，而另一方利益不受损害。正和博弈又叫做合作博弈，它研究参与人采用何种策略来达成合作。与合作博弈相对的是非合作博弈，零和博弈是一种典型的非合作博弈。合作博弈与非合作博弈的重要区别在于前者强调联盟内部的信息互通和存在有约束力的可执行契约。信息互通是形成合作的首要前提和基本条件，能够促使具有共同利益的单个参与人为了同一目标而结成联盟。</p>
+<h2 id="纳什均衡"><a href="#纳什均衡" class="headerlink" title="纳什均衡"></a>纳什均衡</h2><p>各参与人制定各自的策略，如果最终能达到一种稳定状态，那么就把这种情况叫做纳什均衡（Nash Equilibrium）。它是博弈论的一个重要概念，纳什均衡为博弈论提供了强有力的分析框架。为了解释纳什均衡，首先定义支配性策略：在一场博弈中，无论其他参与人的策略如何，某个参与人一定会选择某个确定的策略，这种策略对于该参与人来说就是支配性策略，显然，对于参与人来说，选择支配性策略是为了达到自己期望收益的最大值。在一场两人博弈中（也可以推广到更多参与人），如果两个博弈的参与人的策略组合分别是各自的支配性策略，那么这个策略组合就被定义为纳什均衡。</p>
+<p>纳什均衡是关于博弈将会往什么地步发展的“一致”预测。如果所有参与人都会预测某个特定的稳定状态将会出现，那么每个参与人就没有动力偏离这个均衡。这是基于每个参与人都是自私的，这里的自私不是贬义词，每个参与人仅仅考虑自己的利益最大化，每个参与人都是精明的利己主义者。纳什均衡还有一种通俗的解释：博弈中的任何参与人都不可能通过单一地改变自己的策略从而提高自己的收益，这种稳定状态就叫做纳什均衡。</p>
+<h2 id="Stackelberg-Game"><a href="#Stackelberg-Game" class="headerlink" title="Stackelberg Game"></a>Stackelberg Game</h2><p>Stackelberg Game，即斯塔克尔伯格模型，是一个两阶段的完全信息动态博弈。StackelbergGame由德国经济学家斯塔克尔伯格（H. Von Stackelberg）提出，最开始是为了解释企业间不对称的竞争问题。在经典博弈中，各方是同时选择策略的，以企业为例，企业甲在选择策略时并不知道企业乙的策略，反之亦然。但斯塔克尔伯格观察到，在市场上的企业并不是同时选择策略的，企业有大小之分、有上下游之分、有话语权大小之分，各企业在市场上的地位并不是对称的，通常来说，小企业先观察到大企业的行为，再选择自己的策略。大企业与小企业可以看做一种主从关系，大企业作为领导者（Leader）具有领导优势，能够在博弈之中占据先机或者有利位置，跟随者（Follower）在领导者之后做出决策。所以Stackelberg Game也可以看做非对称博弈，博弈中每一个参与人的地位不尽相同。</p>
+<p>对于求解Stackelberg Game，最常用的方法是逆向归纳法（backward induction），逆向归纳法是一个逻辑严密的方法，它从博弈的最后阶段开始，依次往回逆向推导，直至博弈的所有阶段推导完毕。在掌握完全信息的动态博弈中，先做决策的参与人肯定会考虑跟随者的决策。于是，只有在最后阶段的参与人才能不用考虑跟随者的决策而做出当前情况下自己的最优选择。当他的决策确定后，倒数第二阶段参与人的策略也可确定，因为他的跟随者——最后阶段的参与人已经做出了最优决策，于是倒数第二阶段的参与者可以根据这个信息作出自己的最优决策。按照这样，一步步逆向推导，直到第一阶段推导完毕。逆向归纳法可以在任何完美信息下的有限次博弈中使用，“有限次”指的是阶段数有限、策略空间有限。按照前文的数学描述，在最终阶段，在给定历史信息的情况下，参与人为了利益最大化会采取某种最优策略，再往回推到阶段，确定这一阶段参与人的最优策略，只需要给定阶段采取行动的参与人在历史信息下将采取之前推导出来的某种最优策略即可。当用逆向归纳法确定所有阶段所有参与人的策略时，我们可以建立一个策略组合，并且很容易证明这是一个纳什均衡。</p>
+<p>不难看出，逆向归纳法其实就是求解子博弈完美纳什均衡的最简便的方法，从最后一个子博弈开始，依次往回递推即可。</p>
+<h2 id="海盗分赃"><a href="#海盗分赃" class="headerlink" title="海盗分赃"></a>海盗分赃</h2><p>海盗分赃问题有许多版本，这里我们选择“过半原则、海盗都是贪婪且狠毒的”这一版本</p>
+<p>有五个臭名昭著的海盗共同抢到了100枚金币，为了分配这100枚金币，他们按抽签的顺序依次提出方案：一号海盗提出一种分配方案，然后五人举手表决，超出半数同意方案才算通过（如果恰好一半同意则不算通过），这100枚金币就按一号海盗提出的分配方案分配；如果没有通过，一号海盗就会被扔进大海喂鲨鱼，再由二号海盗提出一种分配方案，然后四人举手表决，以此类推。海盗都是贪婪且狠毒的，即海盗在保证自己利益最大化的情况下更愿意看到其他海盗被扔进大海，假设每个海盗都是理性的、自私的、惜命的，且极度厌恶损失，海盗之间没有任何信任可言（不存在沟通结盟的情况），同时，每个海盗都知道其他海盗也是这样的人。那么，一号海盗要如何分配方案才能保命并且使自己的利益最大化？</p>
+<p>海盗分赃是典型的完美信息的有限次动态博弈问题，我们可以使用逆向归纳法解决：</p>
+<ol>
+<li>假设一、二、三号海盗都被扔进大海了，这时只剩四号、五号海盗，因为此时只剩两人，无论四号提出什么方案，五号只需要否决即可独吞所有金币，就算四号想保命而一分不取，五号也会狠毒地致四号于死地，所以金币分配方案必然是<code>(0, 0, 0, 0, 100)</code>。</li>
+<li>往回反推，假设一号、二号海盗死亡，三号海盗是绝顶聪明的，他明白如果自己的方案不成功，在下一阶段，四号海盗肯定会死，如果自己的方案成功，四号海盗不用死，所以三号海盗无论提出什么方案，四号海盗都会支持自己，出于利益最大化的考虑，三号海盗可以给自己分配100枚金币，由于四号的支持，再加上自己的同意，该方案超出半数会通过，此时的方案是<code>(0, 0, 100, 0, 0)</code>。</li>
+<li>再往回推，假设一号死亡，二号海盗也是绝顶聪明的，他预料到了：如果自己死亡，三号海盗的方案肯定会成功且能拿到所有金币，所以三号海盗肯定拉拢不了了，但现在是四个人，超出半数同意需要三票，所以二号海盗需要拉拢四号、五号海盗，如何拉拢？只需要给他们各自1枚金币即可，对于四号、五号海盗来说，这种情况会比三号海盗的方案要好，如果二号海盗的方案不成功，那自己可就什么也拿不到了，所以四号、五号会同意二号海盗的做法。故当前的方案是<code>(0, 98, 0, 1, 1)</code>。</li>
+<li>再往回推，一号海盗在脑海里计算了一番，想拉拢二号海盗至少得给他99枚金币，而三号海盗在二号海盗的方案那什么也捞不到，所以一号海盗只需要花1枚金币拉拢三号海盗即可，此时是五人，除了一号他自己，还需要一人的支持，一号海盗可以选择四号、五号其中的一位进行拉拢，此时的拉拢必须要给他2枚金币，因为末位的海盗可以计算出自己在二号海盗方案里的收益为1枚金币，如果此时一号海盗只给1枚金币，出于海盗贪婪且狠毒的性格，在利益相同的情况下，末位的海盗是很乐意见到其他海盗被扔进大海喂鲨鱼的。所以一号海盗的方案是<code>(97, 0, 1, 2, 0)</code>或<code>(97, 0, 1, 0, 2)</code>。这就是一号海盗最后的方案，保命的同时最多可以获得97枚金币</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io/2020/11/12/%E5%8D%9A%E5%BC%88%E8%AE%BA/">https://edisonleolhl.github.io/2020/11/12/%E5%8D%9A%E5%BC%88%E8%AE%BA/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://edisonleolhl.github.io" target="_blank">一知半解</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%8D%9A%E5%BC%88%E8%AE%BA/">博弈论</a><a class="post-meta__tags" href="/tags/%E7%BA%B3%E4%BB%80%E5%9D%87%E8%A1%A1/">纳什均衡</a></div><div class="post_share"><div class="social-share" data-image="/images/avatar.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/06/06/%E3%80%8A%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%AF%86%E9%9B%86%E5%9E%8B%E5%BA%94%E7%94%A8%E3%80%8B%E7%9A%84%E7%AC%94%E8%AE%B0/" title="《设计数据密集型应用》的笔记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">《设计数据密集型应用》的笔记</div></div></a></div><div class="next-post pull-right"><a href="/2020/10/19/Linux%E5%AE%9A%E6%97%B6%E5%99%A8%E4%B8%8E%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86/" title="Linux定时器与时间管理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Linux定时器与时间管理</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">47</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/edisonleolhl"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/edisonleolhl" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:edisonleolhl@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a><a class="social-icon" href="https://www.jianshu.com/u/28b41b12cde8" target="_blank" title="jianshu"><i class="fas fa-link" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Go Big or Go Home</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%9A%E5%BC%88%E8%AE%BA"><span class="toc-number">1.</span> <span class="toc-text">博弈论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%B3%E4%BB%80%E5%9D%87%E8%A1%A1"><span class="toc-number">2.</span> <span class="toc-text">纳什均衡</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stackelberg-Game"><span class="toc-number">3.</span> <span class="toc-text">Stackelberg Game</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%B7%E7%9B%97%E5%88%86%E8%B5%83"><span class="toc-number">4.</span> <span class="toc-text">海盗分赃</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20ThreadLocal%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E7%BC%93%E5%AD%98%E9%87%8D%E5%A4%8DRPC%E7%BB%93%E6%9E%9C/" title="微服务架构下的Java ThreadLocal实践——缓存重复RPC结果">微服务架构下的Java ThreadLocal实践——缓存重复RPC结果</a><time datetime="2023-05-12T05:31:47.000Z" title="发表于 2023-05-12 13:31:47">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/C++%E6%96%B0%E7%89%B9%E6%80%A7/" title="C++新特性">C++新特性</a><time datetime="2023-05-11T05:41:59.000Z" title="发表于 2023-05-11 13:41:59">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/" title="Java新特性">Java新特性</a><time datetime="2023-05-11T03:29:22.000Z" title="发表于 2023-05-11 11:29:22">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章">建站第一篇文章</a><time datetime="2023-05-09T16:25:27.000Z" title="发表于 2023-05-10 00:25:27">2023-05-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/12/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%94%B1gmock%E5%BC%95%E5%8F%91%E7%9A%84%E4%BB%A3%E7%A0%81%E9%87%8D%E6%9E%84/" title="记一次由gmock引发的代码重构">记一次由gmock引发的代码重构</a><time datetime="2023-04-12T05:27:41.000Z" title="发表于 2023-04-12 13:27:41">2023-04-12</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 一个廖少少</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
