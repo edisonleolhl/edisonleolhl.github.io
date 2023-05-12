@@ -1,0 +1,246 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>TCP三次握手四次挥手 | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="TCP三次握手与四次挥手三次握手B的TCP服务器进程先创建传输控制块TCB，准备接受客户进程的连接请求。然后服务器进程就处于LISTEN状态，等待客户的连接请求。  A首先创建传输控制块TCB，然后向B发出连接请求报文段，SYN&#x3D;1，初始序号seq&#x3D;x（随机，SYN&#x3D;1的报文段不能携带数据，但要消耗掉一个序号），此时TCP客户进程进入SYN-SENT状态  B收到连接">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP三次握手四次挥手">
+<meta property="og:url" content="https://edisonleolhl.github.io/2020/01/11/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="TCP三次握手与四次挥手三次握手B的TCP服务器进程先创建传输控制块TCB，准备接受客户进程的连接请求。然后服务器进程就处于LISTEN状态，等待客户的连接请求。  A首先创建传输控制块TCB，然后向B发出连接请求报文段，SYN&#x3D;1，初始序号seq&#x3D;x（随机，SYN&#x3D;1的报文段不能携带数据，但要消耗掉一个序号），此时TCP客户进程进入SYN-SENT状态  B收到连接">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://edisonleolhl.github.io/images/avatar.jpeg">
+<meta property="article:published_time" content="2020-01-11T06:20:12.000Z">
+<meta property="article:modified_time" content="2023-05-12T14:21:58.188Z">
+<meta property="article:author" content="一个廖少少">
+<meta property="article:tag" content="TCP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://edisonleolhl.github.io/images/avatar.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://edisonleolhl.github.io/2020/01/11/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'TCP三次握手四次挥手',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-12 22:21:58'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">45</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/cover.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">TCP三次握手四次挥手</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-01-11T06:20:12.000Z" title="发表于 2020-01-11 14:20:12">2020-01-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-12T14:21:58.188Z" title="更新于 2023-05-12 22:21:58">2023-05-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="TCP三次握手四次挥手"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="TCP三次握手与四次挥手"><a href="#TCP三次握手与四次挥手" class="headerlink" title="TCP三次握手与四次挥手"></a>TCP三次握手与四次挥手</h1><h2 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h2><p>B的TCP服务器进程先创建传输控制块TCB，准备接受客户进程的连接请求。然后服务器进程就处于LISTEN状态，等待客户的连接请求。</p>
+<ol>
+<li><p>A首先创建传输控制块TCB，然后向B发出连接请求报文段，SYN&#x3D;1，初始序号seq&#x3D;x（随机，SYN&#x3D;1的报文段不能携带数据，但要消耗掉一个序号），此时TCP客户进程进入<strong>SYN-SENT</strong>状态</p>
+</li>
+<li><p>B收到连接请求报文段后，如同意建立连接，则向A发送确认，SYN&#x3D;1，ACK&#x3D;1，确认号ack&#x3D;x+1，初始序号seq&#x3D;y（随机，SYN&#x3D;1的报文段不能携带数据，但要消耗掉一个序号），TCP服务器进程进入<strong>SYN-RCVD</strong>状态</p>
+</li>
+<li><p>A收到B的确认后，要向B给出确认报文段，ACK&#x3D;1，确认号ack&#x3D;y+1，seq&#x3D;x+1（初始为seq&#x3D;x，第二个报文段所以要+1），ACK报文段可以携带数据，不携带数据则不消耗序号。TCP连接已经建立，A进入<strong>ESTABLISHED</strong>，B收到后也进入<strong>ESTABLISHED</strong>状态</p>
+</li>
+</ol>
+<p>———–数据传输阶段———-</p>
+<h2 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h2><p>由于TCP连接时全双工的，因此，每个方向都必须要单独进行关闭，这一原则是当一方完成数据发送任务后，发送一个FIN来终止这���方向的连接，但是另一方扔仍然能够发送数据，直到另一方向也发送了FIN。首先进行关闭的一方将执行主动关闭，而另一方则执行被动关闭。</p>
+<ol>
+<li><p>A发出连接释放报文段，FIN&#x3D;1，序号seq&#x3D;u（之前最后一次传送的序号加1），并停止再发送数据，主动关闭TCP连接，进入<strong>FIN-WAIT-1</strong>状态，等待B的确认。</p>
+</li>
+<li><p>B收到连接释放报文段后即发出确认报文段，ACK&#x3D;1，确认号ack&#x3D;u+1，序号seq&#x3D;v（之前最后一次传送的序号加1），B进入<strong>CLOSE-WAIT</strong>状态，此时的TCP处于半关闭状态，A到B的这个方向的连接已释放。A收到确认报文段后进入<strong>FIN-WAIT2</strong>状态</p>
+<p> ———–可能这时Server还有数据要发送给Client—————–</p>
+</li>
+<li><p>B没有要向A发出的数据，B发出连接释放报文段，FIN&#x3D;1，ACK&#x3D;1，序号seq&#x3D;w（之前最后一次传送的序号加1），确认号ack&#x3D;u+1，B进入<strong>LAST-ACK</strong>（最后确认）状态，等待A的确认。</p>
+</li>
+<li><p>A收到B的连接释放报文段后，对此发出确认报文段，ACK&#x3D;1，seq&#x3D;u+1，ack&#x3D;w+1，A进入<strong>TIME-WAIT</strong>（时间等待）状态。此时TCP未释放掉，需要经过时间等待计时器设置的时间2*MSL（最长报文段寿命）后，A才进入<strong>CLOSED</strong>状态。B在收到确认报文段后就进入了<strong>CLOSED</strong>状态。</p>
+</li>
+</ol>
+<h2 id="三次握手交换了什么数据"><a href="#三次握手交换了什么数据" class="headerlink" title="三次握手交换了什么数据"></a>三次握手交换了什么数据</h2><p>除了序列号，第一次还包括client通告server的接收窗口大小以及本方的MSS，第二次还包括server通告client的接收窗口大小以及本方的MSS</p>
+<h2 id="三次握手为什么两次不可以，为什么四次没必要"><a href="#三次握手为什么两次不可以，为什么四次没必要" class="headerlink" title="三次握手为什么两次不可以，为什么四次没必要"></a>三次握手为什么两次不可以，为什么四次没必要</h2><p>三次握手的首要原因是为了<strong>防止旧的重复连接初始化造成混乱</strong>。如果是历史连接（序列号过期或超时），则第三次握手发送的报文是 RST 报文，以此中止历史连接；如果不是历史连接，则第三次发送的报文是 ACK 报文，通信双方就会成功建立连接；</p>
+<p>还有一个原因是因为有可能Client的第一个SYN报文段长时间滞留在网络中，Client一直等不到回应就释放了连接，但Server收到这个滞后的SYN报文段会向Client发送确认，并且同意建立连接，Client此时已经释放连接了，对Server的连接确认不予理睬，于是Server空空等待Client发来数据，浪费资源！</p>
+<p>第二次与第三次可以合并在一起，所以四次没必要</p>
+<h2 id="三次握手的第三次丢失怎么办"><a href="#三次握手的第三次丢失怎么办" class="headerlink" title="三次握手的第三次丢失怎么办"></a>三次握手的第三次丢失怎么办</h2><p>server没有收到ACK，超时重传，一定次数还没收到则关闭连接</p>
+<p>第二次握手，client就已经进入established状态，若第三次丢失，则发送数据给server时，server还未建立连接，会返回RST报文，这时client就能感知到了</p>
+<h2 id="有可能四次握手吗"><a href="#有可能四次握手吗" class="headerlink" title="有可能四次握手吗"></a>有可能四次握手吗</h2><p>有可能。当两端<strong>同时</strong>发起 SYN 来建立连接的时候，就出现了四次握手</p>
+<h2 id="有可能三次挥手吗"><a href="#有可能三次挥手吗" class="headerlink" title="有可能三次挥手吗"></a>有可能三次挥手吗</h2><p>如果 Server 在收到 Client 的 FIN 包后，在也没数据需要发送给 Client 了，那么对 Client 的 ACK 包和 Server 自己的 FIN 包就可以合并成为一个包发送过去，这样四次挥手就可以变成三次了(似乎 linux 协议栈就是这样实现的)</p>
+<h2 id="初始序列号ISN为什么是随机的，怎么随机"><a href="#初始序列号ISN为什么是随机的，怎么随机" class="headerlink" title="初始序列号ISN为什么是随机的，怎么随机"></a>初始序列号ISN为什么是随机的，怎么随机</h2><ol>
+<li>如果不是随机产生初始序列号，黑客将会以很容易的方式获取到你与其他主机之间通信的初始化序列号，并且<strong>伪造序列号进行攻击</strong></li>
+<li>在网络不好的场景中，TCP连接可能不停地断开，若用固定ISN，很可能新连接建立后，之前在网络中延迟的数据报才到达，这就<strong>乱套</strong>了</li>
+<li>不同OS的ISN生成算法不一样，就是随机数生成算法，比如RFC文档推荐：<code>ISN = M + F(localhost, localport, remotehost, remoteport)</code>，M是个计时器，每隔 4 毫秒加 1，F是个哈希算法，一般用MD5比较安全</li>
+<li>ISN是32位的</li>
+</ol>
+<h2 id="socket编程"><a href="#socket编程" class="headerlink" title="socket编程"></a>socket编程</h2><ul>
+<li>客户端 connect 成功返回是在第二次握手成功</li>
+<li>服务端 accept 成功返回是在三次握手成功</li>
+</ul>
+<p>为了方便调试服务器程序，一般会在服务端设置 SO_REUSEADDR 选项，这样服务器程序在重启后，可以立刻使用。这里设置SO_REUSEADDR 是不是就等价于对这个 socket 设置了内核中 的 net.ipv4.tcp_tw_reuse&#x3D;1 这个选项？</p>
+<ul>
+<li>tcp_tw_reuse 是内核选项，主要用在连接的发起方（客户端）。TIME_WAIT 状态的连接创建时间超过 1 秒后，新的连接才可以被复用，注意，这里是「连接的发起方」；</li>
+<li>SO_REUSEADDR 是用户态的选项，用于「连接的服务方」，用来告诉操作系统内核，如果端口已被占用，但是 TCP 连接状态位于 TIME_WAIT ，可以重用端口。如果端口忙，而 TCP 处于其他状态，重用会有 “Address already in use” 的错误信息。</li>
+<li>tcp_tw_reuse 是为了<strong>缩短 time_wait 的时间</strong>，避免出现大量的 time_wait 连接而占用系统资源，解决的是 accept 后的问题。</li>
+<li>SO_REUSEADDR 是为了<strong>解决 time_wait 状态带来的端口占用问题</strong>，以及支持同一个 port 对应多个ip，解决的是 bind 时的问题。</li>
+</ul>
+<h2 id="FIN包如何断开连接"><a href="#FIN包如何断开连接" class="headerlink" title="FIN包如何断开连接"></a>FIN包如何断开连接</h2><ul>
+<li>客户端调用 close ，表明客户端没有数据需要发送了，则此时会向服务端发送 FIN 报文，进入FIN_WAIT_1 状态；</li>
+<li>服务端接收到了 FIN 报文，TCP 协议栈会为 FIN 包<strong>插入一个文件结束符 EOF 到接收缓冲区</strong>中，应用程序可以通过 read 调用来感知这个 FIN 包。这个 EOF 会被放在已排队等候的其他已接收的数据之后，这就意味着服务端需要处理这种异常情况，因为 EOF 表示在该连接上再无额外数据到达。此时，服务端进入 CLOSE_WAIT 状态；</li>
+<li>接着，当处理完数据后，自然就会读到 EOF ，于是也调用 close 关闭它的套接字，这会使得客户端会发出一个 FIN 包，之后处于LAST_ACK 状态；</li>
+<li>客户端接收到服务端的 FIN 包，并发送 ACK 确认包给服务端，此时客户端将进入 TIME_WAIT 状态；</li>
+<li>服务端收到 ACK 确认包后，就进入了最后的 CLOSE 状态；</li>
+<li>客户端经过 2MSL 时间之后，也进入 CLOSE 状态</li>
+</ul>
+<h2 id="为什么A在TIME-WAIT状态必须等待2-MSL时间"><a href="#为什么A在TIME-WAIT状态必须等待2-MSL时间" class="headerlink" title="为什么A在TIME-WAIT状态必须等待2*MSL时间"></a>为什么A在TIME-WAIT状态必须等待2*MSL时间</h2><ol>
+<li>第四次挥手的ACK报文可能丢失，B如没有收到ACK报文，则会不断重复发送FIN报文，所以A不能立即关闭，必须确认B收到了ACK，<code>2*MSL</code>正好是一个发送和一个回复的最大时间，如果A直到<code>2*MSL</code>还没收到B的重复FIN报文，则说明第四次挥手的ACK已经成功接收，于是可以放心的关闭TCP连接了。</li>
+<li>第四次挥手的ACK报文之后，再经过2*MSL的时间，就是本次连接持续时间内产生的所有报文都从网络中消失，这样下一个新的TCP连接就不会出现旧的连接请求报文了。</li>
+<li>2MSL 的时间是从客户端接收到 FIN 后发送 ACK 开始计时的。如果在 TIME-WAIT 时间内，因为客户端的 ACK 没有传输到服务端，客户端又接收到了服务端重发的 FIN 报文，那么 2MSL 时间将重新计时。</li>
+<li><strong>在 Linux 系统里 2MSL 默认是 60 秒</strong>，那么一个 MSL 也就是 30 秒。Linux 系统停留在TIME_WAIT 的时间为固定的 60 秒��</li>
+</ol>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/8wAjPNQGC_l4p-j8OIbPNQ">TCP漫谈之keepalive和time_wait</a></p>
+</blockquote>
+<h2 id="time-wait状态太多如何处理"><a href="#time-wait状态太多如何处理" class="headerlink" title="time_wait状态太多如何处理"></a>time_wait状态太多如何处理</h2><ol>
+<li>开启tcp_timestamps：在TCP可选选项(option)字段内记录最后一次发送时间和最后一次接收时间（这是time_wait重用和快速回收的保证），<code>net.ipv4.tcp_timestamps = 1</code></li>
+<li>开启time_wait重用：因为time_wait是主动关闭方的状态，当客户端发送方又有新的TCP连接想要发起时，可以直接<strong>重用正在time_wait状态的TCP连接</strong>，接收端收到数据报，可以<strong>通过timestamp字段判断属于复用前的连接还是复用后的连接</strong>，<code>net.ipv4.tcp_tw_reuse = 1</code></li>
+<li>开启time_wait快速回收：不再等待2MSL，而是RTO（远小于2MSL），<code>net.ipv4.tcp_tw_recycle = 1</code>，但time_wait不等待2MSL的话会出现之前的问题，所以Linux4.12版本后就废弃这个参数了，NAT也不好处理time_wait</li>
+<li>tcp_max_tw_buckets 控制并发的 TIME_WAIT 的数量，默认值是 180000。如果超过默认值，内核会把多的 TIME_WAIT 连接清掉，然后在日志里打一个警告。官网文档说这个选项只是为了阻止一些简单的 DoS 攻击，平常不要人为的降低它。</li>
+<li>简单来说，就是打开系统的<strong>time_wait重用和快速回收</strong>。但是这是非常危险的，因为这两个参数违反了TCP协议，而且time_wait状态只有主动发起FIN的那方才会有的，服务器一般不会主动断连，特别是HTTP服务器会设置KeepAlive保持连接</li>
+</ol>
+<h2 id="close-wait状态太多如何处理"><a href="#close-wait状态太多如何处理" class="headerlink" title="close_wait状态太多如何处理"></a>close_wait状态太多如何处理</h2><p>在服务器与客户端通信过程中，因服务器发生了socket未关导致的closed_wait发生，致使监听port打开的句柄数到了1024个，且均处于close_wait的状态，最终造成配置的port被占满出现“Too many open files”，无法再进行通信。</p>
+<p>close_wait状态出现的原因是被动关闭方未关闭socket造成，更多是由于程序编写不当造成的，比如被动关闭方没有检测到关闭socket，或者程序忘记要关闭socket，所以需要修改程序的逻辑</p>
+<h2 id="往close的TCP连接发送数据会发生什么？"><a href="#往close的TCP连接发送数据会发生什么？" class="headerlink" title="往close的TCP连接发送数据会发生什么？"></a>往close的TCP连接发送数据会发生什么？</h2><p>Linux下显示32: Broken pipe</p>
+<ul>
+<li>1）当TCP连接的对端进程已经关闭了Socket的情况下，本端进程再发送数据时，第一包可以发送成功（但会导致对端发送一个RST包过来）：之后如果再继续发送数据会失败，错误码为“10053: An established connection was aborted by the software in your host machine”（Windows下）或“32: Broken pipe，同时收到SIGPIPE信号”（Linux下）错误；之后如果接收数据，则Windows下会报10053的错误，而Linux下则收到正常关闭消息；</li>
+<li>2）TCP连接的本端接收缓冲区中还有未接收数据的情况下close了Socket，则本端TCP会向对端发送RST包，而不是正常的FIN包，这就会导致对端进程提前（RST包比正常数据包先被收到）收到“10054: An existing connection was forcibly closed by the remote host”（Windows下）或“104: Connection reset by peer”（Linux下）错误。</li>
+</ul>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://www.52im.net/thread-1014-1-1.html">不为人知的网络编程(四)：深入研究分析TCP的异常关闭</a></p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io/2020/01/11/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/">https://edisonleolhl.github.io/2020/01/11/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://edisonleolhl.github.io" target="_blank">一知半解</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/TCP/">TCP</a></div><div class="post_share"><div class="social-share" data-image="/images/avatar.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/01/25/C++11%E7%9A%84%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" title="C++11的智能指针"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">C++11的智能指针</div></div></a></div><div class="next-post pull-right"><a href="/2019/12/12/Elements%20of%20Scientific%20Writing%20Preparing%20for%20Top%20Conference%20and%20Journal%20Publications/" title="Elements of Scientific Writing Preparing for Top Conference and Journal Publications"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Elements of Scientific Writing Preparing for Top Conference and Journal Publications</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">45</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/edisonleolhl"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/edisonleolhl" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:edisonleolhl@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Go Big or Go Home</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E4%B8%8E%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="toc-number">1.</span> <span class="toc-text">TCP三次握手与四次挥手</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="toc-number">1.1.</span> <span class="toc-text">三次握手</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="toc-number">1.2.</span> <span class="toc-text">四次挥手</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E4%BA%A4%E6%8D%A2%E4%BA%86%E4%BB%80%E4%B9%88%E6%95%B0%E6%8D%AE"><span class="toc-number">1.3.</span> <span class="toc-text">三次握手交换了什么数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%A4%E6%AC%A1%E4%B8%8D%E5%8F%AF%E4%BB%A5%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9B%9B%E6%AC%A1%E6%B2%A1%E5%BF%85%E8%A6%81"><span class="toc-number">1.4.</span> <span class="toc-text">三次握手为什么两次不可以，为什么四次没必要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E7%9A%84%E7%AC%AC%E4%B8%89%E6%AC%A1%E4%B8%A2%E5%A4%B1%E6%80%8E%E4%B9%88%E5%8A%9E"><span class="toc-number">1.5.</span> <span class="toc-text">三次握手的第三次丢失怎么办</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%89%E5%8F%AF%E8%83%BD%E5%9B%9B%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%90%97"><span class="toc-number">1.6.</span> <span class="toc-text">有可能四次握手吗</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%89%E5%8F%AF%E8%83%BD%E4%B8%89%E6%AC%A1%E6%8C%A5%E6%89%8B%E5%90%97"><span class="toc-number">1.7.</span> <span class="toc-text">有可能三次挥手吗</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%BA%8F%E5%88%97%E5%8F%B7ISN%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E9%9A%8F%E6%9C%BA%E7%9A%84%EF%BC%8C%E6%80%8E%E4%B9%88%E9%9A%8F%E6%9C%BA"><span class="toc-number">1.8.</span> <span class="toc-text">初始序列号ISN为什么是随机的，怎么随机</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#socket%E7%BC%96%E7%A8%8B"><span class="toc-number">1.9.</span> <span class="toc-text">socket编程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FIN%E5%8C%85%E5%A6%82%E4%BD%95%E6%96%AD%E5%BC%80%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.10.</span> <span class="toc-text">FIN包如何断开连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88A%E5%9C%A8TIME-WAIT%E7%8A%B6%E6%80%81%E5%BF%85%E9%A1%BB%E7%AD%89%E5%BE%852-MSL%E6%97%B6%E9%97%B4"><span class="toc-number">1.11.</span> <span class="toc-text">为什么A在TIME-WAIT状态必须等待2*MSL时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#time-wait%E7%8A%B6%E6%80%81%E5%A4%AA%E5%A4%9A%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86"><span class="toc-number">1.12.</span> <span class="toc-text">time_wait状态太多如何处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#close-wait%E7%8A%B6%E6%80%81%E5%A4%AA%E5%A4%9A%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86"><span class="toc-number">1.13.</span> <span class="toc-text">close_wait状态太多如何处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%80close%E7%9A%84TCP%E8%BF%9E%E6%8E%A5%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.14.</span> <span class="toc-text">往close的TCP连接发送数据会发生什么？</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20ThreadLocal%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E7%BC%93%E5%AD%98%E9%87%8D%E5%A4%8DRPC%E7%BB%93%E6%9E%9C/" title="微服务架构下的Java ThreadLocal实践——缓存重复RPC结果">微服务架构下的Java ThreadLocal实践——缓存重复RPC结果</a><time datetime="2023-05-12T05:31:47.000Z" title="发表于 2023-05-12 13:31:47">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/C++%E6%96%B0%E7%89%B9%E6%80%A7/" title="C++新特性">C++新特性</a><time datetime="2023-05-11T05:41:59.000Z" title="发表于 2023-05-11 13:41:59">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/" title="Java新特性">Java新特性</a><time datetime="2023-05-11T03:29:22.000Z" title="发表于 2023-05-11 11:29:22">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章">建站第一篇文章</a><time datetime="2023-05-09T16:25:27.000Z" title="发表于 2023-05-10 00:25:27">2023-05-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/12/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%94%B1gmock%E5%BC%95%E5%8F%91%E7%9A%84%E4%BB%A3%E7%A0%81%E9%87%8D%E6%9E%84/" title="记一次由gmock引发的代码重构">记一次由gmock引发的代码重构</a><time datetime="2023-04-12T05:27:41.000Z" title="发表于 2023-04-12 13:27:41">2023-04-12</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 一个廖少少</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

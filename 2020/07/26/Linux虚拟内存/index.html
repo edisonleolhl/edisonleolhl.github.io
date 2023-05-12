@@ -1,0 +1,311 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Linux虚拟内存 | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="虚拟内存虚拟内存的优势  提供缓存，加速运行 扩大地址空间，通过内存交换 每个进程都有自己的虚拟地址空间，互不影响，也不需要关心物理地址  分段（一般不单独使用） 段选择子就保存在段寄存器里面。段选择子里面最重要的是段号，用作段表的索引。段表里面保存的是这个段的基地址、段的界限和特权等级等。 虚拟地址中的段内偏移量应该位于 0 和段界限之间，如果段内偏移量是合法的，就将段基地址加上段内偏移量得到物">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux虚拟内存">
+<meta property="og:url" content="https://edisonleolhl.github.io/2020/07/26/Linux%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="虚拟内存虚拟内存的优势  提供缓存，加速运行 扩大地址空间，通过内存交换 每个进程都有自己的虚拟地址空间，互不影响，也不需要关心物理地址  分段（一般不单独使用） 段选择子就保存在段寄存器里面。段选择子里面最重要的是段号，用作段表的索引。段表里面保存的是这个段的基地址、段的界限和特权等级等。 虚拟地址中的段内偏移量应该位于 0 和段界限之间，如果段内偏移量是合法的，就将段基地址加上段内偏移量得到物">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://edisonleolhl.github.io/images/avatar.jpeg">
+<meta property="article:published_time" content="2020-07-26T06:08:32.000Z">
+<meta property="article:modified_time" content="2023-05-12T14:12:53.309Z">
+<meta property="article:author" content="一个廖少少">
+<meta property="article:tag" content="内存">
+<meta property="article:tag" content="操作系统">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://edisonleolhl.github.io/images/avatar.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://edisonleolhl.github.io/2020/07/26/Linux%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux虚拟内存',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-12 22:12:53'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">45</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/cover.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Linux虚拟内存</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-07-26T06:08:32.000Z" title="发表于 2020-07-26 14:08:32">2020-07-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-12T14:12:53.309Z" title="更新于 2023-05-12 22:12:53">2023-05-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Linux虚拟内存"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h2><p>虚拟内存的优势</p>
+<ol>
+<li>提供<strong>缓存</strong>，加速运行</li>
+<li>扩大地址空间，通过内存交换</li>
+<li>每个进程都有自己的虚拟地址空间，互不影响，也不需要关心物理地址</li>
+</ol>
+<h3 id="分段（一般不单独使用）"><a href="#分段（一般不单独使用）" class="headerlink" title="分段（一般不单独使用）"></a>分段（一般不单独使用）</h3><ul>
+<li><strong>段选择子</strong>就保存在<strong>段寄存器</strong>里面。段选择子里面最重要的是段号，用作段表的索引。段表里面保存的是这个段的基地址、段的界限和特权等级等。</li>
+<li>虚拟地址中的段内偏移量应该位于 0 和段界限之间，如果段内偏移量是合法的，就将段基地址加上段内偏移量得到物理内存地址。</li>
+<li>虚拟地址是通过<strong>段表</strong>与物理地址进行映射的</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>第一个就是内存碎片的问题。</li>
+<li>第二个就是内存交换的效率低的问题。</li>
+</ul>
+<p>对于多进程的系统来说，用分段的方式，内存碎片是很容易产生的，产生了内存碎片，那不得不重新 Swap 内存区域，这个过程会产生性能瓶颈。所以内存交换的效率也很低</p>
+<h3 id="分页（推荐）"><a href="#分页（推荐）" class="headerlink" title="分页（推荐）"></a>分页（推荐）</h3><p>分段的好处就是能产生连续的内存空间，但是会出现内存碎片和内存交换的空间太大的问题。要解决这些问题，那么就要想出能少出现一些内存碎片的办法。另外，当需要进行内存交换的时候，让需要交换写入或者从磁盘装载的数据更少一点，这样就可以解决问题了。这个办法，也就是内存分页（Paging）。</p>
+<ol>
+<li>每个进程拥有自己的虚拟地址空间，这个空间被分割成多个<strong>页面</strong>(page)&#x2F;虚拟页，页面存放于磁盘中，这些页面通过<strong>页表</strong>（存于MMU中）被映射到物理内存中的<strong>页框</strong>&#x2F;物理页，页面与页框大小一般相等（4KB）</li>
+<li>**页表(page table)**负责把操作系统虚拟内存映射为物理内存，页表存放于物理内存中的MMU中，页表中有若干页表项(page table entry)，每个页表项对应虚拟内存的每个页面，页面被分为三种：<ol>
+<li>已缓存：磁盘中的页面有对应的页框</li>
+<li>未缓存：磁盘中的页面没有对应的页框</li>
+<li>未分配：磁盘中的页面还没有被页表记录</li>
+</ol>
+</li>
+<li>页命中：CPU想要读已缓存的页面，翻译成物理地址访问页框，这样非常快</li>
+<li>缺页(page fault)：CPU想要读的页面未缓存或未分配，则产生缺页，从缓存的角度来说是内存缓存不命中，这就需要缺页置换算法（在内存中选择合适的页面换出）</li>
+</ol>
+<p>分页相比分段，减少内存碎片，那么释放的内存都是以页为单位释放的，也就不会产生无法给进程使用的小内存。</p>
+<h3 id="MMU-x2F-TLB"><a href="#MMU-x2F-TLB" class="headerlink" title="MMU&#x2F;TLB"></a>MMU&#x2F;TLB</h3><p>MMU（内存管理单元）位于CPU，将进程的虚拟地址转换为物理地址，输入进程的页表与虚拟地址，输出物理地址。虚拟地址分为两部分，<strong>页号</strong>和<strong>页内偏移</strong>。页号作为页表的索引，页表包含物理页每页所在物理内存的基地址，这个基地址与页内偏移的组合就形成了物理内存地址</p>
+<p>TLB（快表）存于CPU的L1 Cache，用来缓存已经找到的虚拟地址到物理地址的映射，这样不用去内存去找页表，特别是在多级页表的场景下，<strong>加快了虚拟地址到物理地址的映射速度</strong>。MMU会先查询TLB再查页表</p>
+<p>CPU L1 L2 L3 cache，体现<strong>局部性（locality）</strong>。L1&#x2F;L2 Cache通常都是每个CPU核心一个，L3 Cache通常都是各个核心共享的</p>
+<h3 id="多级页表"><a href="#多级页表" class="headerlink" title="多级页表"></a>多级页表</h3><p>简单分页的缺点：<strong>每个进程都是有自己的虚拟地址空间的</strong>，也就说都有自己的页表，那页表本身所需的内存空间就很大了</p>
+<p>解决办法：<strong>二级页表</strong>即是对页表本身采用分页式管理，对页表本身增加了一层页表管理。页的大小就是一个页表的大小，一个页表只能装在一个页中。</p>
+<p>单级页表：在 32 位的环境下，虚拟地址空间共有 4GB，假设一个页的大小是 4KB（2^12），那么就需要大约 100 万 （2^20） 个页，每个「页表项」需要 4 个字节大小来存储，那么整个 4GB 空间的映射就需要有 4MB 的内存来存储页表。这 4MB 大小的页表，看起来也不是很大。但是要知道每个进程都是有自己的虚拟地址空间的，也就说都有自己的页表。那么，100 个进程的话，就需要 400MB 的内存来存储页表，这是非常大的内存了，更别说 64 位的环境了。</p>
+<p>多级页表：我们把这个 100 多万个「页表项」的单级页表再分页，将页表（一级页表）分为 1024 个页表（二级页表），每个表（二级页表）中包含 1024 个「页表项」，形成二级分页。</p>
+<p>为什么多级页表更省空间？</p>
+<ul>
+<li>当然，如果 4GB 的虚拟地址全部都映射到了物理内上的，二级分页占用空间确实是更大了，<strong>但是，我们往往不会为一个进程分配那么多内存</strong>。</li>
+<li>究其原因，一级页表可以覆盖整个 4GB 虚拟地址空间，但如果某个一级页表的页表项没有被用到，也就<strong>不需要创建这个页表项对应的二级页表</strong>了，即可以在需要时才创建二级页表</li>
+</ul>
+<p>为什么单级页表不能省？</p>
+<ul>
+<li>保存在内存中的页表承担的职责是将虚拟地址翻译成物理地址。假如虚拟地址在页表中找不到对应的页表项，计算机系统就不能工作了。</li>
+<li>所以<strong>页表一定要覆盖全部虚拟地址空间</strong>，不分级的页表就需要有 100 多万个页表项来映射，而二级分页则只需要 1024 个页表项（此时一级页表覆盖到了全部虚拟地址空间，二级页表在需要时创建）</li>
+</ul>
+<p>多级页表的缺点？</p>
+<p>多了一次寻址时间</p>
+<h3 id="段页式内存管理"><a href="#段页式内存管理" class="headerlink" title="段页式内存管理"></a>段页式内存管理</h3><p>内存分段和内存分页并不是对立的，它们是可以组合起来在同一个系统中使用的，那么组合起来后，通常称为<strong>段页式内存管理</strong>。</p>
+<p>实现的方式：</p>
+<ul>
+<li>先将程序划分为多个有逻辑意义的段，也就是前面提到的分段机制；</li>
+<li>接着再把每个段划分为多个页，也就是对分段划分出来的连续空间，再划分固定大小的页；</li>
+<li>这样，地址结构就由段号、段内页号和页内位移三部分组成。</li>
+</ul>
+<p><strong>Linux 内存主要采用的是页式内存管理</strong>，但同时也不可避免地涉及了段机制（因为intel处理器的历史缘故）。</p>
+<p>Linux 系统中的每个段都是从 0 地址开始的整个 4GB 虚拟空间（32 位环境下），也就是所有的段的起始地址都是一样的。这意味着，Linux 系统中的代码，包括操作系统本身的代码和应用程序代码，所面对的地址空间都是线性地址空间（虚拟地址），这种做法相当于屏蔽了处理器中的逻辑地址概念，段只被用于访问控制和内存保护。</p>
+<h3 id="Linux的虚拟地址空间"><a href="#Linux的虚拟地址空间" class="headerlink" title="Linux的虚拟地址空间"></a>Linux的虚拟地址空间</h3><p>在 Linux 操作系统中，虚拟地址空间的内部又被分为内核空间和用户空间两部分，不同位数的系统，地址空间的范围也不同。比如最常见的 32 位和 64 位系统，32 位系统的内核空间占用 1G，位于最高处，剩下的 3G 是用户空间；64 位系统的内核空间和用户空间都是 128T，分别占据整个内存空间的最高和最低处，剩下的中间部分是未定义的（一般很少有进程需要那么大的内存）。</p>
+<p>虽然每个进程都各自有独立的虚拟内存，但是每个虚拟内存中的内核地址，其实关联的都是相同的物理内存。这样，进程切换到内核态后，就可以很方便地访问内核空间内存。</p>
+<p>用户空间内存，从低到高分别是 7 种不同的内存段：</p>
+<ul>
+<li>程序文件段，包括二进制可执行代码；</li>
+<li>已初始化数据段，包括静态常量；</li>
+<li>未初始化数据段，包括未初始化的静态变量；</li>
+<li>堆段，包括动态分配的内存，从低地址开始向上增长，使用 C 标准库的 malloc()在这里动态分配</li>
+<li>文件映射段，包括动态库、共享内存等，从低地址开始向上增长（跟硬件和内核版本有关），使用系统调用mmap()在这里动态分配</li>
+<li>栈段，包括局部变量和函数调用的上下文等。栈的大小是固定的，一般是 8 MB。当然系统也提供了参数，以便我们自定义大小；</li>
+</ul>
+<h3 id="缺页中断"><a href="#缺页中断" class="headerlink" title="缺页中断"></a>缺页中断</h3><p>缺页中断指的是当进程试图访问已映射在虚拟地址空间，但并未被加载在物理内存中的一个分页时，由CPU所触发的中断。</p>
+<p>缺页中断会使进程陷入内核，然后执行以下操作：</p>
+<ol>
+<li>检查要访问的虚拟地址是否合法</li>
+<li>查找&#x2F;分配一个物理页</li>
+<li>填充物理页内容（读取磁盘，或者直接置0，或者啥也不干）</li>
+<li>建立映射关系（虚拟地址到物理地址）</li>
+</ol>
+<p>与普通的中断的区别在于：</p>
+<ol>
+<li>在指令执行期间产生和处理缺页中断信号</li>
+<li>一条指令在执行期间，可能产生多次缺页中断</li>
+<li>缺页中断返回时，执行产生中断的那一条指令，而一般的中断返回时，执行下一条指令</li>
+</ol>
+<h3 id="页面置换算法"><a href="#页面置换算法" class="headerlink" title="页面置换算法"></a>页面置换算法</h3><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzU2NDg0OTgyMA==&mid=2247491583&idx=1&sn=f36d5b9b605c52546045cf250849dfcf&chksm=fc45e20ccb326b1aebdb087d0252320812c8a441b134725d2923d936c3562c0a9a6f9ac8a903&scene=21#wechat_redirect">页面置换算法</a></p>
+<p>如果发生缺页中断，为了能够把所缺的页面装入内存，系统必须从内存中选择一页将其换出，选择哪个页面调出就取决于页面置换算法。如果一个被频繁使用地页面被置换出内存，那么它很快又要被调入内存，这就造成了不必要的开销，所以一个好的页面置换算法至关重要。最常用的是LRU算法。</p>
+<p>PS：如果要换出的页面在驻留内存期间已经被修改过，就必须把它写回磁盘以更新该页面在磁盘上的副本，如果该页面没有被修改过，那么就不需要写回磁盘，</p>
+<ol>
+<li>最佳&#x2F;最优置换（Optimal）：被置换的页面以后不再被访问，或者在将来最迟才回被访问的页面，缺页中断率最低，但这种算法<strong>无法实现</strong>，但仍可以作为衡量其他页面置换算法的标准</li>
+<li>最近未使用（NRU）：在一个时钟内（约 20 ms）淘汰一个已修改但是没有被访问的页面要比一个大量引用的未修改页面好，LRU的很粗糙的近似，主要优点是易于理解并且能够有效的实现</li>
+<li>先进先出置换（FIFO）：置换最先调入内存的页面，即置换在内存中驻留时间最久的页面，一般按照进入内存的先后次序排列成队列，但是该算法会淘汰经常访问的页面，不适合进程实际运行规律，很少使用纯粹的FIFO置换算法</li>
+<li>第二次机会(second chance)：解决FIFO可能会把经常使用的页面换出的问题，当需要出队列时，检查最老页面的R位，如果是0，则该页是最老的且没有被使用，直接换出；如果是1，则清除此位，把该页放在链表尾部，修改它的装入时间就好像它刚放进来一样</li>
+<li>时钟页面置换算法（clock）：解决第二次机会经常要在链表中移动页面从而降低效率的问题，把所有的页面都保存在一个类似钟面的环形链表中，一个表针指向最老的页面</li>
+<li><strong>最近最少使用置换（Least Recently Used, LRU）</strong>：置换最近一段时间以来最长时间未访问过的页面。根据程序局部性原理，刚被访问的页面，可能马上又要被访问；而较长时间内没有被访问的页面，可能最近不会被访问。LRU置换算法效率不粗破，适用于各种类型的程序，但是系统要时时刻刻对各页的访问历史情况加以记录和更新，开销太大，因此LRU置换算法必须要有硬件的支持</li>
+<li>最近最不常用页面置换算法(Least Frequently Used)，也就是淘汰<strong>一定时期内被访问次数最少的页</strong></li>
+<li>最不经常使用（NFU）：LRU的相对粗略近似</li>
+<li><strong>老化算法</strong>：非常近似LRU的有效算法，很好的选择</li>
+<li>工作集算法：开销很大</li>
+<li><strong>工作集时钟算法</strong>：好的有效算法。</li>
+</ol>
+<h3 id="页回写"><a href="#页回写" class="headerlink" title="页回写"></a>页回写</h3><p>读缓存可以通过cache实现，写缓存主要有三种策略：</p>
+<ul>
+<li>不缓存nowrite，也就是说高速缓存不去缓存任何写操作。当对一个缓存中的数据片进行写时，将直接跳过缓存，写到磁盘，同时也使缓存中的数据失效。几乎不用</li>
+<li>写透缓存(write-through cache），写操作将自动更新内存缓存，同时也更新磁盘文件。这种策略对一致性有好处，缓存与磁盘时刻保持同步，实现也最简单</li>
+<li>回写（write-back），程序执行写操作直接写到缓存中，后端存储不会立刻直接更新，而是将页高速缓存中被写入的页面标记成“脏”，并且被加入到脏页链表中。然后由一个进程（<strong>回写进程</strong>）周期行将脏页链表中的页写回到磁盘，从而让磁盘中的数据和内存中最终一致。最后清理“脏”页标识。注意这里“脏页”这个词可能引起混淆，因为实际上脏的并非页高速缓存中的数据（它们是干干净净的），而是磁盘中的数据（它们已过时了）。也许更好的描述应该是“未同步”吧。实现比较复杂，但是Linux就是使用的这种</li>
+</ul>
+<p>缓存回收，Linux实现的是一个修改过的LRU，也称为双链策略，Linux维护两个链表：活跃链表和非活跃链表。<strong>处于活跃链表上的页面被认为是“热”的且不会被换出，而在非活跃链表上的页面则是可以被换出的</strong>。在活跃链表中的页面必须在其被访问时就处于非活跃链表中。两个链表都被伪LRU规则维护：页面从尾部加入，从头部移除，如同队列。两个链表需要维持平衡——如果活跃链表变得过多而超过了非活跃链表，那么活跃链表的头页面将被重新移回到非活跃链表中，以便能再被回收。双链表策略解决了传统LRU算法中对仅一次访问的窘境。而且也更加简单的实现了伪LRU语义。这种双链表方式也称作LRU&#x2F;2。更普遍的是n个链表，故称LRU&#x2F;n。</p>
+<h3 id="内存描述符"><a href="#内存描述符" class="headerlink" title="内存描述符"></a>内存描述符</h3><p>内核使用内存描述符结构体表示<strong>进程的地址空间</strong>，该结构包含了和进程地址空间有关的全部信息。内存描述符由mm_struct结构体表示，定义在文件<code>&lt;linux/sched.h&gt;</code>中。</p>
+<p>所有的mm_struct结构体都通过自身的mmlist域连接在一个双向链表中</p>
+<h3 id="虚拟内存区域"><a href="#虚拟内存区域" class="headerlink" title="虚拟内存区域"></a>虚拟内存区域</h3><p>内存区域由vm_area_struct结构体描述，定义在文件<code>&lt;linux/mm_types.h&gt;</code>中。内存区域在Linux内核中也经常称作虚拟内存区域（virtual memoryAreas，VMAs）。</p>
+<p>vm_area_struct 结构体描述了指定地址空间内连续区间上的一个独立内存范围。内核将每个内存区域作为一个单独的内存对象管理，每个内存区域都拥有一致的属性，比如访问权限等，另外，相应的操作也都一致。按照这样的方式，每一个VMA就可以代表不同类型的内存区域（比如内存映射文件或者进程用户空间栈），这种管理方式类似于使用VFS层的面向对象方法（请看</p>
+<h3 id="mmap和unmmap"><a href="#mmap和unmmap" class="headerlink" title="mmap和unmmap"></a>mmap和unmmap</h3><p>内核使用do_mmap()函数创建一个新的线性地址区间，会将一个地址区间加入到进程的地址空间中——无论是扩展已存在的内存区域还是创建一个新的区域。</p>
+<p>在用户空间可以通过mmap()系统调用获取内核函数do_mmap()的功能。</p>
+<p>do_mummap()函数从特定的进程地址空间中删除指定地址区间</p>
+<p>在用户空间可以通过munmap()系统调用获取内核函数do_mummap()的功能</p>
+<h3 id="内存分配算法：伙伴-buddy-x2F-slab"><a href="#内存分配算法：伙伴-buddy-x2F-slab" class="headerlink" title="内存分配算法：伙伴(buddy)&#x2F;slab"></a>内存分配算法：伙伴(buddy)&#x2F;slab</h3><p>进程申请内存大小是任意的，如果malloc用法不对，会产生<strong>内存碎片</strong>，它们小而且不连续，不满足malloc申请连续内存的要求</p>
+<p><strong>内存碎片</strong>存在的方式有两种：a. 内部碎片  b. 外部碎片</p>
+<ul>
+<li><strong>内部</strong>碎片的产生：因为所有的内存分配需要满足<strong>字节对齐</strong>，所以通常会多分配一点不需要的多余内存空间，造成内部碎片。如：申请43Byte，因为没有合适大小的内存，会分配44Byte或48Byte，就会存在1Byte或3Byte的多余空间。</li>
+<li><strong>外部</strong>碎片的产生：频繁的分配与回收物理页面会导致大量的、连续且小的页面块<strong>夹杂</strong>在已分配的页面中间，从而产生外部碎片。比如有一块共有100个单位的连续空闲内存空间，范围为0<del>99，如果从中申请了一块10 个单位的内存块，那么分配出来的就是0</del>9。这时再继续申请一块 5个单位的内存块，这样分配出来的就是 10<del>14。如果将第一块释放，此时整个内存块只占用了 10</del>14区间共 5个单位的内存块。然后再申请20个单位的内存块，此时只能从 15开始，分配15<del>24区间的内存块，如果以后申请的内存块都大于10个单位，那么 0</del>9 区间的内存块将不会被使用，变成外部碎片。</li>
+</ul>
+<p><strong>伙伴算法</strong>就是将内存分成若干块，然后尽可能以最适合的方式满足程序内存需求的一种内存管理算法，内存释放后，检查与该内存相邻的内存是否是同样大小并且同样处于空闲的状态，如果是，则将这两块内存合并，然后程序递归进行同样的检查。</p>
+<ul>
+<li>伙伴算法的优点是能够<strong>完全避免外部碎片的产生</strong>。</li>
+<li>申请时，伙伴算法会给程序分配一个较大的内存空间，即保证所有大块内存都能得到满足。</li>
+<li>伙伴算法的缺点是<strong>会产生内部碎片</strong>，当分配比需求还大的内存空间，就会产生内部碎片。</li>
+</ul>
+<p><strong>slab allocation</strong>的基本原理：将分配的内存分割成各种尺寸的块，并把相同尺寸的块分成组。当要释放已分配到的内存时，<strong>只会回收、不会释放</strong>，返回到对应的组重复利用。下次分配对象时，会使用最近释放的对象的内存块，因此其驻留在cpu高速缓存中的概率会大大提高。</p>
+<ul>
+<li>对从Buddy拿到的内存进行二次管理，以<strong>更小的单位</strong>进行分配和回收(注意，是回收而不是释放)，防止了空间的浪费。</li>
+<li>让频繁使用的对象尽量分配在<strong>同一块内存区间</strong>并<strong>保留基本数据结构</strong>，提高程序效率。</li>
+</ul>
+<p>最佳实践：如果你要创建和撤销很多大的数据结构，那么考虑建立slab高速缓存。slab层会给每个处理器维持一个对象高速缓存（空闲链表），这种高速缓存会极大地提高对象分配和回收的性能。slab层不是频繁地分配和释放内存，而是为你把事先分配好的对象存放到高速缓存中。当你需要一块新的内存来存放数据结构时，slab层一般无须另外去分配内存，而只需要从高速缓存中得到一个对象就可以了。</p>
+<p>伙伴算法与slab算法的关系：</p>
+<ul>
+<li>slab与Buddy都是内存分配器。</li>
+<li>slab的内存来自Buddy</li>
+<li>slab与Buddy在算法上级别对等。Buddy把内存条 当作一个池子来管理，slab是把从Buddy拿到的内存当作一个池子来管理的。</li>
+</ul>
+<p>kmalloc()函数与用户空间的malloc()一族函数非常类似，只不过它多了一个gfp_t类型的flags参数。flags参数指定了内存分配器的行为。与kmalloc对应的就是kfree。</p>
+<p>vmalloc()函数类似kmalloc，只是vmalloc分配的内存虚拟地址是连续的，而物理地址则无须连续。尽管在某些情况下才需要物理上连续的内存块，但是出于性能考虑，很多内核代码都用kmalloc()来获得内存，而不是vmalloc()。而且vmalloc需要一个个映射不连续的物理页，导致更大的TLB抖动</p>
+<p>每个进程的内核栈大小既依赖体系结构，也与编译时的选项有关。历史上，每个进程都有两页的内核栈。因为32位和64位体系结构的页面大小分别是4KB和8KB，所以通常它们的内核栈的大小分别是8KB和16KB。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/HJB_ATQFNqG82YBCRr97CA">真棒！ 20 张图揭开内存管理的迷雾，瞬间豁然开朗 by 小林coding</a></p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io/2020/07/26/Linux%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98/">https://edisonleolhl.github.io/2020/07/26/Linux%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://edisonleolhl.github.io" target="_blank">一知半解</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%86%85%E5%AD%98/">内存</a><a class="post-meta__tags" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a><a class="post-meta__tags" href="/tags/Linux/">Linux</a></div><div class="post_share"><div class="social-share" data-image="/images/avatar.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/07/27/Linux%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" title="Linux文件系统"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Linux文件系统</div></div></a></div><div class="next-post pull-right"><a href="/2020/06/24/C++%E8%BF%BD%E6%B1%82%E6%80%A7%E8%83%BD%E2%80%94%E2%80%94std::vector%E7%9A%84emplace_back()/" title="C++追求性能——std::vector的emplace_back()"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">C++追求性能——std::vector的emplace_back()</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/10/19/Linux%E5%AE%9A%E6%97%B6%E5%99%A8%E4%B8%8E%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86/" title="Linux定时器与时间管理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-19</div><div class="title">Linux定时器与时间管理</div></div></a></div><div><a href="/2020/10/19/Linux%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/" title="Linux进程管理与调度"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-19</div><div class="title">Linux进程管理与调度</div></div></a></div><div><a href="/2020/07/27/Linux%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" title="Linux文件系统"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-27</div><div class="title">Linux文件系统</div></div></a></div><div><a href="/2022/04/14/C++%E6%8E%92%E6%9F%A5%E6%B4%BE%E7%94%9F%E7%B1%BB%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%AD%A5%E9%AA%A4/" title="C++排查派生类内存泄漏步骤"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-14</div><div class="title">C++排查派生类内存泄漏步骤</div></div></a></div><div><a href="/2020/02/25/C++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" title="C++内存管理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-02-25</div><div class="title">C++内存管理</div></div></a></div><div><a href="/2018/09/08/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B%E3%80%81%E8%B0%83%E5%BA%A6/" title="操作系统——进程、线程、调度"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-09-08</div><div class="title">操作系统——进程、线程、调度</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">45</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/edisonleolhl"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/edisonleolhl" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:edisonleolhl@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Go Big or Go Home</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="toc-number">1.</span> <span class="toc-text">虚拟内存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%AE%B5%EF%BC%88%E4%B8%80%E8%88%AC%E4%B8%8D%E5%8D%95%E7%8B%AC%E4%BD%BF%E7%94%A8%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">分段（一般不单独使用）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E9%A1%B5%EF%BC%88%E6%8E%A8%E8%8D%90%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">分页（推荐）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MMU-x2F-TLB"><span class="toc-number">1.3.</span> <span class="toc-text">MMU&#x2F;TLB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E7%BA%A7%E9%A1%B5%E8%A1%A8"><span class="toc-number">1.4.</span> <span class="toc-text">多级页表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AE%B5%E9%A1%B5%E5%BC%8F%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-number">1.5.</span> <span class="toc-text">段页式内存管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux%E7%9A%84%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4"><span class="toc-number">1.6.</span> <span class="toc-text">Linux的虚拟地址空间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E9%A1%B5%E4%B8%AD%E6%96%AD"><span class="toc-number">1.7.</span> <span class="toc-text">缺页中断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="toc-number">1.8.</span> <span class="toc-text">页面置换算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B5%E5%9B%9E%E5%86%99"><span class="toc-number">1.9.</span> <span class="toc-text">页回写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%8F%8F%E8%BF%B0%E7%AC%A6"><span class="toc-number">1.10.</span> <span class="toc-text">内存描述符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F"><span class="toc-number">1.11.</span> <span class="toc-text">虚拟内存区域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mmap%E5%92%8Cunmmap"><span class="toc-number">1.12.</span> <span class="toc-text">mmap和unmmap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E7%AE%97%E6%B3%95%EF%BC%9A%E4%BC%99%E4%BC%B4-buddy-x2F-slab"><span class="toc-number">1.13.</span> <span class="toc-text">内存分配算法：伙伴(buddy)&#x2F;slab</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20ThreadLocal%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E7%BC%93%E5%AD%98%E9%87%8D%E5%A4%8DRPC%E7%BB%93%E6%9E%9C/" title="微服务架构下的Java ThreadLocal实践——缓存重复RPC结果">微服务架构下的Java ThreadLocal实践——缓存重复RPC结果</a><time datetime="2023-05-12T05:31:47.000Z" title="发表于 2023-05-12 13:31:47">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/C++%E6%96%B0%E7%89%B9%E6%80%A7/" title="C++新特性">C++新特性</a><time datetime="2023-05-11T05:41:59.000Z" title="发表于 2023-05-11 13:41:59">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/" title="Java新特性">Java新特性</a><time datetime="2023-05-11T03:29:22.000Z" title="发表于 2023-05-11 11:29:22">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章">建站第一篇文章</a><time datetime="2023-05-09T16:25:27.000Z" title="发表于 2023-05-10 00:25:27">2023-05-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/12/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%94%B1gmock%E5%BC%95%E5%8F%91%E7%9A%84%E4%BB%A3%E7%A0%81%E9%87%8D%E6%9E%84/" title="记一次由gmock引发的代码重构">记一次由gmock引发的代码重构</a><time datetime="2023-04-12T05:27:41.000Z" title="发表于 2023-04-12 13:27:41">2023-04-12</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 一个廖少少</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
