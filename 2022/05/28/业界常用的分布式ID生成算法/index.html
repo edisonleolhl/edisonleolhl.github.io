@@ -1,0 +1,342 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>业界常用的分布式ID生成算法 | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="分布式id生成 对于IM应用来说，消息ID（或称序列号）是个看似不起眼，但非常重要的东西之一。 1）UUID：这种方法简单直观，可以很好的保证唯一性，但对于技术洁癖的人来说ID长度会有点长，而且是无序的； 2）使用时间戳长整数：这个最偷懒，用在吞吐量不大的场景下，凑活也能用，但存在重复的风险，也无法保证分布式下的唯一性； 3）使用twitter开源的snowflake算法：在分布式高并发的情况下，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="业界常用的分布式ID生成算法">
+<meta property="og:url" content="https://edisonleolhl.github.io/2022/05/28/%E4%B8%9A%E7%95%8C%E5%B8%B8%E7%94%A8%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8FID%E7%94%9F%E6%88%90%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="分布式id生成 对于IM应用来说，消息ID（或称序列号）是个看似不起眼，但非常重要的东西之一。 1）UUID：这种方法简单直观，可以很好的保证唯一性，但对于技术洁癖的人来说ID长度会有点长，而且是无序的； 2）使用时间戳长整数：这个最偷懒，用在吞吐量不大的场景下，凑活也能用，但存在重复的风险，也无法保证分布式下的唯一性； 3）使用twitter开源的snowflake算法：在分布式高并发的情况下，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://edisonleolhl.github.io/images/avatar.jpeg">
+<meta property="article:published_time" content="2022-05-28T06:20:58.000Z">
+<meta property="article:modified_time" content="2023-05-11T14:24:50.978Z">
+<meta property="article:author" content="一个廖少少">
+<meta property="article:tag" content="分布式">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://edisonleolhl.github.io/images/avatar.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://edisonleolhl.github.io/2022/05/28/%E4%B8%9A%E7%95%8C%E5%B8%B8%E7%94%A8%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8FID%E7%94%9F%E6%88%90%E7%AE%97%E6%B3%95/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '业界常用的分布式ID生成算法',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-11 22:24:50'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">43</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/cover.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">业界常用的分布式ID生成算法</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-05-28T06:20:58.000Z" title="发表于 2022-05-28 14:20:58">2022-05-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-11T14:24:50.978Z" title="更新于 2023-05-11 22:24:50">2023-05-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="业界常用的分布式ID生成算法"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="分布式id生成"><a href="#分布式id生成" class="headerlink" title="分布式id生成"></a>分布式id生成</h1><ul>
+<li>对于IM应用来说，消息ID（或称序列号）是个看似不起眼，但非常重要的东西之一。</li>
+<li>1）UUID：这种方法简单直观，可以很好的保证唯一性，但对于技术洁癖的人来说ID长度会有点长，而且是无序的；</li>
+<li>2）使用时间戳长整数：这个最偷懒，用在吞吐量不大的场景下，凑活也能用，但存在重复的风险，也无法保证分布式下的唯一性；</li>
+<li>3）使用twitter开源的snowflake算法：在分布式高并发的情况下，这也是个不错的选择；</li>
+<li>4）按用户使用独立的ID生成空间生成顺序的ID：比如微信的消息序列号生成策略就很不错。</li>
+</ul>
+<h2 id="分布式唯一id：snowflake算法思考"><a href="#分布式唯一id：snowflake算法思考" class="headerlink" title="分布式唯一id：snowflake算法思考"></a>分布式唯一id：snowflake算法思考</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jiangxinlingdu/p/8440413.html">snowflake算法的Java实现</a></p>
+<ul>
+<li>snowflake是Twitter开源的分布式ID生成算法，结果是一个long型的ID。其核心思想是：使用41bit作为毫秒数，10bit作为机器的ID（5个bit是数据中心，5个bit的机器ID），12bit作为毫秒内的流水号（意味着每个节点在每毫秒可以产生 4096 个 ID），最后还有一个符号位，永远是0。</li>
+<li>优点：快，简单，熟悉原理后可更根据时机情况调整位段</li>
+<li>缺点：依赖机器时间。解决方法可参考美团的leaf-snowflake</li>
+</ul>
+<h2 id="百度分布式ID生成器UidGenerator"><a href="#百度分布式ID生成器UidGenerator" class="headerlink" title="百度分布式ID生成器UidGenerator"></a>百度分布式ID生成器UidGenerator</h2><p><a target="_blank" rel="noopener" href="https://github.com/baidu/uid-generator/blob/master/README.zh_cn.md%3E">github地址</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yeyang/p/10226284.html">百度开源分布式id生成器uid-generator源码剖析</a></p>
+<ul>
+<li>baidu开源的UidGenerator，UidGenerator是Java实现的, 基于Snowflake算法的唯一ID生成器。</li>
+<li>引入了高性能队列高性能队列disruptor中RingBuffer思想，进一步提升了效率。</li>
+<li>UidGenerator以组件形式工作在应用项目中, 支持自定义workerId位数和初始化策略, 从而适用于docker等虚拟化环境下实例自动重启、漂移等场景。 在实现上, UidGenerator通过借用未来时间来解决sequence天然存在的并发限制; 采用RingBuffer来缓存已生成的UID, 并行化UID的生产和消费, 同时对CacheLine补齐，避免了由RingBuffer带来的硬件级「伪共享」问题. 最终单机QPS可达600万。</li>
+</ul>
+<h3 id="DefaultUidGenerator"><a href="#DefaultUidGenerator" class="headerlink" title="DefaultUidGenerator"></a>DefaultUidGenerator</h3><ul>
+<li>如果选用UidGenerator的DefaultUidGenerator，一定要根据你的业务的情况和特点，调整各个字段占用的位数</li>
+<li>DefaultUidGenerator的关键实现点<ul>
+<li>a. synchronized保证线程安全；</li>
+<li>b. 如果时间有任何的回拨，那么直接抛出异常；（简单粗暴）</li>
+<li>c. 如果当前时间和上一次是同一秒时间，那么sequence自增。如果同一秒内自增值超过2^13-1，那么就会自旋等待下一秒（getNextSecond）；</li>
+<li>d. 如果是新的一秒，那么sequence重新从0开始。</li>
+</ul>
+</li>
+</ul>
+<h3 id="CachedUidGenerator"><a href="#CachedUidGenerator" class="headerlink" title="CachedUidGenerator"></a>CachedUidGenerator</h3><ul>
+<li>CachedUidGenerator是DefaultUidGenerator的重要改进实现。它的核心利用了RingBuffer，它本质上是一个数组，数组中每个项被称为slot。CachedUidGenerator设计了两个RingBuffer，一个保存唯一ID，一个保存flag。RingBuffer的尺寸是2^n，n必须是正整数。</li>
+<li>自增列：CachedUidGenerator的workerId在实例每次重启时初始化，且就是数据库的自增ID，从而完美的实现每个实例获取到的workerId不会有任何冲突；</li>
+<li>RingBuffer：CachedUidGenerator不再在每次取ID时都实时计算分布式ID，而是利用RingBuffer数据结构预先生成若干个分布式ID并保存；（这就是借助未来时间来生成id）</li>
+<li>时间递增：传统的SnowFlake算法实现都是通过System.currentTimeMillis()来获取时间并与上一次时间进行比较，这样的实现严重依赖服务器的时间。而CachedUidGenerator的时间类型是AtomicLong，且通过incrementAndGet()方法获取下一次的时间，从而脱离了对服务器时间的依赖，也就不会有时钟回拨的问题（这种做法也有一个小问题，即分布式ID中的时间信息可能并不是这个ID真正产生的时间点</li>
+</ul>
+<blockquote>
+<p>Ring Buffer的概念，其实来自于Linux内核（Maybe），是为解决某些特殊情况下的竞争问题提供了一种免锁的方法。这种特殊的情况就是当生产者和消费者都只有一个，而在其它情况下使用它也是必须要加锁的。<br>环形缓冲区通常有一个读指针和一个写指针。读指针指向环形缓冲区中可读的数据，写指针指向环形缓冲区中可写的缓冲区。通过移动读指针和写指针就可以实现缓冲区的数据读取和写入。在通常情况下，环形缓冲区的读用户仅仅会影响读指针，而写用户仅仅会影响写指针。如果仅仅有一个读用户和一个写用户，那么不需要添加互斥保护机制就可以保证数据的正确性。如果有多个读写用户访问环形缓冲区，那么必须添加互斥保护机制来确保多个用户互斥访问环形缓冲区。</p>
+</blockquote>
+<h2 id="解密融云IM产品的聊天消息ID生成策略"><a href="#解密融云IM产品的聊天消息ID生成策略" class="headerlink" title="解密融云IM产品的聊天消息ID生成策略"></a>解密融云IM产品的聊天消息ID生成策略</h2><p><a target="_blank" rel="noopener" href="http://www.52im.net/thread-2747-1-1.html">http://www.52im.net/thread-2747-1-1.html</a></p>
+<h3 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h3><ul>
+<li>融云消息数据的唯一 ID 长度采用 80 Bit。</li>
+<li>每 5 个 Bit ，进行一次 32 进制编码，转换为一个字符，字符取值范围是：数字 “2 ~ 9 ”和字母“A ~ B”。其中，已经去掉容易造成肉眼混淆的数字 0 和 1 （余下可用的数字就是8个了），及字母 O 和 I（余下可用的字母就是24个了），那么总可用字符就是32个（刚好可按32进制进行编码）。</li>
+<li>这样，80 Bit 可以转换为 16 个字符，再加上 3 个分隔符（ - ），将 16 个字符分为 4 组，最终得到一个 19 字符的唯一 ID ，形如：“ BD8U-FCOJ-LDC5-L789 ”。 这样设计，即可以保证生成的 ID 是有序的，也能方便阅读。</li>
+<li>80bit分为四段：<ul>
+<li>1）第一段 42 Bit：用于存放时间戳，最长可表示到 2109 年，足够开发者当前使用了。时间戳数据放在高位，可以保证生成的唯一 ID 是按时间有序的，这个是消息 ID 必须要满足的条件。</li>
+<li>2）第二段 12 Bit：用于存放自旋转 ID 。我们知道，时间戳的精度是到毫秒的，对于一套亿级 IM 系统来说，同一毫秒内产生多条消息太正常不过了，这个自旋 ID 就是在给落到同一毫秒内的消息进行自增编号。12 Bit 则意味着，同一毫秒内，单台主机中最多可以标识 4096（ 2 的 12 次方）条消息。</li>
+<li>3）第三段 4 Bit：用于标识会话类型。4 Bit ，最多可以标识 16 中会话，足够涵盖单聊、群聊、系统消息、聊天室、客服及公众号等常用会话类型。</li>
+<li>4）第四段 22 Bit：会话 ID 。如群聊中的群 ID ，聊天室中的聊天室 ID 等。与第三段会话类型组合在一起，可以唯一标识一个会话。其他的一些 ID 生成算法，会预留两段，分别用来标识数据中心编号和主机编号（如 SnowFlake 算法），我们并没有这样做，而是将这两段用来标识会话。这样，ID 生成可以直接融入到业务服务中，且不必关心服务所在的主机，做到无状态扩缩容。</li>
+</ul>
+</li>
+<li>注意点：<ul>
+<li>1）注意保证自旋 ID 的生成是线程安全的；</li>
+<li>2）避免在并发情况下，生成出同样的 ID ；</li>
+<li>3）此 ID 生成算法，强烈依赖系统时间，如果系统时间被改小，理论上也可能造成 ID 生成重复。</li>
+</ul>
+</li>
+</ul>
+<h2 id="微信IM序列号生成算法与容灾实践"><a href="#微信IM序列号生成算法与容灾实践" class="headerlink" title="微信IM序列号生成算法与容灾实践"></a>微信IM序列号生成算法与容灾实践</h2><p><a target="_blank" rel="noopener" href="http://www.52im.net/thread-1998-1-1.html">IM消息ID技术专题(一)：微信的海量IM聊天消息序列号生成实践（算法原理篇）</a><br><a target="_blank" rel="noopener" href="http://www.52im.net/thread-1999-1-1.html">IM消息ID技术专题(二)：微信的海量IM聊天消息序列号生成实践（容灾方案篇）</a></p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul>
+<li>微信服务器端为每一份需要与客户端同步的数据（例如聊天消息）都会赋予一个唯一的、递增的序列号（后文称为 sequence ），作为这份数据的版本号（这是利用了序列号递增的特性）。</li>
+<li>seq是递增的64位整形变量</li>
+<li>每个用户都有自己独立的64位seq空间（够用了）<ul>
+<li>原因：全局唯一的seq很难做到高可用，所以用户独立即可</li>
+</ul>
+</li>
+</ul>
+<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><ul>
+<li>服务端存储的seq空间可以抽象为一个巨大的64位数组，其中每个元素存放着对应用户当前已分配的最后一个seq，每个用户来申请时，只需要将seq+1存储并返回即可</li>
+<li>考虑到仅要求递增，不要求连续，所以可出现跳跃的msgid，每次+1都要持久化非常吃磁盘IO，于是微信实现了一个简单优雅的策略，简单优雅的策略：<ul>
+<li>1）内存中储存最近一个分配出去的sequence：cur_seq，以及分配上限：max_seq；</li>
+<li>2）分配sequence时，将cur_seq++，同时与分配上限max_seq比较：如果cur_seq &gt; max_seq，将分配上限提升一个步长max_seq +&#x3D; step，并持久化max_seq；</li>
+<li>3）重启时，读出持久化的max_seq，赋值给cur_seq。</li>
+<li>实际应用中步长为10000，持久化IO次数从10^7 qps降低到10^3 qps</li>
+</ul>
+</li>
+<li>分号段共享存储优化：上述方案看上去很不错了，但还有个缺点是重启时需要读取大量max_seq到内存中，实际上每个用户不用单独分配一个max_seq，可以将uid相邻的一段用户聚合成一个号段，同一个号段所有用户共享一个max_seq，这样可大幅减少max_seq数据的大小，也可以减少磁盘IO</li>
+</ul>
+<h3 id="架构与高可用"><a href="#架构与高可用" class="headerlink" title="架构与高可用"></a>架构与高可用</h3><ul>
+<li>考虑到可靠性和容灾，微信把消息id生成服务分成两个模块：StoreSvr与AllocSvr，StoreSvr为存储层，利用NRW策略保证不丢失;而每台 AllocSvr 负责若干号段的 sequence 分配，</li>
+<li>高可用核心：任意时刻任意 uid 有且仅有一台 AllocSvr 提供服务，就可以比较容易地实现 sequence 递增不回退的要求</li>
+<li>单点服务：于是，Alloc只能采用单点服务，当单机ALlocSvr不可用时，将该机服务的uid段切换到其他AllocSvr机器，这里就需要一个仲裁服务，探测AllocSvr状态，并决定每个 uid 段由哪台 AllocSvr 加载。</li>
+<li>仲裁&#x2F;探活：出于可靠性的考虑，仲裁模块并不直接操作 AllocSvr ，而是将加载配置写到 StoreSvr 持久化，然后 AllocSvr 定期访问 StoreSvr 读取最新的加载配置，决定自己的加载状态。</li>
+<li>租约：为了避免失联AllocSvr提供错误的服务，返回脏数据，AllocSvr需要跟StoreSvr保持租约。<ul>
+<li>1）租约失效：AllocSvr N秒内无法从StoreSvr读取加载配置时，AllocSvr停止服务；</li>
+<li>2）租约生效：AllocSvr读取到新的加载配置后，立即卸载需要卸载的号段，需要加载的新号段等待N秒后提供服务。</li>
+<li>以上两点保证了新Alloc肯定在旧Alloc下线之后再提供服务的，但会造成小段时间不可用，由于微信后台逻辑层存在重试机制及异步重试队列，租约失效与切换是小概率事件，可以接受</li>
+</ul>
+</li>
+</ul>
+<h3 id="容灾架构演变"><a href="#容灾架构演变" class="headerlink" title="容灾架构演变"></a>容灾架构演变</h3><ul>
+<li>1.0时代：全量的 uid 空间均匀分成N个 Section，连续的若干个 Section 组成了一个 Set，每个 Set 都有一主一备两台 AllocSvr<ul>
+<li>好处是逻辑简单开发快，而且客户端更新AllocSvr的路由状态非常容易实现，因为客户端知道每个uid会在Alloc的一主一备中的一台机器进行加载，最多浪费一次请求就可以知道主备的状态。</li>
+<li>缺点是扩缩容麻烦，客户端需要维护和AllocSvr完全一致的配置文件。另一个隐患是如果一个Set的一主一备都过载，无法用另一个Set的机器进行容灾，虽然可以用一致性哈希，但是还是面临配置变更的麻烦</li>
+</ul>
+</li>
+<li>2.0时代：1.0最大问题是客户端需要感知AllocSvr的配置信息，于是把 AllocSvr 的路由状态嵌入到 Client 请求 sequence 的响应包<ul>
+<li>seqsvr 所有模块使用了统一的路由表，描述了 uid 号段到 AllocSvr 的全映射。这份路由表由仲裁服务根据 AllocSvr 的服务状态生成，写到 StoreSvr 中，由 AllocSvr 当作租约读出，最后在业务返回包里旁路给 Client 端。</li>
+<li>这种看似简单的动作，却给整个架构带来了灵活性，比如所有机器都可互为备机，还可以轻松地负载均衡，运维也可大大简化</li>
+</ul>
+</li>
+<li>优化：不用每次请求都返回路由表，客户端可维护一份路由表缓存，带有版本号，向Alloc发起请求时带上版本号即可，Alloc判断版本号如果是旧版就在请求附上最新路由表</li>
+</ul>
+<h2 id="深度解密美团的分布式ID生成算法"><a href="#深度解密美团的分布式ID生成算法" class="headerlink" title="深度解密美团的分布式ID生成算法"></a>深度解密美团的分布式ID生成算法</h2><p><a target="_blank" rel="noopener" href="http://www.52im.net/thread-2751-1-1.html">深度解密美团的分布式ID生成算法</a></p>
+<p><a target="_blank" rel="noopener" href="https://tech.meituan.com/2017/04/21/mt-leaf.html">Leaf——美团点评分布式ID生成系统</a></p>
+<ul>
+<li>美团开源了两种id生成算法，其中segment非常适合IM场景：<ul>
+<li>1）Leaf-segment方案：可生成全局唯一、全局有序的ID；</li>
+<li>2）Leaf-snowflake方案：可生成全局唯一、局部有序的ID。</li>
+</ul>
+</li>
+<li>经过分析，纯粹的snowflake强烈依赖机器时钟，二数据库自增的id也不合适，因为强依赖db且受限于db的单机性能，单机性能可根据Flickr团队<a target="_blank" rel="noopener" href="https://code.flickr.net/2010/02/08/ticket-servers-distributed-unique-primary-keys-on-the-cheap/">Ticket Servers: Distributed Unique Primary Keys on the Cheap</a>进行优化，但仍有db性能问题，且水平扩展受限</li>
+</ul>
+<h3 id="Leaf-segment"><a href="#Leaf-segment" class="headerlink" title="Leaf-segment"></a>Leaf-segment</h3><ul>
+<li>这是基于数据库自增id方案的改进：<ul>
+<li>1）原方案每次获取ID都得读写一次数据库，造成数据库压力大。改为利用proxy server批量获取，每次获取一个segment(step决定大小)号段的值。用完之后再去数据库获取新的号段，可以大大的减轻数据库的压力；（这跟微信的max_seq持久化策略有异曲同工之妙）</li>
+<li>2）各个业务不同的发号需求用biz_tag字段来区分，每个biz-tag的ID获取相互隔离，互不影响。如果以后有性能需求需要对数据库扩容，不需要上述描述的复杂的扩容操作，只需要对biz_tag分库分表就行。</li>
+</ul>
+</li>
+<li>优点：易扩展，容灾（号段有缓存）</li>
+<li>缺点：不随机所以不安全，数据库IO时会造成尖刺，强依赖db</li>
+<li>双buffer解决IO尖刺：因为在号段耗尽的临界点事需要等待IO完成，可以多设置一个号段buffer，当当前号段快耗尽时，启动另一个线程去获取下一个号段填充第二个号段buffer，以此循环往复</li>
+<li>该方案可以生成趋势递增的id，且id可计算，但不试用于订单生成场景，因为竞争对手可根据连续两天同一时间下单的订单号推测业务量</li>
+</ul>
+<h3 id="Leaf-snowflake"><a href="#Leaf-snowflake" class="headerlink" title="Leaf-snowflake"></a>Leaf-snowflake</h3><ul>
+<li>基于snowflake的改进，每个leaf-snowflake服务启动后都会连接zookeeper，在leaf_forever父节点上检查自己是否注册，若未注册择创建一个持久顺序节点，取回顺序号作为workerid；若注册则直接取回自己的workerid</li>
+<li>zookeeper可若依赖，每个leaf-snowflake本机文件系统有workerid的缓存</li>
+<li>解决时钟问题：<ul>
+<li>1）若写过，则用自身系统时间与leaf_forever&#x2F;${self}节点记录时间做比较，若小于leaf_forever&#x2F;${self}时间则认为机器时间发生了大步长回拨，服务启动失败并报警；</li>
+<li>2）若未写过，证明是新服务节点，直接创建持久节点leaf_forever&#x2F;${self}并写入自身系统时间，接下来综合对比其余Leaf节点的系统时间来判断自身系统时间是否准确，具体做法是取leaf_temporary下的所有临时节点(所有运行中的Leaf-snowflake节点)的服务IP：Port，然后通过RPC请求得到所有节点的系统时间，计算sum(time)&#x2F;nodeSize；</li>
+<li>3）若abs( 系统时间-sum(time)&#x2F;nodeSize ) &lt; 阈值，认为当前系统时间准确，正常启动服务，同时写临时节点leaf_temporary&#x2F;${self} 维持租约；</li>
+<li>4）否则认为本机系统时间发生大步长偏移，启动失败并报警；</li>
+<li>5）每隔一段时间(3s)上报自身系统时间写入leaf_forever&#x2F;${self}。</li>
+</ul>
+</li>
+<li>由于强依赖时钟，对时间的要求比较敏感，在机器工作时NTP同步也会造成秒级别的回退，建议可以直接关闭NTP同步。要么在时钟回拨的时候直接不提供服务直接返回ERROR_CODE，等时钟追上即可。或者做一层重试，然后上报报警系统，更或者是发现有时钟回拨之后自动摘除本身节点并报警。</li>
+</ul>
+<h2 id="深度解密滴滴的高性能ID生成器-Tinyid"><a href="#深度解密滴滴的高性能ID生成器-Tinyid" class="headerlink" title="深度解密滴滴的高性能ID生成器(Tinyid)"></a>深度解密滴滴的高性能ID生成器(Tinyid)</h2><p><a target="_blank" rel="noopener" href="http://www.52im.net/thread-3129-1-1.html">深度解密滴滴的高性能ID生成器(Tinyid)</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/didi/tinyid">github地址</a></p>
+<ul>
+<li>Tinyid是滴滴用Java开发的一款分布式id生成系统，基于数据库号段算法实现。基于美团的leaf-segment扩展而来，支持数据库多主节点模式</li>
+<li>特点：<ul>
+<li>1）全局唯一的long型ID：即id极限数量是2的64次方；</li>
+<li>2）趋势递增的id：趋势递增的意思是，id是递增但不一定是连续的（这跟微信的ID生成策略类似）；</li>
+<li>3）提供 http 和 java-client 方式接入；</li>
+<li>4）支持批量获取ID；</li>
+<li>5）支持生成1,3,5,7,9…序列的ID；</li>
+<li>6）支持多个db的配置。</li>
+</ul>
+</li>
+<li>试用场景，只关心id是数字、趋势递增的系统，可容忍不连续，不适用于订单场景，因为id可推算</li>
+</ul>
+<h3 id="Tinyid的技术优势"><a href="#Tinyid的技术优势" class="headerlink" title="Tinyid的技术优势"></a>Tinyid的技术优势</h3><p>性能方面：</p>
+<ul>
+<li>1）http方式：访问性能取决于http server的能力，网络传输速度；</li>
+<li>2）java-client方式：id为本地生成，号段长度(step)越长，qps越大，如果将号段设置足够大，则qps可达1000w+。</li>
+</ul>
+<p>可用性方面：</p>
+<ul>
+<li>1）当db不可用时，因为server有缓存，所以还可以使用一段时间；</li>
+<li>2）如果配置了多个db，则只要有1个db存活，则服务可用；</li>
+<li>3）使用tiny-client时，只要server有一台存活，则理论上server全挂，因为client有缓存，也可以继续使用一段时间。</li>
+</ul>
+<h3 id="Tinyid的技术原理详解"><a href="#Tinyid的技术原理详解" class="headerlink" title="Tinyid的技术原理详解"></a>Tinyid的技术原理详解</h3><ul>
+<li>每次获取id会读db，浪费性能，可以一次性从db获取一个号段加载到tinyid-server的内存中</li>
+<li>缺点：如果tiny-server重启，号段丢失，就浪费了；db是单点；http每次获取都要网络开销</li>
+<li>优化方法：<ul>
+<li>双号段缓存，跟美团的leaf思想一致</li>
+<li>多db支持，每台db生成的号段分隔开，比如两台db就是一个只生成偶数一个只生成奇数，这个与Flickr的思想一致</li>
+<li>增加tinyid-client：没有什么是缓存解决不了的，client可以构建本地的双号段与id生成</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>PS：感觉还是美团的leaf强大一点</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io/2022/05/28/%E4%B8%9A%E7%95%8C%E5%B8%B8%E7%94%A8%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8FID%E7%94%9F%E6%88%90%E7%AE%97%E6%B3%95/">https://edisonleolhl.github.io/2022/05/28/%E4%B8%9A%E7%95%8C%E5%B8%B8%E7%94%A8%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8FID%E7%94%9F%E6%88%90%E7%AE%97%E6%B3%95/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://edisonleolhl.github.io" target="_blank">一知半解</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a><a class="post-meta__tags" href="/tags/%E7%AE%97%E6%B3%95/">算法</a></div><div class="post_share"><div class="social-share" data-image="/images/avatar.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/06/19/%E3%80%8AJava8%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E3%80%8B%E2%80%94%E2%80%94%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" title="Java8函数式编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Java8函数式编程</div></div></a></div><div class="next-post pull-right"><a href="/2022/05/11/Python%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="Python基础知识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Python基础知识</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/08/05/%E9%98%BF%E9%87%8C%E4%BA%91%E8%A1%A8%E6%A0%BC%E5%AD%98%E5%82%A8%E4%BB%8B%E7%BB%8D/" title="阿里云表格存储介绍"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-05</div><div class="title">阿里云表格存储介绍</div></div></a></div><div><a href="/2021/06/06/%E3%80%8A%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%AF%86%E9%9B%86%E5%9E%8B%E5%BA%94%E7%94%A8%E3%80%8B%E7%9A%84%E7%AC%94%E8%AE%B0/" title="《设计数据密集型应用》的笔记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-06</div><div class="title">《设计数据密集型应用》的笔记</div></div></a></div><div><a href="/2022/07/26/%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/" title="缓存一致性"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-26</div><div class="title">缓存一致性</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">43</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/edisonleolhl"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/edisonleolhl" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:edisonleolhl@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Go Big or Go Home</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8Fid%E7%94%9F%E6%88%90"><span class="toc-number">1.</span> <span class="toc-text">分布式id生成</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%94%AF%E4%B8%80id%EF%BC%9Asnowflake%E7%AE%97%E6%B3%95%E6%80%9D%E8%80%83"><span class="toc-number">1.1.</span> <span class="toc-text">分布式唯一id：snowflake算法思考</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BE%E5%BA%A6%E5%88%86%E5%B8%83%E5%BC%8FID%E7%94%9F%E6%88%90%E5%99%A8UidGenerator"><span class="toc-number">1.2.</span> <span class="toc-text">百度分布式ID生成器UidGenerator</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DefaultUidGenerator"><span class="toc-number">1.2.1.</span> <span class="toc-text">DefaultUidGenerator</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CachedUidGenerator"><span class="toc-number">1.2.2.</span> <span class="toc-text">CachedUidGenerator</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%AF%86%E8%9E%8D%E4%BA%91IM%E4%BA%A7%E5%93%81%E7%9A%84%E8%81%8A%E5%A4%A9%E6%B6%88%E6%81%AFID%E7%94%9F%E6%88%90%E7%AD%96%E7%95%A5"><span class="toc-number">1.3.</span> <span class="toc-text">解密融云IM产品的聊天消息ID生成策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF"><span class="toc-number">1.3.1.</span> <span class="toc-text">设计思路</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E4%BF%A1IM%E5%BA%8F%E5%88%97%E5%8F%B7%E7%94%9F%E6%88%90%E7%AE%97%E6%B3%95%E4%B8%8E%E5%AE%B9%E7%81%BE%E5%AE%9E%E8%B7%B5"><span class="toc-number">1.4.</span> <span class="toc-text">微信IM序列号生成算法与容灾实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.4.1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%97%E6%B3%95"><span class="toc-number">1.4.2.</span> <span class="toc-text">算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8"><span class="toc-number">1.4.3.</span> <span class="toc-text">架构与高可用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%B9%E7%81%BE%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8F%98"><span class="toc-number">1.4.4.</span> <span class="toc-text">容灾架构演变</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%B1%E5%BA%A6%E8%A7%A3%E5%AF%86%E7%BE%8E%E5%9B%A2%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8FID%E7%94%9F%E6%88%90%E7%AE%97%E6%B3%95"><span class="toc-number">1.5.</span> <span class="toc-text">深度解密美团的分布式ID生成算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Leaf-segment"><span class="toc-number">1.5.1.</span> <span class="toc-text">Leaf-segment</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Leaf-snowflake"><span class="toc-number">1.5.2.</span> <span class="toc-text">Leaf-snowflake</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%B1%E5%BA%A6%E8%A7%A3%E5%AF%86%E6%BB%B4%E6%BB%B4%E7%9A%84%E9%AB%98%E6%80%A7%E8%83%BDID%E7%94%9F%E6%88%90%E5%99%A8-Tinyid"><span class="toc-number">1.6.</span> <span class="toc-text">深度解密滴滴的高性能ID生成器(Tinyid)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Tinyid%E7%9A%84%E6%8A%80%E6%9C%AF%E4%BC%98%E5%8A%BF"><span class="toc-number">1.6.1.</span> <span class="toc-text">Tinyid的技术优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tinyid%E7%9A%84%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.6.2.</span> <span class="toc-text">Tinyid的技术原理详解</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20ThreadLocal%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E7%BC%93%E5%AD%98%E9%87%8D%E5%A4%8DRPC%E7%BB%93%E6%9E%9C/" title="微服务架构下的Java ThreadLocal实践——缓存重复RPC结果">微服务架构下的Java ThreadLocal实践——缓存重复RPC结果</a><time datetime="2023-05-12T05:31:47.000Z" title="发表于 2023-05-12 13:31:47">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%94%B1gmock%E5%BC%95%E5%8F%91%E7%9A%84%E4%BB%A3%E7%A0%81%E9%87%8D%E6%9E%84/" title="记一次由gmock引发的代码重构">记一次由gmock引发的代码重构</a><time datetime="2023-05-12T05:27:41.000Z" title="发表于 2023-05-12 13:27:41">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/C++%E6%96%B0%E7%89%B9%E6%80%A7/" title="C++新特性">C++新特性</a><time datetime="2023-05-11T05:41:59.000Z" title="发表于 2023-05-11 13:41:59">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/" title="Java新特性">Java新特性</a><time datetime="2023-05-11T03:29:22.000Z" title="发表于 2023-05-11 11:29:22">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章">建站第一篇文章</a><time datetime="2023-05-09T16:25:27.000Z" title="发表于 2023-05-10 00:25:27">2023-05-10</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 一个廖少少</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

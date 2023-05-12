@@ -1,0 +1,271 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>C++内存管理 | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="不考虑windows的C++，首先看看Linux的虚拟地址空间概念 Linux虚拟地址空间Linux 使用虚拟地址空间，大大增加了进程的寻址空间，由高地址到低地址分别为：  内核虚拟空间（内核态）：用户代码不可见的内存区域，由内核管理(页表就存放在内核虚拟空间)。 栈：用于维护函数调用的上下文空间，堆的末端由break指针标识，当堆管理器需要更多内存时，可通过系统调用brk()和sbrk()来移动">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++内存管理">
+<meta property="og:url" content="https://edisonleolhl.github.io/2020/02/25/C++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="不考虑windows的C++，首先看看Linux的虚拟地址空间概念 Linux虚拟地址空间Linux 使用虚拟地址空间，大大增加了进程的寻址空间，由高地址到低地址分别为：  内核虚拟空间（内核态）：用户代码不可见的内存区域，由内核管理(页表就存放在内核虚拟空间)。 栈：用于维护函数调用的上下文空间，堆的末端由break指针标识，当堆管理器需要更多内存时，可通过系统调用brk()和sbrk()来移动">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://edisonleolhl.github.io/images/avatar.jpeg">
+<meta property="article:published_time" content="2020-02-25T08:09:50.000Z">
+<meta property="article:modified_time" content="2023-05-11T16:14:36.345Z">
+<meta property="article:author" content="一个廖少少">
+<meta property="article:tag" content="内存">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://edisonleolhl.github.io/images/avatar.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://edisonleolhl.github.io/2020/02/25/C++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'C++内存管理',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-12 00:14:36'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">43</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/cover.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">C++内存管理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-02-25T08:09:50.000Z" title="发表于 2020-02-25 16:09:50">2020-02-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-11T16:14:36.345Z" title="更新于 2023-05-12 00:14:36">2023-05-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/C-C/">C/C++</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="C++内存管理"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>不考虑windows的C++，首先看看Linux的虚拟地址空间概念</p>
+<h3 id="Linux虚拟地址空间"><a href="#Linux虚拟地址空间" class="headerlink" title="Linux虚拟地址空间"></a>Linux虚拟地址空间</h3><p>Linux 使用虚拟地址空间，大大增加了进程的寻址空间，由高地址到低地址分别为：</p>
+<ul>
+<li>内核虚拟空间（内核态）：用户代码不可见的内存区域，由内核管理(页表就存放在内核虚拟空间)。</li>
+<li>栈：用于维护函数调用的上下文空间，堆的末端由break指针标识，当堆管理器需要更多内存时，可通过系统调用brk()和sbrk()来移动break指针以扩张堆，一般由系统自动调用。</li>
+<li>内存映射区域（mmap）：内核将硬盘文件的内容直接映射到内存，一般是mmap系统调用所分配的，当malloc超过128KB时，不在堆上分配内存，而在内存映射区分配内存，既可以用于装载动态库，也可以用于匿名内存映射，没有指定文件，所以可以用来存放数据</li>
+<li>堆：就是平时所说的动态内存， malloc&#x2F;new 大部分都来源于此。其中堆顶的位置可通过函数brk和sbrk进行动态调整。</li>
+<li>BSS段（.bss）：未初始化的全局变量或者静态局部变量</li>
+<li>数据段（.data）：已初始化的全局变量或静态局部变量</li>
+<li>代码段（.text）：保存代码（CPU执行的机器码）</li>
+</ul>
+<p><img src="/images/linuxprocessmemory.png" alt="linuxprocessmemory"></p>
+<p>32位OS的虚拟地址空间为32位即4GB，用户空间占3GB，内核空间占1GB</p>
+<p>64位OS的虚拟地址空间为48位即256T，用户空间占128T</p>
+<h3 id="C-内存分配（管理）方式"><a href="#C-内存分配（管理）方式" class="headerlink" title="C++内存分配（管理）方式"></a>C++内存分配（管理）方式</h3><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/qg-whz/p/5060894.html">C++ 自由存储区是否等价于堆？</a></p>
+<p>栈：就是那些由编译器在需要的时候分配，在不需要的时候自动清除的变量的存储区。里面的变量通常是局部变量、函数参数等。在一个进程中，位于用户虚拟地址空间顶部的是用户栈，编译器用它来实现函数的调用。操作方式类似于数据结构里的栈。向下增长。</p>
+<p>堆：malloc在堆上分配的内存块，使用free释放内存。如果程序员没有释放掉，那么在程序结束后，操作系统会自动回收。操作方式类似于数据结构里的链表。向上增长。可以说堆是操作系统维护的一块内存（物理上的）。</p>
+<p>自由存储区（C++特有概念）：new所申请的内存则是在自由存储区上，使用delete来释放。自由存储区是C++通过new与delete动态分配和释放对象的抽象概念（逻辑上的），有可能是由堆实现的，可以说new所申请的内存在堆上（这点和很多网络上的文章不一致，本人选择与上面的博客文章一致，在极客时间现代C++实战30讲中也是这样的观点）</p>
+<p>全局&#x2F;静态存储区：全局变量和静态变量的存储是放在一块的，<strong>初始化</strong>的全局变量和静态变量在一块区域，<strong>未初始化</strong>的全局变量和未初始化的静态变量在相邻的另一块区域。程序结束后由系统释放。</p>
+<p>常量存储区：存放字面值常量（如字符串常量），不建议修改，程序结束后由系统释放。</p>
+<p>例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//main.cpp</span></span><br><span class="line"><span class="type">int</span> a = <span class="number">0</span>; 全局初始化区</span><br><span class="line"><span class="type">char</span> *p1; 全局未初始化区</span><br><span class="line"><span class="built_in">main</span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> a; <span class="comment">//栈</span></span><br><span class="line">    <span class="type">char</span> s[] = <span class="string">&quot;abc&quot;</span>; <span class="comment">//栈</span></span><br><span class="line">    <span class="type">char</span> *p2; <span class="comment">//栈</span></span><br><span class="line">    <span class="type">char</span> *p3 = <span class="string">&quot;123456&quot;</span>; <span class="comment">//123456\0在常量区，p3在栈上。</span></span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> c =<span class="number">0</span>； <span class="comment">//全局（静态）初始化区</span></span><br><span class="line">    p1 = (<span class="type">char</span> *)<span class="built_in">malloc</span>(<span class="number">10</span>);</span><br><span class="line">    p2 = (<span class="type">char</span> *)<span class="built_in">malloc</span>(<span class="number">20</span>);<span class="comment">//分配得来得10和20字节的区域就在堆区。</span></span><br><span class="line">    <span class="built_in">strcpy</span>(p1, <span class="string">&quot;123456&quot;</span>); <span class="comment">//123456\0放在常量区，编译器可能会将它与p3所指向的&quot;123456&quot;,优化成一个地方。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="堆和栈的区别"><a href="#堆和栈的区别" class="headerlink" title="堆和栈的区别"></a>堆和栈的区别</h3><ol>
+<li>管理方式：栈是用数据结构栈实现的，由系统分配，速度较快，但不受程序员控制，不够则报栈溢出的错误；<strong>堆是由（空闲）链表实现的</strong>，由程序员手动配置（new和delete），速度较慢，也容易产生内存泄露，但使用灵活</li>
+<li>生长方向：栈向下生长，内存地址由高到低；堆向上生长，内存地址由低到高</li>
+<li>分配效率：<strong>栈由操作系统自动分配</strong>，硬件层面有支持；堆是由C的库函数（malloc）、C++的操作符（new）来完成申请的，实现复杂，频繁的申请容易产生<strong>内存碎片</strong>，效率更低</li>
+<li>存放内容：栈存放函数返回地址、相关参数、局部变量和寄存器内容；堆的内容由程序员自己决定</li>
+</ol>
+<h3 id="malloc-x2F-calloc-x2F-free-x2F-realloc"><a href="#malloc-x2F-calloc-x2F-free-x2F-realloc" class="headerlink" title="malloc&#x2F;calloc&#x2F;free&#x2F;realloc"></a>malloc&#x2F;calloc&#x2F;free&#x2F;realloc</h3><p>堆的管理：堆分为映射区(mapped region)和未映射区(unmapped region)，从堆开始的地方~break指针为映射区（通过MMU映射虚拟地址到物理地址），break往上是未映射区。当映射区不够时，break指针上移，扩大映射区，但是不能无限扩大，有rlimit限制。</p>
+<p><code>void *malloc(size_t size)</code>在堆区分配一块大小为至少为size（可能要字节对齐）的连续内存，返回指向这块<strong>未初始化</strong>内存的起始位置的指针，分配失败返回NULL</p>
+<ul>
+<li>malloc函数用于动态分配内存。为了减少内存碎片和系统调用的开销，malloc其采用<strong>内存池</strong>的方式，先申请大块内存作为堆区，然后将堆区分为多个内存块（block），以块作为内存管理的基本单位。当用户申请内存时，直接从堆区分配一块合适的空闲块。</li>
+<li>malloc采用隐式链表结构将堆区分成连续的、大小不一的块，包含已分配块和未分配块；同时malloc采用<strong>双向链表来管理所有的空闲块</strong>，双向链表将空闲块连接起来，每一个空闲块记录了一个连续的、未分配的地址。</li>
+<li>malloc在申请内存时，一般会通过brk或者mmap系统调用进行申请。其中当申请内存小于128K时，会使用系统调用<strong>brk在堆区</strong>中分配；而当申请内存大于128K时，会使用系统调用<strong>mmap在内存映射区</strong>分配。mmap有一种用法是映射磁盘文件到内存中（进程间通信），如果是匿名映射，就不指定磁盘文件，也就相当于开辟了一块内存。</li>
+</ul>
+<p><code>void *calloc(size_t numitems, size_t size)</code>给一组对象分配内存并且<strong>初始化为0</strong>，底层会调用malloc</p>
+<p><code>void *free(void *p)</code>验证传入地址是否有效（是否是malloc开辟的），然后合并空闲的相邻内存块</p>
+<p><code>void *realloc(void *ptr, size_t size)</code>调整（通常是增加）一块内存的大小，若增加了已分配内存块大小，则额外内存是未初始化的，并且调整内存大小要考虑内存块block的关系，有可能需要分裂内存块split block，也有可能需要合并后面的空闲块，还有可能调用malloc重新分配再复制</p>
+<h3 id="malloc最多能分配多少内存"><a href="#malloc最多能分配多少内存" class="headerlink" title="malloc最多能分配多少内存"></a>malloc最多能分配多少内存</h3><p><a target="_blank" rel="noopener" href="http://fallincode.com/blog/2020/01/malloc%E6%9C%80%E5%A4%9A%E8%83%BD%E5%88%86%E9%85%8D%E5%A4%9A%E5%B0%91%E5%86%85%E5%AD%98/">malloc最多能分配多少内存</a></p>
+<p>一次malloc：取决于OS内核文件的策略，<strong>启发式分配</strong>最多能分配接近物理内存上限，<strong>超额分配</strong>能分配虚拟地址空间的上限（64位OS是2^47位的内存）</p>
+<p>多次malloc：无论是启发式还是超额，最终都能分配到虚拟地址空间的上限</p>
+<p>malloc()成功返回，OS已经分配相应内存给该进程了吗</p>
+<p>答：不是的，这是虚拟内存，但可能会分配4K（一页的大小）的物理内存，用来增加页表项</p>
+<h3 id="new-x2F-delete与malloc-x2F-free的区别是什么"><a href="#new-x2F-delete与malloc-x2F-free的区别是什么" class="headerlink" title="new&#x2F;delete与malloc&#x2F;free的区别是什么"></a>new&#x2F;delete与malloc&#x2F;free的区别是什么</h3><p>new和malloc</p>
+<ul>
+<li>malloc需要给定申请内存的大小，返回的是void*，一般需要强制类型转化；new会调用构造函数，不用指定内存大小，返回的指针不用强转。</li>
+<li>malloc失败返回空，<strong>new失败抛bad_malloc异常</strong>，在catch捕捉之前，所有的栈上对象都会被析构，资源全都回收了，而且释放资源的范围由栈帧限定了</li>
+<li>malloc分配的内存不够时，可以使用realloc扩容，而new没有这种操作</li>
+</ul>
+<p>delete和free</p>
+<ul>
+<li>free会释放内存空间，对于类类型的对象，不会调用析构函数；</li>
+<li>delete会释放内存空间，而且还会调用析构函数</li>
+</ul>
+<p>new[]和delete[]</p>
+<ul>
+<li>申请数组时，<code>new[]</code>一次分配所有内存，多次调用构造函数，搭配使用<code>delete[]</code>，<code>delete[]</code>多次调用析构函数，销毁数组中的每个对象，而malloc只能接收类似<code>sizeof(int)*n</code>这样的参数形式来开辟能容纳n个int型元素的数组空间</li>
+<li><code>delete[]</code>操作符释放空间，而且会调用由<code>new[]</code>创建的一组对象的析构函数</li>
+<li>由<code>new[]</code>创建的内存空间，如果由delete释放，则编译器只会释放第一个对象的内存空间，后面的内存空间没法释放，于是产生内存泄漏</li>
+<li>编译器怎么知道<code>delete[]</code>要销毁多少个对象呢，关键在于<code>new[]</code>时会把instance的数量存在开头，编译器遇到<code>delete[]</code>时就会寻找这个字段值，所以建议：用delete删除new的空间，用<code>delete[]</code>删除<code>new[]</code>的空间</li>
+</ul>
+<h3 id="三个“妞”：new-operator、operator-new、placement-new"><a href="#三个“妞”：new-operator、operator-new、placement-new" class="headerlink" title="三个“妞”：new operator、operator new、placement new"></a>三个“妞”：new operator、operator new、placement new</h3><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/slgkaifa/p/6887887.html"></a></p>
+<ul>
+<li><p>new operator：我们最常用的new操作符，内置的，<strong>无法重载</strong>，它只干两件事：（根据operator new函数）分配内存+调用构造函数</p>
+</li>
+<li><p>operator new：<strong>是new函数</strong>（最容易引起歧义的地方），<strong>可以重载</strong>，重载时可以添加额外参数，但第一个参数必须是size_t用来确定分配的内存，仅干一件事：分配内存</p>
+  <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span>* <span class="keyword">operator</span> <span class="title">new</span><span class="params">(<span class="type">size_t</span> size)</span></span>; <span class="comment">// 返回指针，指向一块size大小的内存</span></span><br><span class="line"><span class="type">void</span>* rawMemory = <span class="keyword">operator</span> <span class="built_in">new</span>(<span class="built_in">sizeof</span>(string)); <span class="comment">// 直接调用new函数创建原始内存，这就跟调用malloc差不多</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>placement new：在指定地址上创建对象，不分配内存，它只干一件事：调用构造函数</p>
+  <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A *ptr2 = <span class="built_in">new</span>(ptr) <span class="built_in">A</span>();</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>new一个类A的对象分为二步：</p>
+<ol>
+<li>调用operator new分配内存（通常在堆中），<code>void* operator new (size_t);</code>，这里会把<code>sizeof(A)</code>传入size_t型参数中</li>
+<li>调用构造函数生成类对象，<code>A::A()</code></li>
+</ol>
+<p>三种delete与三种new正好对应</p>
+<h3 id="operator-new-的异常处理"><a href="#operator-new-的异常处理" class="headerlink" title="operator new 的异常处理"></a>operator new 的异常处理</h3><ul>
+<li>避免使用nothrow new,因为它如今并不能提供任何显著的优点，而且其特性通常要比简单new(可能抛出异常)的还差。</li>
+<li>记住，无论如何，检查new是否失败几乎是没什么意义的，原因有若干。</li>
+<li>如果你理当关心内存耗尽的话，请确保你正在检查的是你所认为你正在检查的，因为：<ul>
+<li>在那些直到内存被用到时才去提交实际内存的系统之上，检查new失败通常是没有意义的。</li>
+<li>在拥有虚拟内存的系统上，new失败几乎不会发生，因为早在虚拟内存耗尽之前，系统</li>
+<li>通常就已经开始颠簸了，而此时系统管理员自然会杀掉一些进程。</li>
+<li>除了一些特殊情况之外，通常即便你检测到了new失败，要是真的没内存剩下了的话，那么你也就做不了什么了。</li>
+</ul>
+</li>
+</ul>
+<h3 id="定义一个只能new出来的类-x2F-定义一个不能new的类"><a href="#定义一个只能new出来的类-x2F-定义一个不能new的类" class="headerlink" title="定义一个只能new出来的类&#x2F;定义一个不能new的类"></a>定义一个只能new出来的类&#x2F;定义一个不能new的类</h3><p>在C++中，类的对象建立分为两种，一种是静态建立，如<code>A a</code>；另一种是动态建立，如<code>A* ptr=new A</code>；这两种方式是有区别的。</p>
+<ol>
+<li>静态建立类对象：是由编译器为对象在栈空间中分配内存，再调用类的构造函数。</li>
+<li>动态建立类对象，是使用new运算符将对象建立在堆空间中。这个过程分为两步，第一步是执行operator new()函数，在堆空间中搜索合适的内存并进行分配；第二步是调用构造函数构造对象，初始化这片内存空间。</li>
+</ol>
+<ul>
+<li><p>答案1：<strong>将析构函数设为私有</strong>，类对象就无法建立在栈上了，也就只能new出来了</p>
+<p>  编译器在为类对象分配栈空间时，会先检查类的析构函数的访问性，其实不光是析构函数，只要是非静态的函数，编译器都会进行检查。如果类的析构函数是私有的，则编译器不会在栈空间上为类对象分配内存。</p>
+<p>  这样的类只能new出来，但是不能直接调用析构函数回收，类必须定义一个public的destroy函数，<strong>类对象用完后必须调用destroy回收</strong></p>
+  <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">A</span>()&#123;&#125;;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">destroy</span><span class="params">()</span></span>&#123;<span class="keyword">delete</span> <span class="keyword">this</span>;&#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    ~<span class="built_in">A</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  若要解决继承问题，则把析构函数设为protected</p>
+</li>
+<li><p>答案2：<strong>重载operator new设为private</strong>，因为new operator总是先调用operator new，而设为私有后就不能调用new了，故类对象只能建立在栈上，无法建立在堆上</p>
+  <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>  </span><br><span class="line">&#123;  </span><br><span class="line"><span class="keyword">private</span>:  </span><br><span class="line">    <span class="function"><span class="type">void</span>* <span class="keyword">operator</span> <span class="title">new</span><span class="params">(<span class="type">size_t</span> t)</span></span>&#123;&#125;     <span class="comment">// 注意函数的第一个参数和返回值都是固定的  </span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="keyword">operator</span> <span class="title">delete</span><span class="params">(<span class="type">void</span>* ptr)</span></span>&#123;&#125; <span class="comment">// 重载了new就需要重载delete  </span></span><br><span class="line"><span class="keyword">public</span>:  </span><br><span class="line">    <span class="built_in">A</span>()&#123;&#125;  </span><br><span class="line">    ~<span class="built_in">A</span>()&#123;&#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io/2020/02/25/C++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">https://edisonleolhl.github.io/2020/02/25/C++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://edisonleolhl.github.io" target="_blank">一知半解</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%86%85%E5%AD%98/">内存</a><a class="post-meta__tags" href="/tags/C-C/">C/C++</a></div><div class="post_share"><div class="social-share" data-image="/images/avatar.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/03/16/MySQL%E7%B4%A2%E5%BC%95/" title="MySQL索引"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">MySQL索引</div></div></a></div><div class="next-post pull-right"><a href="/2020/01/25/C++11%E7%9A%84%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" title="C++11的智能指针"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">C++11的智能指针</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/04/14/C++%E6%8E%92%E6%9F%A5%E6%B4%BE%E7%94%9F%E7%B1%BB%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%AD%A5%E9%AA%A4/" title="C++排查派生类内存泄漏步骤"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-14</div><div class="title">C++排查派生类内存泄漏步骤</div></div></a></div><div><a href="/2019/12/10/%E4%BB%8E%E6%B1%87%E7%BC%96%E8%A7%92%E5%BA%A6%E6%9D%A5%E7%9C%8B%E8%A7%A3%E5%BC%95%E7%94%A8%E4%B8%8E%E8%87%AA%E5%A2%9E/" title="从汇编角度来看解引用与自增"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-12-10</div><div class="title">从汇编角度来看解引用与自增</div></div></a></div><div><a href="/2022/03/29/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84C++%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%8D%A2%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" title="多线程场景下的C++字符串转换最佳实践"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-29</div><div class="title">多线程场景下的C++字符串转换最佳实践</div></div></a></div><div><a href="/2021/08/19/GDB%20Cheatsheet/" title="GDB Cheatsheet"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-19</div><div class="title">GDB Cheatsheet</div></div></a></div><div><a href="/2023/05/11/C++%E6%96%B0%E7%89%B9%E6%80%A7/" title="C++新特性"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-11</div><div class="title">C++新特性</div></div></a></div><div><a href="/2020/08/08/C%E5%92%8C%E6%8C%87%E9%92%88/" title="C和指针"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-08</div><div class="title">C和指针</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">43</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/edisonleolhl"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/edisonleolhl" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:edisonleolhl@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Go Big or Go Home</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4"><span class="toc-number">1.</span> <span class="toc-text">Linux虚拟地址空间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%EF%BC%88%E7%AE%A1%E7%90%86%EF%BC%89%E6%96%B9%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">C++内存分配（管理）方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A0%86%E5%92%8C%E6%A0%88%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.</span> <span class="toc-text">堆和栈的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#malloc-x2F-calloc-x2F-free-x2F-realloc"><span class="toc-number">4.</span> <span class="toc-text">malloc&#x2F;calloc&#x2F;free&#x2F;realloc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#malloc%E6%9C%80%E5%A4%9A%E8%83%BD%E5%88%86%E9%85%8D%E5%A4%9A%E5%B0%91%E5%86%85%E5%AD%98"><span class="toc-number">5.</span> <span class="toc-text">malloc最多能分配多少内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#new-x2F-delete%E4%B8%8Emalloc-x2F-free%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">6.</span> <span class="toc-text">new&#x2F;delete与malloc&#x2F;free的区别是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E4%B8%AA%E2%80%9C%E5%A6%9E%E2%80%9D%EF%BC%9Anew-operator%E3%80%81operator-new%E3%80%81placement-new"><span class="toc-number">7.</span> <span class="toc-text">三个“妞”：new operator、operator new、placement new</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#operator-new-%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="toc-number">8.</span> <span class="toc-text">operator new 的异常处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E5%8F%AA%E8%83%BDnew%E5%87%BA%E6%9D%A5%E7%9A%84%E7%B1%BB-x2F-%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E4%B8%8D%E8%83%BDnew%E7%9A%84%E7%B1%BB"><span class="toc-number">9.</span> <span class="toc-text">定义一个只能new出来的类&#x2F;定义一个不能new的类</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20ThreadLocal%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E7%BC%93%E5%AD%98%E9%87%8D%E5%A4%8DRPC%E7%BB%93%E6%9E%9C/" title="微服务架构下的Java ThreadLocal实践——缓存重复RPC结果">微服务架构下的Java ThreadLocal实践——缓存重复RPC结果</a><time datetime="2023-05-12T05:31:47.000Z" title="发表于 2023-05-12 13:31:47">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%94%B1gmock%E5%BC%95%E5%8F%91%E7%9A%84%E4%BB%A3%E7%A0%81%E9%87%8D%E6%9E%84/" title="记一次由gmock引发的代码重构">记一次由gmock引发的代码重构</a><time datetime="2023-05-12T05:27:41.000Z" title="发表于 2023-05-12 13:27:41">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/C++%E6%96%B0%E7%89%B9%E6%80%A7/" title="C++新特性">C++新特性</a><time datetime="2023-05-11T05:41:59.000Z" title="发表于 2023-05-11 13:41:59">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/" title="Java新特性">Java新特性</a><time datetime="2023-05-11T03:29:22.000Z" title="发表于 2023-05-11 11:29:22">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章">建站第一篇文章</a><time datetime="2023-05-09T16:25:27.000Z" title="发表于 2023-05-10 00:25:27">2023-05-10</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 一个廖少少</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

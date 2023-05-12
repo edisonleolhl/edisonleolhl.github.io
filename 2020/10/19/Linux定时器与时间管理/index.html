@@ -1,0 +1,232 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Linux定时器与时间管理 | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Linux中的定时器与时间管理时间概念周期性产生的事件——比如每10ms一次——都是由系统定时器驱动的。系统定时器是一种可编程硬件芯片，它能以固定频率产生中断。该中断就是所谓的定时器中断，它所对应的中断处理程序负责更新系统时间，也负责执行需要周期性运行的任务。 内核知道连续两次时钟中断的间隔时间，这个间隔时间就称为节拍（tick），它等于节拍率分之一(1&#x2F;(tick rate))秒。内核">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux定时器与时间管理">
+<meta property="og:url" content="https://edisonleolhl.github.io/2020/10/19/Linux%E5%AE%9A%E6%97%B6%E5%99%A8%E4%B8%8E%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="Linux中的定时器与时间管理时间概念周期性产生的事件——比如每10ms一次——都是由系统定时器驱动的。系统定时器是一种可编程硬件芯片，它能以固定频率产生中断。该中断就是所谓的定时器中断，它所对应的中断处理程序负责更新系统时间，也负责执行需要周期性运行的任务。 内核知道连续两次时钟中断的间隔时间，这个间隔时间就称为节拍（tick），它等于节拍率分之一(1&#x2F;(tick rate))秒。内核">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://edisonleolhl.github.io/images/avatar.jpeg">
+<meta property="article:published_time" content="2020-10-19T08:35:19.000Z">
+<meta property="article:modified_time" content="2023-05-11T16:36:34.796Z">
+<meta property="article:author" content="一个廖少少">
+<meta property="article:tag" content="操作系统">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="定时器">
+<meta property="article:tag" content="时间">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://edisonleolhl.github.io/images/avatar.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://edisonleolhl.github.io/2020/10/19/Linux%E5%AE%9A%E6%97%B6%E5%99%A8%E4%B8%8E%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux定时器与时间管理',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-12 00:36:34'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">43</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/cover.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Linux定时器与时间管理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-10-19T08:35:19.000Z" title="发表于 2020-10-19 16:35:19">2020-10-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-11T16:36:34.796Z" title="更新于 2023-05-12 00:36:34">2023-05-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Linux定时器与时间管理"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="Linux中的定时器与时间管理"><a href="#Linux中的定时器与时间管理" class="headerlink" title="Linux中的定时器与时间管理"></a>Linux中的定时器与时间管理</h3><h4 id="时间概念"><a href="#时间概念" class="headerlink" title="时间概念"></a>时间概念</h4><p>周期性产生的事件——比如每10ms一次——都是由系统定时器驱动的。系统定时器是一种<strong>可编程硬件芯片</strong>，它能以固定频率产生中断。该中断就是所谓的<strong>定时器中断</strong>，它所对应的中断处理程序负责更新系统时间，也负责执行需要周期性运行的任务。</p>
+<p>内核知道连续两次时钟中断的间隔时间，这个间隔时间就称为节拍（tick），它等于节拍率分之一(1&#x2F;(tick rate))秒。内核就是靠这种已知的时钟中断间隔来计算墙上时间和系统运行时间的。<strong>墙上时间（也就是实际时间）</strong>对用户空间的应用程序来说是最重要的。内核通过控制时钟中断维护实际时间，另外内核也为用户空间提供了一组系统调用以获取实际日期和实际时间。<strong>系统运行时间（自系统启动开始所经的时间）</strong>对用户空间和内核都很有用，因为许多程序都必须清楚流逝的时间。通过两次（现在和以后）读取运行时间再计算它们的差，就可以得到相对的流逝的时间了。</p>
+<h4 id="节拍率"><a href="#节拍率" class="headerlink" title="节拍率"></a>节拍率</h4><p><strong>系统定时器频率（节拍率）</strong>是通过静态预处理定义的，也就是HZ（赫兹），在系统启动时按照HZ值对硬件进行设置。体系结构不同，HZ的值也不同，大部分是100HZ，又有1000HZ。编写内核代码时，不要认为HZ值是一个固定不变的值。</p>
+<p>提高节拍率意味着时钟中断产生得更加频繁，所以中断处理程序也会更频繁地执行。如此一来会给整个系统带来如下好处：</p>
+<ul>
+<li>更高的时钟中断<strong>解析度（resolution）</strong>可提高时间驱动事件的解析度。100HZ的时钟的执行粒度为10ms，周期事件最快为每10ms运行一次，而不可能有更高的精度，但是1000HZ的解析度就是1ms，精细了十倍。</li>
+<li>提高了时间驱动事件的<strong>准确度（accuracy）</strong>。假定内核在某个随机时刻触发定时器，而它可能在任何时间超时，但由于只有在时钟中断到来时才可能执行它，<strong>所以平均误差大约为半个时钟中断周期</strong>。比如说，如果时钟周期为HZ&#x3D;100，那么事件平均在设定时刻的+&#x2F;-5ms内发生，所以平均误差为5ms。如果HZ&#x3D;1000，那么平均误差可降低到0.5ms——准确度提高了10倍。</li>
+</ul>
+<p>节拍率越高，意味着时钟中断频率越高，也就意味着系统负担越重。因为处理器必须花时间来执行时钟中断处理程序，所以节拍率越高，中断处理程序占用的处理器的时间越多。这样不但减少了处理器处理其他工作的时间，而且还会更频繁地打乱处理器高速缓存并增加耗电。最后的结论是：至少在现代计算机系统上，时钟频率为1000HZ不会导致难以接受的负担，并且不会对系统性能造成较大的影响，尽管如此，2.6版本的内核还是允许在编译内核时选定不同的HZ值</p>
+<h4 id="jiffies"><a href="#jiffies" class="headerlink" title="jiffies"></a>jiffies</h4><p>全局变量jiffies用来记录自系统启动以来产生的节拍的总数。启动时，内核将该变量初始化为0，此后，每次时钟中断处理程序就会增加该变量的值。因为一秒内时钟中断的次数等于HZ，所以jiffies一秒内增加的值也就为HZ。系统运行时间以秒为单位计算，就等于jiffies&#x2F;HZ。</p>
+<p>jiffies定义于文件<code>&lt;linux/jiffes.h&gt;</code>中：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">unsigned</span> <span class="type">long</span> <span class="keyword">volatile</span> jiffies;</span><br></pre></td></tr></table></figure>
+
+<p>关键字volatile指示编译器在每次访问变量时都重新从主内存中获得，而不是通过寄存器中的变量别名来访问</p>
+<p>jiffies变量总是<strong>无符号长整数（unsigned long）</strong>，因此，在32位体系结构上是32位，在64位体系结构上是64位。由于性能与历史的原因，主要还考虑到与现有内核代码的兼容性，内核开发者希望jiffies依然为unsigned long。内核用了很巧妙的链接程序，用jiffies_64变量的初值覆盖了jiffies变量，jiffies取整个64位jiffies_64变量的低32位。</p>
+<p>和任何C整型一样，当jiffies变量的值超过它的最大存放范围后就会发生溢出。如果节拍计数达到了最大值后还要继续增加的话，它的值会<strong>回绕（wrap around）</strong>到0。</p>
+<p>考虑下面的代码，如果jiffies重新回绕为0，那么timeout永远都比jiffies大，这明显不是我们希望的</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">long</span> timeout = jiffies + HZ/<span class="number">2</span>;<span class="comment">/*0.5秒后超时*/</span></span><br><span class="line"><span class="comment">/*执行一些任务..*/</span></span><br><span class="line"><span class="comment">/*然后查看是否花的时间过长*/</span></span><br><span class="line"><span class="keyword">if</span>（timeout&gt;jiffies）&#123;</span><br><span class="line">    <span class="comment">/*没有超时，很好..*/</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">/*超时了，发生错误...*/</span></span><br></pre></td></tr></table></figure>
+
+<p>幸好，内核提供了四个宏来帮助比较节拍计数，它们能正确地处理节拍计数回绕情况。这些宏定义在文件<code>&lt;linux/jiffies.h&gt;</code>中，这里列出的去是简化版，其中unkown参数通常是jifies，known参数是需要对比的值</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> time_after(unknown，known)((long)(known)-(long)(unknown)&lt;0)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> time_before(unknown，known)((long)(unknown)-(long)(known)&lt;0)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> time_after_eq(unknown，known)((long)(unknown)-(long)(known)&gt;=0)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> time_before_eg(unknown，known)((long)(knowm)-(long)(unknown)&gt;=0)</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>为了便于说明，我们假设jiffies是单字节的无符号数，范围为0~255。假如jiffies开始为250，由于是无符号数据，那么它在机器中实际存储的补码为11111010，记为J1；timeout如果被设为252，实际存储为11111100；而过了一会jiffies发生回绕编变成了1，实际存储变为00000001，记为J2。 那么此时如果按照无符号数比较其大小关系，有： <code>J1&lt;timeout &amp; J2 &lt;timeout</code>，这样的结果与实际的时间节拍统计是不符的，但是如果我们按照有符号数来比较会有什么结果呢？J1如果按照有符号数读取，首先从补码转换成原码：10000110，转换成十进制为－6；timeout按照有符号数读取，首先从补码转换成原码：10000100，转换成十进制为－4；J2按照有符号数读取，首先从补码转换成原码：00000001，转换成十进制为1；这样它们的大小关系为：<code>J1&lt;timeout&lt;J2</code> 。 这与实际的节拍计数就吻合了，以上内核定义的几个宏就是通过这种方式巧妙解决jiffies回绕问题的。</p>
+</blockquote>
+<h4 id="硬时钟和定时器"><a href="#硬时钟和定时器" class="headerlink" title="硬时钟和定时器"></a>硬时钟和定时器</h4><p><strong>实时时钟（RTC）</strong>是用来持久存放系统时间的设备，即便系统关闭后，它也可以靠主板上的微型电池提供的电力保持系统的计时。在PC体系结构中，RTC和CMOS集成在一起，而且RTC的运行和BIOS的保存设置都是通过同一个电池供电的。当系统启动时，内核通过读取RTC来初始化墙上时间，该时间存放在xtime变量中。</p>
+<p><strong>系统定时器</strong>是内核定时机制中最为重要的角色。尽管不同体系结构中的定时器实现不尽相同，但是系统定时器的根本思想并没有区别——提供一种周期性触发中断机制。有些体系结构是通过对<strong>电子晶振</strong>进行分频来实现系统定时器，还有些体系结构则提供了一<strong>个衰减测量器（decrementer）</strong>——衰减测量器设置一个初始值，该值以固定频率递减，当减到零时，触发一个中断。无论哪种情况，其效果都一样。</p>
+<h4 id="时钟中断处理程序"><a href="#时钟中断处理程序" class="headerlink" title="时钟中断处理程序"></a>时钟中断处理程序</h4><ul>
+<li>获得xtime_lock锁，以便对访问jiffies_64和墙上时间xtime进行保护。</li>
+<li>需要时应答或重新设置系统时钟。</li>
+<li>周期性地使用墙上时间更新实时时钟。</li>
+<li>调用体系结构无关的时钟例程：tick periodic()。</li>
+<li>给jiffies_64变量增加1（这个操作即使是在32位体系结构上也是安全的，因为前面已经获得了xtime_lock锁）。</li>
+<li>更新资源消耗的统计值，比如当前进程所消耗的系统时间和用户时间。</li>
+<li>执行已经到期的动态定时器（11.6节将讨论）。</li>
+<li>执行第4章曾讨论的sheduler_tick）函数。</li>
+<li>更新墙上时间，该时间存放在xtime变量中。</li>
+<li>计算平均负载值。</li>
+</ul>
+<h4 id="实际时间"><a href="#实际时间" class="headerlink" title="实际时间"></a>实际时间</h4><p>当前实际时间（墙上时间）定义在文件<code>kernel/time/timekeeping.c</code>中：xtime，timespec数据结构定义在文件<code>&lt;linux/time.h&gt;</code>中，形式如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">timespec</span> xtime;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">timespec</span>&#123;</span><br><span class="line">    <span class="type">kernel_time_t</span> tv_sec；<span class="comment">/*秒*/</span></span><br><span class="line">    <span class="type">long</span> tv_nsec；<span class="comment">/*ns*/</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>xtime.tv_sec以秒为单位，存放着自1970年1月1日（UTC）以来经过的时间，1970年1月1日被称为纪元，多数Unix系统的墙上时间都是基于该纪元而言的。xtime.v_nsec记录自上一秒开始经过的ns数。</p>
+<p>读写xtime变量需要使用xtime_lock锁，该锁不是普通自旋锁而是一个<strong>seq锁</strong></p>
+<p>从用户空间取得墙上时间的主要接口是gettimeofday()，在内核中对应系统调用为sys_gettimeofday()，定义于<code>kernel/time.c</code>：</p>
+<h4 id="定时器"><a href="#定时器" class="headerlink" title="定时器"></a>定时器</h4><p>定时器（有时也称为动态定时器或内核定时器）是管理内核流逝的时间的基础。</p>
+<p>定时器的使用很简单。你只需要执行一些初始化工作，设置一个超时时间，指定超时发生后执行的函数，然后激活定时器就可以了。指定的函数将在定时器到期时自动执行。注意定时器并不周期运行，它在超时后就自行撤销，这也正是这种定时器被称为动态定时器e的一个原因；动态定时器不断地创建和撤销，而且它的运行次数也不受限制。定时器在内核中应用得非常普遍。</p>
+<p>定时器由结构timer_list表示，定义在文件<code>&lt;linux/timer.h&gt;</code>中。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">timer_list</span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">list_head</span> entry;<span class="comment">/*定时器链表的入口*/</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> expires;<span class="comment">/*以jiffies为单位的定时值*/</span></span><br><span class="line">    <span class="built_in">void</span> (*function) (<span class="type">unsigned</span> <span class="type">long</span>);<span class="comment">/*定时器处理函数*/</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> data;.<span class="comment">/*传给处理函数的长整型参数*/</span></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">tvec_t_base_s</span>*base;<span class="comment">/*定时器内部值，用户不要使用*/</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>Linux的定时器机制（时间轮与红黑树）</p>
+<p>前提：Linux根据时钟源设备启动tick中断，用tick计时，基于Hz，精度是1&#x2F;Hz</p>
+<p>低精度：用<strong>时间轮（timing wheel）</strong>机制维护定时事件，时间轮的触发基于tick，<strong>周期触发</strong>，内核根据时间轮处理超时事件</p>
+<p>高精度：hrtimer（high resolution），<strong>基于事件触发</strong>，基于<strong>红黑树</strong>，将高精度时钟硬件的下次中断触发设置为红黑树最早到期的时间，到期后又取得下一个最早到期时间（类似于最小堆）</p>
+<h4 id="延迟执行"><a href="#延迟执行" class="headerlink" title="延迟执行"></a>延迟执行</h4><p>忙等待，最笨的方法</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">long</span> timeout=jiffies+<span class="number">10</span>;<span class="comment">/*10个节拍*/</span></span><br><span class="line"><span class="keyword">while</span>(<span class="built_in">time_before</span>(jiffies，timeout))</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>更好的方法应该是在代码等待时，允许内核重新调度执行其他任务，cond_resched0函数将调度一个新程序投入运行：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">long</span> delay=jiffies +<span class="number">5</span>*HZ;</span><br><span class="line"><span class="keyword">while</span>(<span class="built_in">time_before</span>(jiffies，timeout))</span><br><span class="line">    <span class="built_in">cond_resched</span>();</span><br></pre></td></tr></table></figure>
+
+<p>对于短延迟，内核提供了三个可以处理ms、ns和ms级别的延迟函数，它们定义在文件<code>&lt;linux/delay.h&gt;</code>和<code>&lt;asm/delay.h&gt;</code>中，可以看到它们并不使用jiffies：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">udelay</span><span class="params">(<span class="type">unsigned</span> <span class="type">long</span> usecs)</span> <span class="comment">// 利用忙循环将任务延迟指定的ms数后运行，后者延迟指定的ms数。</span></span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">ndelay</span><span class="params">(<span class="type">unsigned</span> <span class="type">long</span> nsecs)</span></span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">mdelay</span><span class="params">(<span class="type">unsigned</span> <span class="type">long</span> msecs)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>udelay())函数依靠执行数次循环达到延迟效果，而mdelay()函数又是通过udelay()函数实现的。因为内核知道处理器在1秒内能执行多少次循环（BogoMIPS值记录处理器在给定时间内忙循环执行的次数），所以udelay()函数仅仅需要根据指定的延迟时间在1秒中占的比例，就能决定需要进行多少次循环即可达到要求的推迟时间。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io/2020/10/19/Linux%E5%AE%9A%E6%97%B6%E5%99%A8%E4%B8%8E%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86/">https://edisonleolhl.github.io/2020/10/19/Linux%E5%AE%9A%E6%97%B6%E5%99%A8%E4%B8%8E%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://edisonleolhl.github.io" target="_blank">一知半解</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a><a class="post-meta__tags" href="/tags/Linux/">Linux</a><a class="post-meta__tags" href="/tags/%E5%AE%9A%E6%97%B6%E5%99%A8/">定时器</a><a class="post-meta__tags" href="/tags/%E6%97%B6%E9%97%B4/">时间</a></div><div class="post_share"><div class="social-share" data-image="/images/avatar.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/06/06/%E3%80%8A%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%AF%86%E9%9B%86%E5%9E%8B%E5%BA%94%E7%94%A8%E3%80%8B%E7%9A%84%E7%AC%94%E8%AE%B0/" title="《设计数据密集型应用》的笔记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">《设计数据密集型应用》的笔记</div></div></a></div><div class="next-post pull-right"><a href="/2020/10/19/Linux%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/" title="Linux进程管理与调度"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Linux进程管理与调度</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/10/19/Linux%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/" title="Linux进程管理与调度"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-19</div><div class="title">Linux进程管理与调度</div></div></a></div><div><a href="/2020/07/27/Linux%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" title="Linux文件系统"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-27</div><div class="title">Linux文件系统</div></div></a></div><div><a href="/2018/09/08/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B%E3%80%81%E8%B0%83%E5%BA%A6/" title="操作系统——进程、线程、调度"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-09-08</div><div class="title">操作系统——进程、线程、调度</div></div></a></div><div><a href="/2019/03/11/%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%8B%BE%E9%81%97/" title="现代操作系统拾遗"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-03-11</div><div class="title">现代操作系统拾遗</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">43</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/edisonleolhl"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/edisonleolhl" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:edisonleolhl@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Go Big or Go Home</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux%E4%B8%AD%E7%9A%84%E5%AE%9A%E6%97%B6%E5%99%A8%E4%B8%8E%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">Linux中的定时器与时间管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.</span> <span class="toc-text">时间概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%8A%82%E6%8B%8D%E7%8E%87"><span class="toc-number">1.2.</span> <span class="toc-text">节拍率</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#jiffies"><span class="toc-number">1.3.</span> <span class="toc-text">jiffies</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A1%AC%E6%97%B6%E9%92%9F%E5%92%8C%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="toc-number">1.4.</span> <span class="toc-text">硬时钟和定时器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%B6%E9%92%9F%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F"><span class="toc-number">1.5.</span> <span class="toc-text">时钟中断处理程序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E9%99%85%E6%97%B6%E9%97%B4"><span class="toc-number">1.6.</span> <span class="toc-text">实际时间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="toc-number">1.7.</span> <span class="toc-text">定时器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BB%B6%E8%BF%9F%E6%89%A7%E8%A1%8C"><span class="toc-number">1.8.</span> <span class="toc-text">延迟执行</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20ThreadLocal%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E7%BC%93%E5%AD%98%E9%87%8D%E5%A4%8DRPC%E7%BB%93%E6%9E%9C/" title="微服务架构下的Java ThreadLocal实践——缓存重复RPC结果">微服务架构下的Java ThreadLocal实践——缓存重复RPC结果</a><time datetime="2023-05-12T05:31:47.000Z" title="发表于 2023-05-12 13:31:47">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%94%B1gmock%E5%BC%95%E5%8F%91%E7%9A%84%E4%BB%A3%E7%A0%81%E9%87%8D%E6%9E%84/" title="记一次由gmock引发的代码重构">记一次由gmock引发的代码重构</a><time datetime="2023-05-12T05:27:41.000Z" title="发表于 2023-05-12 13:27:41">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/C++%E6%96%B0%E7%89%B9%E6%80%A7/" title="C++新特性">C++新特性</a><time datetime="2023-05-11T05:41:59.000Z" title="发表于 2023-05-11 13:41:59">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/" title="Java新特性">Java新特性</a><time datetime="2023-05-11T03:29:22.000Z" title="发表于 2023-05-11 11:29:22">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章">建站第一篇文章</a><time datetime="2023-05-09T16:25:27.000Z" title="发表于 2023-05-10 00:25:27">2023-05-10</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 一个廖少少</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

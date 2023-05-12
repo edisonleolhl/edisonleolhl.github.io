@@ -1,0 +1,216 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>缓存一致性 | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="缓存一致性缓存在计算机系统是无处不在，在CPU层面有L1-L3的Cache，在Linux中有TLB加速虚拟地址和物理地址的转换，在浏览器有本地缓存、手机有本地缓存等。缓存在计算机系统中有非常重要的地位，其主要作用是提高响应速度、减少磁盘访问等，本文主要讨论在高并发系统中的缓存系统。 一般来说，缓存由三座大山需要跨越，雪崩、穿透、击穿 缓存雪崩 Cache Avalanche理解：系统像雪崩一样崩了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="缓存一致性">
+<meta property="og:url" content="https://edisonleolhl.github.io/2022/07/26/%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="缓存一致性缓存在计算机系统是无处不在，在CPU层面有L1-L3的Cache，在Linux中有TLB加速虚拟地址和物理地址的转换，在浏览器有本地缓存、手机有本地缓存等。缓存在计算机系统中有非常重要的地位，其主要作用是提高响应速度、减少磁盘访问等，本文主要讨论在高并发系统中的缓存系统。 一般来说，缓存由三座大山需要跨越，雪崩、穿透、击穿 缓存雪崩 Cache Avalanche理解：系统像雪崩一样崩了">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://edisonleolhl.github.io/images/avatar.jpeg">
+<meta property="article:published_time" content="2022-07-26T06:16:49.000Z">
+<meta property="article:modified_time" content="2023-05-11T14:26:26.903Z">
+<meta property="article:author" content="一个廖少少">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="分布式">
+<meta property="article:tag" content="缓存">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://edisonleolhl.github.io/images/avatar.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://edisonleolhl.github.io/2022/07/26/%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '缓存一致性',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-11 22:26:26'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">43</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/cover.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">缓存一致性</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-07-26T06:16:49.000Z" title="发表于 2022-07-26 14:16:49">2022-07-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-11T14:26:26.903Z" title="更新于 2023-05-11 22:26:26">2023-05-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="缓存一致性"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="缓存一致性"><a href="#缓存一致性" class="headerlink" title="缓存一致性"></a>缓存一致性</h3><p>缓存在计算机系统是无处不在，在CPU层面有L1-L3的Cache，在Linux中有TLB加速虚拟地址和物理地址的转换，在浏览器有本地缓存、手机有本地缓存等。缓存在计算机系统中有非常重要的地位，其主要作用是提高响应速度、减少磁盘访问等，本文主要讨论在高并发系统中的缓存系统。</p>
+<p>一般来说，缓存由三座大山需要跨越，雪崩、穿透、击穿</p>
+<h4 id="缓存雪崩-Cache-Avalanche"><a href="#缓存雪崩-Cache-Avalanche" class="headerlink" title="缓存雪崩 Cache Avalanche"></a>缓存雪崩 Cache Avalanche</h4><p>理解：系统像雪崩一样崩了</p>
+<p>问题：如果缓存系统故障，大量的请求无法从缓存完成数据请求，就全量汹涌冲向磁盘数据库系统，导致数据库被打死，整个系统彻底崩溃。比如由于大量的热数据设置了<strong>相同或接近的过期时间</strong>，导致缓存在某一时刻密集失效，大量请求全部转发到 DB，或者是某个冷数据瞬间涌入大量访问，这些查询在缓存 MISS 后，并发的将请求透传到 DB，DB 瞬时压力过载从而<strong>拒绝服务</strong>。</p>
+<p>解决方案：目前常见的预防缓存雪崩的解决方案，主要是通过对 key 的 TTL 时间加随机数，打散 key 的淘汰时间来尽量规避，但是不能彻底规避。</p>
+<h4 id="缓存穿透-Cache-Penetration"><a href="#缓存穿透-Cache-Penetration" class="headerlink" title="缓存穿透 Cache Penetration"></a>缓存穿透 Cache Penetration</h4><p>理解：请求过来了 转了一圈 一无所获 就像穿过透明地带一样。其实就是指查询一个一定不存在的数据</p>
+<p>问题：如果某时段有大量恶意的不存在的key的集中请求，那么服务将一直处理这些根本不存在的请求，导致正常请求无法被处理，从而出现问题。</p>
+<p>解决方案：有效甄别是否存在这个key再决定是否读取很重要，一般可以用<strong>布隆过滤器</strong>，布隆过滤器是个好东西，有非常多的用途，包括：垃圾邮件识别、搜索蜘蛛爬虫url去重等，主要借助K个哈希函数和一个超大的bit数组来降低哈希冲突本身带来的误判，从而提高识别准确性。</p>
+<p>布隆过滤器也存在一定的误判，假如判断存在可能不一定存在，但是假如判断不存在就一定不存在，因此刚好用在解决缓存穿透的key查找场景，事实上很多系统都是基于布隆过滤器来解决缓存穿透问题的。</p>
+<h4 id="缓存击穿-Hotspot-Invalid"><a href="#缓存击穿-Hotspot-Invalid" class="headerlink" title="缓存击穿  Hotspot Invalid"></a>缓存击穿  Hotspot Invalid</h4><p>理解：击穿是一人的雪崩，雪崩是一群人的击穿</p>
+<p>问题：由于缓存系统中的热点数据都有过期时间，如果没有过期时间就造成了主存和缓存的数据不一致，因此过期时间一般都不会太长。设想某时刻一批热点数据同时在缓存系统中过期失效，那么这部分数据就都将请求磁盘数据库系统。</p>
+<p>解决方案：</p>
+<ul>
+<li>在设置<strong>热点数据过期时间时尽量分散</strong>，比如设置100ms的基础值，在此基础上正负浮动10ms，从而降低相同时刻出现CacheMiss的key的数量。</li>
+<li>另外一种做法是<strong>多线程加锁</strong>，其中第一个线程发现CacheMiss之后进行加锁，再从数据库获取内容之后写到缓存中，其他线程获取锁失败则阻塞数ms之后再进行缓存读取，这样可以降低访问数据数据库的线程数，需要注意在单机和集群需要使用不同的锁，集群环境使用分布式锁来实现，但是由于锁的存在也会影响并发效率。</li>
+<li>一种方法是在业务层对使用的热点数据查看是否即将过期，如果即将过期则去数据库获取最新数据进行更新并延长该热点key在缓存系统中的时间，从而避免后面的过期CacheMiss，相当于把事情提前解决了。</li>
+</ul>
+<h4 id="cache-aside"><a href="#cache-aside" class="headerlink" title="cache aside"></a>cache aside</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">data = queryDataRedis(key);</span><br><span class="line"><span class="keyword">if</span> (data ==<span class="literal">null</span>) &#123;</span><br><span class="line">     data = queryDataMySQL(key); <span class="comment">//缓存查询不到，从MySQL做查询</span></span><br><span class="line">     <span class="keyword">if</span> (data!=<span class="literal">null</span>) &#123;</span><br><span class="line">         updateRedis(key, data);<span class="comment">//查询完数据后更新MySQL最新数据到Redis</span></span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也就是说优先查询缓存，查询不到才查询数据库。如果这时候数据库查到数据了，就将缓存的数据进行更新。这是我们常说的 cache aside 的策略，也是最常用的策略。</p>
+<h4 id="缓存更新"><a href="#缓存更新" class="headerlink" title="缓存更新"></a>缓存更新</h4><p>缓存更新的问题是：先更新缓存还是先更新存储，缓存的处理是通过删除来实现还是通过更新来实现</p>
+<ul>
+<li>Step1：先更新存储，保证数据可靠性；</li>
+<li>Step2：再更新缓存，2个策略怎么选：<ul>
+<li><strong>惰性更新</strong>：删除缓存，等待下次读 MISS 再缓存（推荐方案，不一致的概率更低）；</li>
+<li>积极更新：将最新的值更新到缓存（仅当写操作比较频繁时才选择这个额方案）；</li>
+</ul>
+</li>
+</ul>
+<p>做个简单总结，足以适应绝大部分的互联网开发场景的决策：</p>
+<ul>
+<li>针对大部分读多写少场景，建议选择更新数据库后删除缓存的策略。</li>
+<li>针对读写相当或者写多读少的场景，建议选择更新数据库后更新缓存的策略。</li>
+</ul>
+<h4 id="缓存淘汰"><a href="#缓存淘汰" class="headerlink" title="缓存淘汰"></a>缓存淘汰</h4><p>缓存的作用是将热点数据缓存到内存实现加速，内存的成本要远高于磁盘，因此我们通常仅仅缓存热数据在内存，冷数据需要定期的从内存淘汰，数据的淘汰通常有两种方案：</p>
+<ul>
+<li>主动淘汰，这是推荐的方式，我们通过对 Key 设置 TTL 的方式来让 Key 定期淘汰，以保障冷数据不会长久的占有内存。TTL 的策略可以保证冷数据一定被淘汰，但是没有办法保障热数据始终在内存，这个我们在后面会展开；</li>
+<li>被动淘汰，这个是保底方案，并不推荐，Redis 提供了一系列的 Maxmemory 策略来对数据进行驱逐，触发的前提是内存要到达 maxmemory（内存使用率 100%），在 maxmemory 的场景下缓存的质量是不可控的，因为每次缓存一个 Key 都可能需要去淘汰一个 Key。</li>
+</ul>
+<h4 id="缓存不一致无法完全避免"><a href="#缓存不一致无法完全避免" class="headerlink" title="缓存不一致无法完全避免"></a>缓存不一致无法完全避免</h4><ul>
+<li>客观条件：缓存与主存无法做到强一致，除非付出极大的代价，比如使用分布式事务，但这样会使得系统整体性能大幅度下降，甚至比不用缓存还慢，得不偿失</li>
+<li>但可以让缓存与主存做到最终一致，这个不一致的窗口越小约好</li>
+<li>做法：<ul>
+<li>缓存设置过期时间，最终都能兜底查主存，然后回写到缓存</li>
+<li>如何减少缓存删除&#x2F;更新的失败？可以借助mq的atleast-once机制，确保缓存能够缓存&#x2F;更新；更极端场景，如果发mq失败，可以使用rocketmq的事务消息</li>
+<li>如果需要更新多个缓存，最好是通过mq解耦这些操作；或者用更优雅的方法，订阅MySQL的binlog</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io/2022/07/26/%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/">https://edisonleolhl.github.io/2022/07/26/%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://edisonleolhl.github.io" target="_blank">一知半解</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><a class="post-meta__tags" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a><a class="post-meta__tags" href="/tags/%E7%BC%93%E5%AD%98/">缓存</a></div><div class="post_share"><div class="social-share" data-image="/images/avatar.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/02/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20Parallel%20Stream%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E4%BC%98%E5%8C%96RT%E4%B8%8E%E4%B8%B2%E8%81%94traceid/" title="微服务架构下的Java Parallel Stream实践——优化RT与串联traceid"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">微服务架构下的Java Parallel Stream实践——优化RT与串联traceid</div></div></a></div><div class="next-post pull-right"><a href="/2022/06/19/%E3%80%8AJava8%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E3%80%8B%E2%80%94%E2%80%94%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" title="Java8函数式编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Java8函数式编程</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/08/05/%E9%98%BF%E9%87%8C%E4%BA%91%E8%A1%A8%E6%A0%BC%E5%AD%98%E5%82%A8%E4%BB%8B%E7%BB%8D/" title="阿里云表格存储介绍"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-05</div><div class="title">阿里云表格存储介绍</div></div></a></div><div><a href="/2021/06/06/%E3%80%8A%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%AF%86%E9%9B%86%E5%9E%8B%E5%BA%94%E7%94%A8%E3%80%8B%E7%9A%84%E7%AC%94%E8%AE%B0/" title="《设计数据密集型应用》的笔记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-06</div><div class="title">《设计数据密集型应用》的笔记</div></div></a></div><div><a href="/2020/03/16/MySQL%E7%B4%A2%E5%BC%95/" title="MySQL索引"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-03-16</div><div class="title">MySQL索引</div></div></a></div><div><a href="/2022/05/28/%E4%B8%9A%E7%95%8C%E5%B8%B8%E7%94%A8%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8FID%E7%94%9F%E6%88%90%E7%AE%97%E6%B3%95/" title="业界常用的分布式ID生成算法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-28</div><div class="title">业界常用的分布式ID生成算法</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">43</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/edisonleolhl"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/edisonleolhl" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:edisonleolhl@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Go Big or Go Home</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7"><span class="toc-number">1.</span> <span class="toc-text">缓存一致性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9-Cache-Avalanche"><span class="toc-number">1.1.</span> <span class="toc-text">缓存雪崩 Cache Avalanche</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F-Cache-Penetration"><span class="toc-number">1.2.</span> <span class="toc-text">缓存穿透 Cache Penetration</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF-Hotspot-Invalid"><span class="toc-number">1.3.</span> <span class="toc-text">缓存击穿  Hotspot Invalid</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#cache-aside"><span class="toc-number">1.4.</span> <span class="toc-text">cache aside</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0"><span class="toc-number">1.5.</span> <span class="toc-text">缓存更新</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0"><span class="toc-number">1.6.</span> <span class="toc-text">缓存淘汰</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E4%B8%8D%E4%B8%80%E8%87%B4%E6%97%A0%E6%B3%95%E5%AE%8C%E5%85%A8%E9%81%BF%E5%85%8D"><span class="toc-number">1.7.</span> <span class="toc-text">缓存不一致无法完全避免</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20ThreadLocal%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E7%BC%93%E5%AD%98%E9%87%8D%E5%A4%8DRPC%E7%BB%93%E6%9E%9C/" title="微服务架构下的Java ThreadLocal实践——缓存重复RPC结果">微服务架构下的Java ThreadLocal实践——缓存重复RPC结果</a><time datetime="2023-05-12T05:31:47.000Z" title="发表于 2023-05-12 13:31:47">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%94%B1gmock%E5%BC%95%E5%8F%91%E7%9A%84%E4%BB%A3%E7%A0%81%E9%87%8D%E6%9E%84/" title="记一次由gmock引发的代码重构">记一次由gmock引发的代码重构</a><time datetime="2023-05-12T05:27:41.000Z" title="发表于 2023-05-12 13:27:41">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/C++%E6%96%B0%E7%89%B9%E6%80%A7/" title="C++新特性">C++新特性</a><time datetime="2023-05-11T05:41:59.000Z" title="发表于 2023-05-11 13:41:59">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/" title="Java新特性">Java新特性</a><time datetime="2023-05-11T03:29:22.000Z" title="发表于 2023-05-11 11:29:22">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章">建站第一篇文章</a><time datetime="2023-05-09T16:25:27.000Z" title="发表于 2023-05-10 00:25:27">2023-05-10</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 一个廖少少</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
