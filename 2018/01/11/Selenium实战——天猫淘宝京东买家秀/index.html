@@ -1,0 +1,302 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Selenium实战——天猫淘宝京东买家秀 | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Selenium实战——天猫淘宝京东买家秀源码地址：https:&#x2F;&#x2F;github.com&#x2F;edisonleolhl&#x2F;BuyersShow 1、起因 作为一个关注什么值得买已久的人，作为一个微博都关注了好几个白菜君的人，在各大电商网站上薅羊毛那是再平常不过了。作为一个从来没看过商品的买家，商品评论里的买家秀自然是重点关注。  然而有的商品，只钟意其中一种颜色，或者款式，也许这个款式很特别，买的人很少">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Selenium实战——天猫淘宝京东买家秀">
+<meta property="og:url" content="https://edisonleolhl.github.io/2018/01/11/Selenium%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E5%A4%A9%E7%8C%AB%E6%B7%98%E5%AE%9D%E4%BA%AC%E4%B8%9C%E4%B9%B0%E5%AE%B6%E7%A7%80/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="Selenium实战——天猫淘宝京东买家秀源码地址：https:&#x2F;&#x2F;github.com&#x2F;edisonleolhl&#x2F;BuyersShow 1、起因 作为一个关注什么值得买已久的人，作为一个微博都关注了好几个白菜君的人，在各大电商网站上薅羊毛那是再平常不过了。作为一个从来没看过商品的买家，商品评论里的买家秀自然是重点关注。  然而有的商品，只钟意其中一种颜色，或者款式，也许这个款式很特别，买的人很少">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://edisonleolhl.github.io/images/avatar.jpeg">
+<meta property="article:published_time" content="2018-01-10T23:54:35.000Z">
+<meta property="article:modified_time" content="2023-05-13T08:03:56.598Z">
+<meta property="article:author" content="一个廖少少">
+<meta property="article:tag" content="selenium">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="淘宝">
+<meta property="article:tag" content="天猫">
+<meta property="article:tag" content="京东">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://edisonleolhl.github.io/images/avatar.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://edisonleolhl.github.io/2018/01/11/Selenium%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E5%A4%A9%E7%8C%AB%E6%B7%98%E5%AE%9D%E4%BA%AC%E4%B8%9C%E4%B9%B0%E5%AE%B6%E7%A7%80/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Selenium实战——天猫淘宝京东买家秀',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-13 16:03:56'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">55</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/cover.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Selenium实战——天猫淘宝京东买家秀</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2018-01-10T23:54:35.000Z" title="发表于 2018-01-11 07:54:35">2018-01-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-13T08:03:56.598Z" title="更新于 2023-05-13 16:03:56">2023-05-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%88%AC%E8%99%AB/">爬虫</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Selenium实战——天猫淘宝京东买家秀"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Selenium实战——天猫淘宝京东买家秀"><a href="#Selenium实战——天猫淘宝京东买家秀" class="headerlink" title="Selenium实战——天猫淘宝京东买家秀"></a>Selenium实战——天猫淘宝京东买家秀</h1><p>源码地址：<a target="_blank" rel="noopener" href="https://github.com/edisonleolhl/BuyersShow">https://github.com/edisonleolhl/BuyersShow</a></p>
+<h2 id="1、起因"><a href="#1、起因" class="headerlink" title="1、起因"></a>1、起因</h2><ul>
+<li><p>作为一个关注什么值得买已久的人，作为一个微博都关注了好几个白菜君的人，在各大电商网站上薅羊毛那是再平常不过了。作为一个从来没看过商品的买家，商品评论里的买家秀自然是重点关注。</p>
+</li>
+<li><p>然而有的商品，只钟意其中一种颜色，或者款式，也许这个款式很特别，买的人很少，即使在评论区选择“带图”评价，可能好几页才有一个买家秀，这无疑是非常耗时又耗力的。</p>
+</li>
+<li><p>而且，商家有时候为了评价数量更多、更好看，新款的商品会和老款商品放在一起卖，选择款式的时候区分开，但是评价里却还有很多老款的，新款的寥寥无几，不禁想到：如果能一次性只看一种款式的买家秀就好了。</p>
+</li>
+<li><p>作为一个Python爬虫的实践者，就琢磨着能不能写个自动化工具，告诉程序商品的url地址，然后在本地就会有所有的买家秀图片，并且是按款式区分的，于是，说干就干，总共用时一天，反正坑挺多的。。</p>
+</li>
+</ul>
+<h2 id="2、步骤"><a href="#2、步骤" class="headerlink" title="2、步骤"></a>2、步骤</h2><ul>
+<li><p>首先，访问这些评论，是不需要登录的，所以最开始我搞了挺久的cookies，后来发现根本不需要。。</p>
+</li>
+<li><p>selenium作为一个强大的自动化工具，几乎可以完全模拟浏览器的所有行为，抓取买家秀自然不在话下，如果你对selenium还不太了解，请看这篇文章：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/c8ed978dd0ab">https://www.jianshu.com/p/c8ed978dd0ab</a></p>
+</li>
+<li><p>先抓淘宝吧，进入商品页面后，先要跳转到评论部分，点击“累计评论”这个按钮就好了。注意了，先得把窗口最大化哦，</p>
+<pre><code>  driver.maximize_window()
+</code></pre>
+<p>  <img src="/images/taobao.jpg" alt="2018111-taobao"></p>
+</li>
+<li><p>用xpath语法来选择这个按钮吧，如何快速知道这个元素的xpath路径呢，推荐chrome浏览器安装xpath helper这个插件，打开插件，按住shift，把鼠标移动到元素上，框里自动出来xpath路径了。</p>
+<pre><code>  driver.find_element_by_xpath(&quot;.//*/a[@id=&#39;J_ReviewTabTrigger&#39;]&quot;).click() # 累计评论
+</code></pre>
+<p>  <img src="/images/taobaoxpath.jpg" alt="2018111-taobaoxpath"></p>
+</li>
+<li><p>点击“有图”</p>
+<pre><code>  driver.find_element_by_xpath(&quot;.//*/label/input[@id=&#39;reviews-t-val3&#39;]&quot;).send_keys(Keys.SPACE) # 有图
+</code></pre>
+</li>
+<li><p>接下来是得到所有图片，这个比较简单，因为所有买家秀图片都是在li这个标签里面，而且这个li标签的class&#x3D;’photo-item’，所以xpath语法这样写就好了，最后会得到一个关于img_ele_list的列表：</p>
+<pre><code>  img_ele_list = driver.find_elements_by_xpath(&quot;.//*/li[@class=&#39;photo-item&#39;]/img&quot;)
+</code></pre>
+</li>
+<li><p>得到img_ele，调用img_ele_list[i].get_attribute(‘src’)，即可得到图片的url，但是注意，这个时候图片只有40x40！因为这是小图，那大图怎么办，点开一个买家秀，查看大图，发现它们的url有个规律：</p>
+<ul>
+<li><p>40x40的图片，url末尾是_40x40</p>
+</li>
+<li><p>400x400的图片，url末尾是_400x400</p>
+</li>
+<li><p>url那里除了40x40、400x400，其他完全一样，那其他图片是不是这样的呢？经过实践发现，把这里改成500x500，一样可以显示图片，图片大一号而已。通过总结得到，一般人都是用手机拍的照片，一般像素值肯定会大于400x400，于是这里直接替换成400x400即可，阿里已经存储了同一张图片的不同格式（虽然我觉得挺浪费空间的）。</p>
+<pre><code>url = img_ele_list[i].get_attribute(&#39;src&#39;).replace(&#39;40x40&#39;, &#39;400x400&#39;)
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>好，图片下载完了，如果直接下载到本地，文件名肯定是乱七八糟的，这与我们“想要按款式分开买家秀”的初衷不符了，在存储图片的时候，应该知道这个图片是哪个款式，于是，我们需要找到这个图片元素所在的那个评论用户所买的款式。</p>
+<p>  <img src="/images/taobaocomment.jpg" alt="2018111-taobaocomment"></p>
+</li>
+<li><p>根据xpath语法，我们得到了img_ele，需要往上找3级父节点，再找弟弟，再找class&#x3D;’tb-r-info’的div，</p>
+<pre><code>  p = img_ele_list[i].find_element_by_xpath(&quot;./../../../following-sibling::div[1]/div[@class=&#39;tb-r-info&#39;]&quot;)
+</code></pre>
+</li>
+<li><p>但是得到的输出是这样的：</p>
+<pre><code>  p = &#39;2017年11月27日 10:06颜色分类：红色  参考身高：130cm&#39;
+</code></pre>
+</li>
+<li><p>这里用正则表达式，把日期和款式分开：</p>
+<pre><code>  d = re.findall (r&#39;^20[0-9][0-9].[0-1][0-9].[0-3][0-9].&#39;, p.text)[0]
+
+  p = re.findall (r&#39;(?&lt;=[0-9][0-9]:[0-9][0-9]).+$&#39;, p.text)[0].replace (&#39;/&#39;, &#39;-&#39;).replace (&#39;\\&#39;, &#39;--&#39;)  # 款式要作为文件名的，所以不要/和\\
+</code></pre>
+</li>
+<li><p>从上图可以看到，同时也可以找到买家秀对应的用户评论，这里直接给出xpath语法：</p>
+<pre><code>  c = img_ele.find_element_by_xpath(&quot;.//../../../preceding-sibling::div[1]&quot;).text.replace (&#39;/&#39;, &#39;-&#39;).replace (&#39;\\&#39;, &#39;--&#39;)
+</code></pre>
+</li>
+<li><p>好的，一个完整的图片以及信息找到了，要遍历这一页的所有买家秀，怎么做呢？</p>
+</li>
+<li><p>前文我们得到了img_ele_list，我们可以对其遍历，对每个img_ele，找到其对应的评论、日期、款式，各自加入到一个新的列表中，最后4个列表长度相等，代码如下：</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 得到把该页的所有买家秀，存入列表中，并且创建另外三个列表，长度一样，</span></span><br><span class="line"><span class="comment"># 分别存储每个买家秀的property和对应的用户发表的评论时间及内容</span></span><br><span class="line"><span class="comment"># 我认为带买家秀的评论比较重要，最后在图片文件名中给出</span></span><br><span class="line">img_ele_list = driver.find_elements_by_xpath(<span class="string">&quot;.//*/li[@class=&#x27;photo-item&#x27;]/img&quot;</span>)</span><br><span class="line">property_list = []</span><br><span class="line">datetime_list = []</span><br><span class="line">comment_list = []</span><br><span class="line"></span><br><span class="line">p, d, c = <span class="string">&#x27;&#x27;</span>, <span class="string">&#x27;&#x27;</span>, <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> img_ele <span class="keyword">in</span> img_ele_list:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        p = img_ele.find_element_by_xpath(<span class="string">&quot;./../../../following-sibling::div[1]/div[@class=&#x27;tb-r-info&#x27;]&quot;</span>) <span class="comment"># p = &#x27;2017年11月27日 10:06颜色分类：红色  参考身高：130cm&#x27;</span></span><br><span class="line">        d = re.findall (<span class="string">r&#x27;^20[0-9][0-9].[0-1][0-9].[0-3][0-9].&#x27;</span>, p.text)</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(d) &gt; <span class="number">0</span>:</span><br><span class="line">            d = d[<span class="number">0</span>]  <span class="comment"># 得到日期时间</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            d = <span class="string">&#x27;&#x27;</span></span><br><span class="line">        p = re.findall (<span class="string">r&#x27;(?&lt;=[0-9][0-9]:[0-9][0-9]).+$&#x27;</span>, p.text)</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(p) &gt; <span class="number">0</span>:</span><br><span class="line">            p = p[<span class="number">0</span>].replace (<span class="string">&#x27;/&#x27;</span>, <span class="string">&#x27;-&#x27;</span>).replace (<span class="string">&#x27;\\&#x27;</span>, <span class="string">&#x27;--&#x27;</span>)  <span class="comment"># 删掉日期时间，得到款式等信息</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            p = <span class="string">&#x27;&#x27;</span></span><br><span class="line">        c = img_ele.find_element_by_xpath(<span class="string">&quot;.//../../../preceding-sibling::div[1]&quot;</span>).text.replace (<span class="string">&#x27;/&#x27;</span>, <span class="string">&#x27;-&#x27;</span>).replace (<span class="string">&#x27;\\&#x27;</span>, <span class="string">&#x27;--&#x27;</span>)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;ERROR happens when getting corresponding property of img :::&quot;</span>, e)</span><br><span class="line">    datetime_list.append (d)</span><br><span class="line">    property_list.append (p)</span><br><span class="line">    comment_list.append (c)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 四个列表长度一致，所以可以用同一个指针i来对四个列表同步遍历</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(img_ele_list)):</span><br><span class="line">    url = img_ele_list[i].get_attribute(<span class="string">&#x27;src&#x27;</span>).replace(<span class="string">&#x27;40x40&#x27;</span>, <span class="string">&#x27;400x400&#x27;</span>)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span> (path + <span class="string">&#x27;/&#x27;</span> + property_list[i] + <span class="string">&#x27;-&#x27;</span> + datetime_list[i] + <span class="string">&#x27;-&#x27;</span> + <span class="built_in">str</span>(time.time()) + <span class="string">&#x27;.jpg&#x27;</span>, <span class="string">&#x27;wb+&#x27;</span>) <span class="keyword">as</span> f_img:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            f_img.write (urllib.request.urlopen (url).read ())</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;Img url illegal: &quot;</span> + url)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">print</span> (<span class="string">&quot;A new img!!! PROPERTY = %s, DATETIME = %s\n, COMMENT = %s\n, DOWALOADING url = %s&quot;</span></span><br><span class="line">                   %(property_list[i], datetime_list[i], comment_list[i], url))</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可以看到，完成了4个列表后，就开始下载这些图片了，图片名字举例如：</p>
+<pre><code>  颜色：卡其色  尺码：170-92A-M-2017年10月04日-1515648926.131808.jpg
+</code></pre>
+</li>
+</ul>
+<h3 id="翻页"><a href="#翻页" class="headerlink" title="翻页"></a>翻页</h3><ul>
+<li><p>翻页从来都是一个重难点，但是掌握规律，是有迹可循的。看截图，评论有两页，第一页是这样的：</p>
+<p>  <img src="/images/taobaocommentpage1.jpg" alt="2018111-next"></p>
+<p>  <img src="/images/taobaocommentpage2.jpg" alt="2018111-nextlast"></p>
+</li>
+<li><p>这里给出我的办法：找到pg-current的li，查它的弟弟元素，得到其文本值，如果是数字，则还没有到最后一页，如果不是数字，则到最后一页（即“下一页”），于是在这里用try…except捕捉一下，再所有代码之上套一个while循环，于是，代码如下：</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 得到把该页的所有买家秀，存入列表中，并且创建另外三个列表，长度一样，</span></span><br><span class="line">    <span class="comment"># 分别存储每个买家秀的property和对应的用户发表的评论时间及内容</span></span><br><span class="line">    <span class="comment"># 我认为带买家秀的评论比较重要，最后在图片文件名中给出</span></span><br><span class="line">    img_ele_list = driver.find_elements_by_xpath(<span class="string">&quot;.//*/li[@class=&#x27;photo-item&#x27;]/img&quot;</span>)</span><br><span class="line">    property_list = []</span><br><span class="line">    datetime_list = []</span><br><span class="line">    comment_list = []</span><br><span class="line"></span><br><span class="line">    p, d, c = <span class="string">&#x27;&#x27;</span>, <span class="string">&#x27;&#x27;</span>, <span class="string">&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> img_ele <span class="keyword">in</span> img_ele_list:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            p = img_ele.find_element_by_xpath(<span class="string">&quot;./../../../following-sibling::div[1]/div[@class=&#x27;tb-r-info&#x27;]&quot;</span>) <span class="comment"># p = &#x27;2017年11月27日 10:06颜色分类：红色  参考身高：130cm&#x27;</span></span><br><span class="line">            d = re.findall (<span class="string">r&#x27;^20[0-9][0-9].[0-1][0-9].[0-3][0-9].&#x27;</span>, p.text)</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(d) &gt; <span class="number">0</span>:</span><br><span class="line">                d = d[<span class="number">0</span>]  <span class="comment"># 得到日期时间</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                d = <span class="string">&#x27;&#x27;</span></span><br><span class="line">            p = re.findall (<span class="string">r&#x27;(?&lt;=[0-9][0-9]:[0-9][0-9]).+$&#x27;</span>, p.text)</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(p) &gt; <span class="number">0</span>:</span><br><span class="line">                p = p[<span class="number">0</span>].replace (<span class="string">&#x27;/&#x27;</span>, <span class="string">&#x27;-&#x27;</span>).replace (<span class="string">&#x27;\\&#x27;</span>, <span class="string">&#x27;--&#x27;</span>)  <span class="comment"># 删掉日期时间，得到款式等信息</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                p = <span class="string">&#x27;&#x27;</span></span><br><span class="line">            c = img_ele.find_element_by_xpath(<span class="string">&quot;.//../../../preceding-sibling::div[1]&quot;</span>).text.replace (<span class="string">&#x27;/&#x27;</span>, <span class="string">&#x27;-&#x27;</span>).replace (<span class="string">&#x27;\\&#x27;</span>, <span class="string">&#x27;--&#x27;</span>)</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;ERROR happens when getting corresponding property of img :::&quot;</span>, e)</span><br><span class="line">        datetime_list.append (d)</span><br><span class="line">        property_list.append (p)</span><br><span class="line">        comment_list.append (c)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 四个列表长度一致，所以可以用同一个指针i来对四个列表同步遍历</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(img_ele_list)):</span><br><span class="line">        url = img_ele_list[i].get_attribute(<span class="string">&#x27;src&#x27;</span>).replace(<span class="string">&#x27;40x40&#x27;</span>, <span class="string">&#x27;400x400&#x27;</span>)</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span> (path + <span class="string">&#x27;/&#x27;</span> + property_list[i] + <span class="string">&#x27;-&#x27;</span> + datetime_list[i] + <span class="string">&#x27;-&#x27;</span> + <span class="built_in">str</span>(time.time()) + <span class="string">&#x27;.jpg&#x27;</span>, <span class="string">&#x27;wb+&#x27;</span>) <span class="keyword">as</span> f_img:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                f_img.write (urllib.request.urlopen (url).read ())</span><br><span class="line">            <span class="keyword">except</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&quot;Img url illegal: &quot;</span> + url)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="built_in">print</span> (<span class="string">&quot;A new img!!! PROPERTY = %s, DATETIME = %s\n, COMMENT = %s\n, DOWALOADING url = %s&quot;</span></span><br><span class="line">                    %(property_list[i], datetime_list[i], comment_list[i], url))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># ---------------翻页---------------</span></span><br><span class="line">    driver.execute_script (<span class="string">&quot;window.scrollBy(0,-100)&quot;</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="built_in">next</span> = driver.find_element_by_xpath(<span class="string">&quot;.//*/ul/li[@class=&#x27;pg-current&#x27;]/./following-sibling::li[1]&quot;</span>) <span class="comment"># 淘宝的评论页码工具条，每个都是li标签</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">next</span>.text.isdigit():</span><br><span class="line">            ActionChains(driver).click(<span class="built_in">next</span>).perform()</span><br><span class="line">            time.sleep(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            exit()</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;only one page with img&#x27;</span>)</span><br><span class="line">        exit()</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="3、结果"><a href="#3、结果" class="headerlink" title="3、结果"></a>3、结果</h2><ul>
+<li><p>在项目文件夹下，运行items.py，提示输入url，复制你在浏览器地址栏中的url，粘贴到命令行上（我用的是Pycharm IDE，最后要加个空格，防止IDE自动打开url），按下回车即可，这里找个图片比较多的商品吧。</p>
+<p>  <a target="_blank" rel="noopener" href="https://item.taobao.com/item.htm?spm=a219r.lm893.14.1.3b9cc350h7CJf8&id=561861021238&ns=1&abbucket=16">https://item.taobao.com/item.htm?spm=a219r.lm893.14.1.3b9cc350h7CJf8&amp;id=561861021238&amp;ns=1&amp;abbucket=16</a></p>
+<p>  <img src="/images/taobaopycharm.jpg" alt="2018111-pycharmrun"></p>
+</li>
+<li><p>单个输出是这样的：</p>
+<pre><code>  A new img!!! PROPERTY = 颜色分类：米灰色厚绒  尺码：38, DATETIME = 2017年12月27日
+  , COMMENT = 包装特别好，大盒子套小盒子，高大上，鞋特别暖和，毛毛特别多特别软，鞋底也厚，走路软软的，哈哈非常喜欢，都说好看，尺码也特准，超级喜欢
+  , DOWALOADING url = https://img.alicdn.com/imgextra/i2/0/TB2wrG1klTH8KJjy0FiXXcRsXXa_!!0-rate.jpg_400x400.jpg
+</code></pre>
+</li>
+<li><p>因为一个买家可能有多个买家秀图片，还记得上文说的4个列表长度一致吗？好几个图片对应的款式、日期、评论，都是一样的，所以看起来命令行中会有重复的，但是url绝对是不一样的（即都是不同的买家秀，除非买家发表评论的时候手抖发了两张一样的）</p>
+</li>
+<li><p>在本地文件夹中可以轻松查看：</p>
+</li>
+</ul>
+<p><img src="/images/taobaobuyershowlocal.jpg" alt="2018111-shoe"></p>
+<ul>
+<li>因为图片文件名开头是按款式区分的，所以文件夹中“按名称排序”即可把同款商品放在一起浏览，简单方便。</li>
+</ul>
+<h2 id="4、其他电商"><a href="#4、其他电商" class="headerlink" title="4、其他电商"></a>4、其他电商</h2><h3 id="天猫"><a href="#天猫" class="headerlink" title="天猫"></a>天猫</h3><ul>
+<li><p>注意天猫和淘宝是两套不同的网页模版，所以还得重新设计xpath语法，主要有这几点需要更改的：</p>
+<ul>
+<li><p>各种xpath</p>
+</li>
+<li><p>翻页操作（详情参考github上源码的注释）</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="京东"><a href="#京东" class="headerlink" title="京东"></a>京东</h3><ul>
+<li><p>京东的带图评价其实挺方便的，但是还是不能按款式浏览。</p>
+<p>  <img src="/images/jingdongclient.jpg" alt="2018111-jd"></p>
+</li>
+<li><p>对于jd而言，得到图片后，查询对应评价、日期、款式其实挺简单的，因为像上图一样，一个页面只有一个评论、日期、款式，很好处理，具体看源码即可。</p>
+</li>
+<li><p>翻页操作，也是直接点下一个，就不详细叙述了。</p>
+</li>
+</ul>
+<h2 id="5、后记"><a href="#5、后记" class="headerlink" title="5、后记"></a>5、后记</h2><ul>
+<li><p>小工具真的特别特别实用，才写了每两天，就用了好几次了（虽然都是些白菜），但是真的特别方便，买家秀才是反映商品的有效途径。</p>
+<p>  <img src="/images/dicathlon.jpg" alt="2018111-dikan"></p>
+<p>  <img src="/images/taobaohat.jpg" alt="2018111-hat"></p>
+</li>
+</ul>
+<blockquote>
+<p>原文发表于 <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/c84f943eca5c">https://www.jianshu.com/p/c84f943eca5c</a>, by 2018.01.11 14:04:06</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io/2018/01/11/Selenium%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E5%A4%A9%E7%8C%AB%E6%B7%98%E5%AE%9D%E4%BA%AC%E4%B8%9C%E4%B9%B0%E5%AE%B6%E7%A7%80/">https://edisonleolhl.github.io/2018/01/11/Selenium%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E5%A4%A9%E7%8C%AB%E6%B7%98%E5%AE%9D%E4%BA%AC%E4%B8%9C%E4%B9%B0%E5%AE%B6%E7%A7%80/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://edisonleolhl.github.io" target="_blank">一知半解</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/selenium/">selenium</a><a class="post-meta__tags" href="/tags/%E7%88%AC%E8%99%AB/">爬虫</a><a class="post-meta__tags" href="/tags/%E6%B7%98%E5%AE%9D/">淘宝</a><a class="post-meta__tags" href="/tags/%E5%A4%A9%E7%8C%AB/">天猫</a><a class="post-meta__tags" href="/tags/%E4%BA%AC%E4%B8%9C/">京东</a></div><div class="post_share"><div class="social-share" data-image="/images/avatar.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2018/05/11/Python%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="Python基础知识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Python基础知识</div></div></a></div><div class="next-post pull-right"><a href="/2017/12/05/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/" title="遗传算法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">遗传算法</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2017/11/18/%20%E5%88%A9%E7%94%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7Selenium%E7%88%AC%E5%8F%96IEEE%E7%9A%84%E5%AD%A6%E8%80%85%E4%BF%A1%E6%81%AF/" title="利用自动化测试工具Selenium爬取IEEE的学者信息"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2017-11-18</div><div class="title">利用自动化测试工具Selenium爬取IEEE的学者信息</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">55</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/edisonleolhl"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/edisonleolhl" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:edisonleolhl@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a><a class="social-icon" href="https://www.jianshu.com/u/28b41b12cde8" target="_blank" title="jianshu"><i class="fas fa-link" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Go Big or Go Home</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Selenium%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E5%A4%A9%E7%8C%AB%E6%B7%98%E5%AE%9D%E4%BA%AC%E4%B8%9C%E4%B9%B0%E5%AE%B6%E7%A7%80"><span class="toc-number">1.</span> <span class="toc-text">Selenium实战——天猫淘宝京东买家秀</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E8%B5%B7%E5%9B%A0"><span class="toc-number">1.1.</span> <span class="toc-text">1、起因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.2.</span> <span class="toc-text">2、步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BF%BB%E9%A1%B5"><span class="toc-number">1.2.1.</span> <span class="toc-text">翻页</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E7%BB%93%E6%9E%9C"><span class="toc-number">1.3.</span> <span class="toc-text">3、结果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E5%85%B6%E4%BB%96%E7%94%B5%E5%95%86"><span class="toc-number">1.4.</span> <span class="toc-text">4、其他电商</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A9%E7%8C%AB"><span class="toc-number">1.4.1.</span> <span class="toc-text">天猫</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%AC%E4%B8%9C"><span class="toc-number">1.4.2.</span> <span class="toc-text">京东</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E3%80%81%E5%90%8E%E8%AE%B0"><span class="toc-number">1.5.</span> <span class="toc-text">5、后记</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/13/Ford-Fulkerson%20%E6%96%B9%E6%B3%95%E2%80%94%E2%80%94%E6%9C%80%E5%A4%A7%E6%B5%81%E9%97%AE%E9%A2%98/" title="Ford-Fulkerson 方法——最大流问题">Ford-Fulkerson 方法——最大流问题</a><time datetime="2023-05-13T00:17:29.000Z" title="发表于 2023-05-13 08:17:29">2023-05-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20ThreadLocal%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E7%BC%93%E5%AD%98%E9%87%8D%E5%A4%8DRPC%E7%BB%93%E6%9E%9C/" title="微服务架构下的Java ThreadLocal实践——缓存重复RPC结果">微服务架构下的Java ThreadLocal实践——缓存重复RPC结果</a><time datetime="2023-05-12T05:31:47.000Z" title="发表于 2023-05-12 13:31:47">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/C++%E6%96%B0%E7%89%B9%E6%80%A7/" title="C++新特性">C++新特性</a><time datetime="2023-05-11T05:41:59.000Z" title="发表于 2023-05-11 13:41:59">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/" title="Java新特性">Java新特性</a><time datetime="2023-05-11T03:29:22.000Z" title="发表于 2023-05-11 11:29:22">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章">建站第一篇文章</a><time datetime="2023-05-09T16:25:27.000Z" title="发表于 2023-05-10 00:25:27">2023-05-10</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 一个廖少少</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

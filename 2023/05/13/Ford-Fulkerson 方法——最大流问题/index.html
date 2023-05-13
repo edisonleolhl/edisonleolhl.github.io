@@ -1,0 +1,471 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Ford-Fulkerson 方法——最大流问题 | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="最大流&amp;&amp;最小费用最大流&amp;&amp;最大二分匹配中文是2017年8月的笔记，英文是2018.11月的笔记 英文笔记来自于MIT公开课的笔记，教材为Introduction to Algorithm(Third Edition)，根据四位作者姓名首字母大写常称作CLRS，以下是一些资源：  MIT OCW COURSE HOME MIT OCW video ppt downl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ford-Fulkerson 方法——最大流问题">
+<meta property="og:url" content="https://edisonleolhl.github.io/2023/05/13/Ford-Fulkerson%20%E6%96%B9%E6%B3%95%E2%80%94%E2%80%94%E6%9C%80%E5%A4%A7%E6%B5%81%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="最大流&amp;&amp;最小费用最大流&amp;&amp;最大二分匹配中文是2017年8月的笔记，英文是2018.11月的笔记 英文笔记来自于MIT公开课的笔记，教材为Introduction to Algorithm(Third Edition)，根据四位作者姓名首字母大写常称作CLRS，以下是一些资源：  MIT OCW COURSE HOME MIT OCW video ppt downl">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://edisonleolhl.github.io/images/avatar.jpeg">
+<meta property="article:published_time" content="2023-05-13T00:17:29.000Z">
+<meta property="article:modified_time" content="2023-05-13T08:23:15.814Z">
+<meta property="article:author" content="一个廖少少">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://edisonleolhl.github.io/images/avatar.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://edisonleolhl.github.io/2023/05/13/Ford-Fulkerson%20%E6%96%B9%E6%B3%95%E2%80%94%E2%80%94%E6%9C%80%E5%A4%A7%E6%B5%81%E9%97%AE%E9%A2%98/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Ford-Fulkerson 方法——最大流问题',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-13 16:23:15'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">55</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/cover.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Ford-Fulkerson 方法——最大流问题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-13T00:17:29.000Z" title="发表于 2023-05-13 08:17:29">2023-05-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-13T08:23:15.814Z" title="更新于 2023-05-13 16:23:15">2023-05-13</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Ford-Fulkerson 方法——最大流问题"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="最大流-amp-amp-最小费用最大流-amp-amp-最大二分匹配"><a href="#最大流-amp-amp-最小费用最大流-amp-amp-最大二分匹配" class="headerlink" title="最大流&amp;&amp;最小费用最大流&amp;&amp;最大二分匹配"></a>最大流&amp;&amp;最小费用最大流&amp;&amp;最大二分匹配</h1><p>中文是2017年8月的笔记，英文是2018.11月的笔记</p>
+<p>英文笔记来自于MIT公开课的笔记，教材为Introduction to Algorithm(Third Edition)，根据四位作者姓名首字母大写常称作CLRS，以下是一些资源：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-046j-introduction-to-algorithms-sma-5503-fall-2005/index.htm">MIT OCW COURSE HOME</a></li>
+<li><a target="_blank" rel="noopener" href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-046j-introduction-to-algorithms-sma-5503-fall-2005/video-lectures">MIT OCW video</a></li>
+<li>ppt download links are just under the video frame</li>
+<li><a target="_blank" rel="noopener" href="https://www.khanacademy.org/computing/computer-science/algorithms">khan academy</a> （brief and easy）</li>
+<li>book: Introduction to Algorithms ( known as CLRS)</li>
+<li><a target="_blank" rel="noopener" href="http://mitp-content-server.mit.edu:18180/books/content/sectbyfn?collid=books_pres_0&fn=Intro_to_Algo_Selected_Solutions.pdf&id=8030">official exercises solution to CLRS</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/gzc/CLRS">inofficial exercises solution to CLRS(github)</a></li>
+<li><a target="_blank" rel="noopener" href="https://walkccc.github.io/CLRS/">inofficial solution(easy to read)</a></li>
+</ul>
+<h2 id="最大流问题"><a href="#最大流问题" class="headerlink" title="最大流问题"></a>最大流问题</h2><ul>
+<li><p>比喻：有一个自来水管道运输系统，起点是 s，终点是 t，途中经过的管道都有一个最大的容量，可以想象每条管道不能被水流“撑爆”。求从 s 到 t 的最大水流量是多少？</p>
+</li>
+<li><p>应用：网络最大流问题是网络的另一个基本问题。许多系统包含了流量问题。例如交通系统有车流量，金融系统有现金流，控制系统有信息流等。许多流问题主要是确定这类系统网络所能承受的最大流量以及如何达到这个最大流量。</p>
+</li>
+<li><p>流网络（Flow Networks）：指的是一个有向图 G &#x3D; (V, E)，其中每条边 (u, v) ∈ E 均有一非负容量 c(u, v) ≥ 0。如果 (u, v) ∉ E 则可以规定 c(u, v) &#x3D; 0。流网络中有两个特殊的顶点：源点 s （source）和汇点 t（sink）。为方便起见，假定每个顶点均处于从源点到汇点的某条路径上，就是说，对每个顶点 v ∈ E，存在一条路径 s –&gt; v –&gt; t。</p>
+</li>
+<li><p>容量限制(Capacity constraint)：对于所有的结点 u, v ∈ V，要求 0 ≤ f(u, v) ≤ c(u, v)</p>
+</li>
+<li><p>流量限制&#x2F;流量守恒(Flow conservation)：对于所有的结点 u ∈ V - {s, t}，要求 Σf(v, u) &#x3D; Σf(u, v)</p>
+<blockquote>
+<p>We call this property “flow conservation”, and it is equivalent to Kirchhoff’s current law when the material is electrical current.</p>
+<p>Flow in equals flow out.</p>
+</blockquote>
+</li>
+<li><p>当(u, v) ∉ E时，从结点 u 到结点 v 之间没有流，因此f(u, v) &#x3D; 0。我们称非负数值f(u, v)为从结点 u 到结点 v 的流，定义如下： |f| &#x3D; Σf(s, v) - Σf(v, s)，也就是说，流 f 的值是从源结点流出的总流量减去流入源结点的总流量。（有点类似电路中的基尔霍夫定律）</p>
+<blockquote>
+<p>Here, the |*|notation denotes flow value, not absolute value or cardinality.</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="具有多个源结点和多个汇点的网络"><a href="#具有多个源结点和多个汇点的网络" class="headerlink" title="具有多个源结点和多个汇点的网络"></a>具有多个源结点和多个汇点的网络</h3><ul>
+<li>一个最大流问题可能会包含几个源结点和几个汇点，比如{s1, s2, …, sm} 以及 {t1, t2, …, tm}，而不仅仅只有一个源结点和汇点，其解决方法并不比普通的最大流问题难。</li>
+<li>加入一个超级源结点 s，并对于多个源结点，加入有向边 (s, si) 和容量 c(s, si) &#x3D; ∞，同时创建一个超级汇点 t，并对于多个汇点，加入有向边 (ti, t) 和容量 c(ti, t) &#x3D; ∞。</li>
+<li>这样单源结点能够给原来的多个源结点 si 提供所需要的流量，而单汇点 t 则可以消费原来所有汇点 ti 所消费的流量。</li>
+</ul>
+<h3 id="Ford-Fulkerson-方法"><a href="#Ford-Fulkerson-方法" class="headerlink" title="Ford-Fulkerson 方法"></a>Ford-Fulkerson 方法</h3><blockquote>
+<p>We call it a “method” rather than an “algorithm” because it encompasses<br>several implementations with differing running times.</p>
+</blockquote>
+<ul>
+<li><p>几个重要的概念</p>
+<ul>
+<li><p>残留网络(residual capacity)：容量网络 - 流量网络 &#x3D; 残留网络</p>
+<ul>
+<li><p>具体说来，就是假定一个网络 G &#x3D;（V，E），其源点 s，汇点 t。设 f 为 G 中的一个流，对应顶点 u 到顶点 v 的流。在不超过 C（u，v）的条件下（C 代表边容量），从 u 到 v 之间可以压入的额外网络流量，就是边（u，v）的残余容量（residual capacity）。</p>
+</li>
+<li><p>残余网络 Gf 还可能包含 G 中不存在的边，算法对流量进行操作的目的是增加总流量，为此，算法可能对特定边上的流量进行缩减。为了表示对一个正流量 f(u ,v) 的缩减，我们将边 (u, v) 加入到 Gf中，并将其残余容量设置为 cf(v, u) &#x3D; f(u ,v)。也就是说，一条边所能允许的反向流量最多能将其正向流量抵消。</p>
+</li>
+<li><p>残存网络中的这些反向边允许算法将已经发送出来的流量发送回去。而将流量从同一边发送回去等同于缩减该边的流量，这种操作在很多算法中都是必需的。</p>
+</li>
+</ul>
+</li>
+<li><p>增广路径(augmenting path): 这是一条不超过各边容量的从 s 到 t 的简单路径，向这个路径注入流量，可以增加整个网络的流量。我们称在一条增广路径上能够为每条边增加的流量的最大值为路径的残余容量，cf(p) &#x3D; min{cf(u,v) : (u,v)∈路径p}</p>
+</li>
+<li><p>割：用来证明  “当残留网络中找不到增广路径时，即找到最大流”，最大流最小切割定理，具体证明略。</p>
+</li>
+</ul>
+</li>
+<li><p>算法过程：</p>
+<ul>
+<li><p>开始，对于所有结点 u, v ∈ V， f(u, v) &#x3D; 0，给出的初始流值为0。</p>
+</li>
+<li><p>在每一次迭代中，将 G 的流值增加，方法就是在残留网络　Gf 中寻找一条增广路径（一般用 BFS 算法遍历残留网络中各个结点，以此寻找增广路径），然后在增广路径中的每条边都增加等量的流值，这个流值的大小就是增广路径上的最大残余流量。</p>
+</li>
+<li><p>虽然 Ford-Fulkerson 方法每次迭代都增加流值，但是对于某条特定边来说，其流量可能增加，也可能减小，这是必要的，详情见下文的“反向边”。</p>
+</li>
+<li><p>重复这一过程，直到残余网络中不再存在增广路径为止。最大流最小切割定理将说明在算法终结时，该算法获得一个最大流。</p>
+</li>
+<li><p>伪代码：</p>
+<pre><code>FORD-FULKERSON（G，t，s）
+
+1 for each edge(u,v) 属于 E（G）
+
+2     do f[u,v]=0
+
+3          f[v,u]=0
+
+4 while there exists a path p from s to t in the residual network Gf // 根据最大流最小切割定理，当不再有增广路径时，流 f 就是最大流
+
+5       do cf(p)=min&#123;cf(u,v):(u,v)is in p&#125;  // cf(p)为该路径的残余容量
+
+6        for each edge (u,v) in p
+
+7              do f[u,v]=f[u,v]+cf(p)  //为该路径中的每条边中注入刚才找到到的残余容量
+
+8                    f[v,u]=-f[u,v]   //反向边注入反向流量
+</code></pre>
+</li>
+<li><p>反向边是什么？</p>
+<blockquote>
+<p>转自（已失效-_-）：<a target="_blank" rel="noopener" href="http://nano9th.wordpress.com.cn/2009/02/17/%E7%BD%91%E7%BB%9C%E6%B5%81%E5%9F%BA%E7%A1%80%E7%AF%87-edmond-karp%E7%AE%97%E6%B3%95/">http://nano9th.wordpress.com.cn/2009/02/17/%E7%BD%91%E7%BB%9C%E6%B5%81%E5%9F%BA%E7%A1%80%E7%AF%87-edmond-karp%E7%AE%97%E6%B3%95/</a></p>
+</blockquote>
+<ul>
+<li><p>假设没有上面伪代码中最后一步的操作，那么对于如下的流网络：</p>
+<p><img src="/images/jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219170051.png"></p>
+</li>
+<li><p>我们第一次找到了 1-2-3-4 这条增广路，这条路上的最小边剩余流量显然是 1。于是我们修改后得到了下面这个残留网络：</p>
+<p>  <img src="/images/jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219170114.png"></p>
+</li>
+<li><p>这时候 (1,2) 和 (3,4) 边上的流量都等于容量了，我们再也找不到其他的增广路了，当前的流量是 1。但这个答案明显不是最大流，因为我们可以同时走 1-2-4 和 1-3-4，这样可以得到流量为 2 的流。</p>
+</li>
+<li><p><strong>这是贪婪算法行不通的一个例子（摘自<a target="_blank" rel="noopener" href="https://book.douban.com/subject/26910665/">《算法与数据结构 C++语言描述》第四版</a>，但翻译很差劲，推荐读原版）</strong></p>
+</li>
+<li><p>而这个算法神奇的利用了一个叫做<strong>反向边</strong>的概念来解决这个问题。即每条边 (i,j) 都有一条反向边 (j,i)，反向边也同样有它的容量。那么我们刚刚的算法问题在哪里呢？问题就在于我们没有给程序一个<strong>后悔</strong>的机会，应该有一个不走 (2-3-4) 而改走 (2-4) 的机制。</p>
+</li>
+<li><p>我们来看刚才的例子，在找到 1-2-3-4 这条增广路之后，把容量修改成如下:</p>
+<p>  <img src="/images/jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219170941.png"></p>
+</li>
+<li><p>这时再找增广路的时候，就会找到 1-3-2-4 这条可增广量，即 delta 值为 1 的可增广路。将这条路增广之后，得到了最大流 2。</p>
+<p>  <img src="/images/jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219171007.png"></p>
+</li>
+<li><p>解释：</p>
+<p>事实上，当我们第二次的增广路走 3-2 这条反向边的时候，就相当于把 2-3 这条正向边已经是用了的流量给” 退” 了回去，不走 2-3 这条路，而改走从 2 点出发的其他的路也就是 2-4。（有人问如果这里没有 2-4 怎么办，这时假如没有 2-4 这条路的话，最终这条增广路也不会存在，因为他根本不能走到汇点）同时本来在 3-4 上的流量由 1-3-4 这条路来” 接管”。而最终 2-3 这条路正向流量 1，反向流量 1，等于没有流量。</p>
+</li>
+<li><p><strong>这就是这个算法的精华部分，利用反向边，使程序有了一个后悔和改正的机会</strong>。</p>
+<blockquote>
+<p>The intuition behind this definition（反向边） follows the definition of the residual network.<br>We increase the flow on (u, v) by f’(u, v) but decrease it by f’(u, v) because pushing flow on the reverse edge in the residual network signifies decreasing the flow in the original network.</p>
+<p>Pushing flow on the reverse edge in the residual network is also known as <em><strong>cancellation</strong></em>.</p>
+</blockquote>
+</li>
+<li><p>关于反向边的讨论——Modeling problems with antiparallel edges</p>
+<ul>
+<li><p>Our original assumption: if an edge (v1, v2) ∈ E, then (v2, v1) ∉ E.</p>
+</li>
+<li><p>What if we violate this assumption? Thus, we have (v2, v1) ∈ E. We call the two edges (v1, v2) and (v2, v1) <em><strong>antiparallel</strong></em>.</p>
+</li>
+<li><p>How to solve this problem? We could <em><strong>convert</strong></em> a graph <em><strong>with</strong></em> antiparallel edges into a graph <em><strong>wihout</strong></em> antiparallel edges:</p>
+<ul>
+<li>Split (v1, v2) by adding a new vertex v’ and replacing edge (v1, v2) with the pair of edge (v1, v’) and (v’, v2).</li>
+<li>Set the capacity of both new edges to the capacity of the original edge.</li>
+<li>Thus, the resulting network satisfies the property that if an edge is in the network, the reverse is not.</li>
+</ul>
+</li>
+<li><p>总之，antiparallel是允许存在的，引入一个新节点即可把带antiparallel的图转换为不带antiparallel的图</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="最大流-最小割定理"><a href="#最大流-最小割定理" class="headerlink" title="最大流-最小割定理"></a>最大流-最小割定理</h3><blockquote>
+<p>最大流-最小割定理用来证明Ford-Fulkson方法的确达到了最大流</p>
+</blockquote>
+<p>Cuts of flow networks</p>
+<ul>
+<li><p>The Ford-Fulkerson method repeatedly augments the flow along augmenting paths until it has found a maximum flow.</p>
+<p>How do we know that when the algorithm terminates, we have actually found a maximum flow?</p>
+<p>The max-flow min-cut theorem, which we shall prove shortly, tells us that a flow is maximum if and only if its residual network contains no augmenting path.</p>
+<p>To prove this theorem, though, we must first explore the notion of a cut of a flow network.</p>
+</li>
+<li><p>You can overview <em><strong>cut</strong></em> theory in my preview note of minimum spanning tree.</p>
+</li>
+<li><p>Definition:</p>
+<ul>
+<li><p>If f is a flow, then the <em><strong>net flow</strong></em> f(S, T) across the cut (S, T) is defined to be</p>
+<p>f(S, T) &#x3D; Σu∈SΣv∈T f(u, v) - Σu∈SΣv∈T f(v, u)</p>
+</li>
+<li><p>The <em><strong>capacity</strong></em> of the cut (S, T) is</p>
+<p>c(S, T) &#x3D; Σu∈SΣv∈T c(u, v)</p>
+</li>
+<li><p>A <em><strong>minimum cut</strong></em> of a network is a cut whose capacity is minimum over all cuts of the network.</p>
+</li>
+<li><p>Let f be a flow in a flow network G with source s and sink t, and let (S, T) be any cut of G. Then the <em><strong>net flow</strong></em> across (S, T) is</p>
+<p>f(S, T) &#x3D; |f|</p>
+</li>
+<li><p>The value of any flow f in a flow network G is <em><strong>bounded</strong></em> from above by the capacity of any cut of G</p>
+</li>
+</ul>
+</li>
+<li><p>Theorem 26.6 (Max-flow min-cut theorem)<br>If f is a flow in a flow network G(V, E) with source s and sink t, then the<br>following conditions are equivalent:</p>
+<ol>
+<li>f is a maximum flow in G.</li>
+<li>The residual network Gf contains no augmenting paths.</li>
+<li>|f| &#x3D; c(S, T) for some cut (S, T) of G.</li>
+</ol>
+</li>
+</ul>
+<h3 id="算法的效率及其优化——-Edmonds-Karp-算法"><a href="#算法的效率及其优化——-Edmonds-Karp-算法" class="headerlink" title="算法的效率及其优化—— Edmonds-Karp 算法"></a>算法的效率及其优化—— Edmonds-Karp 算法</h3><ul>
+<li><p>如果使用广度优先搜索（BFS）来寻找增广路径，那么可以改善 FORD-FULKERSON 算法的效率，也就是说，每次选择的增广路径是一条从 s 到 t 的最短路径，其中每条边的权重为单位距离（即根据边的数量来计算最短路径），我们称如此实现的 FORD-FULKERSON 方法为 Edmonds-Karp 算法。其运行时间为 O(VE^2)。</p>
+</li>
+<li><p>注意 E-K 算法适用于改善 F-F 算法的效率，边的权重仅仅还是容量限制，而下文的“最小费用最大流”中的每条边的权重有两个值：（容量限制，单位流量损耗）。</p>
+</li>
+</ul>
+<h3 id="最大流实例"><a href="#最大流实例" class="headerlink" title="最大流实例"></a>最大流实例</h3><ul>
+<li><p>对于如下拓扑图，给出从S1到S6允许的流的方向和带宽限制：</p>
+<ul>
+<li><p>求出S1到S6最大可能带宽（提示Ford-Fulkerson算法）。</p>
+</li>
+<li><p>画出流的流向及带宽分配，使达到最大可能的带宽。</p>
+</li>
+</ul>
+<p><img src="/images/maxflow1.jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219165219.png"></p>
+</li>
+<li><p>根据算法，最大流的值为23（定值），而下图是一种可能的流量走向：</p>
+<p><img src="/images/maxflow2.jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219165239.png"></p>
+</li>
+<li><p>源码：<a target="_blank" rel="noopener" href="https://github.com/edisonleolhl/DataStructure-Algorithm/blob/master/Graph/MaxFlow/maxflow.py">https://github.com/edisonleolhl/DataStructure-Algorithm/blob/master/Graph/MaxFlow/maxflow.py</a></p>
+</li>
+<li><p>在寻找增广路径时用到了 BFS 算法，以后有时间再写写 BFS、DFS 的文章，注意用到了 Python 中的标准库：deque，这是双端队列。</p>
+</li>
+</ul>
+<h3 id="CLRS-Exercies"><a href="#CLRS-Exercies" class="headerlink" title="CLRS Exercies"></a>CLRS Exercies</h3><blockquote>
+<p>本节摘录了一些算法导论上的对应习题</p>
+</blockquote>
+<h4 id="26-1-5"><a href="#26-1-5" class="headerlink" title="26.1-5"></a>26.1-5</h4><ul>
+<li><p>State the maximum-flow problem as a linear-programming problem.</p>
+</li>
+<li><p>Solution:</p>
+<p>max ∑f(s, v) - ∑f(v,s)</p>
+<p>s.t. 0 ≤ f(u, v) ≤ c(u, v)</p>
+<p>​      ∑f(v, u) - ∑f(u, v) &#x3D; 0</p>
+</li>
+</ul>
+<h4 id="26-1-6"><a href="#26-1-6" class="headerlink" title="26.1-6"></a>26.1-6</h4><ul>
+<li><p>Professor Adam has two children who, unfortunately, dislike each other. The problem is so severe that not only do they refuse to walk to school together, but in fact each one refuses to walk on any block that the other child has stepped on that day. The children have no problem with their paths crossing at a corner. Fortunately both the professor’s house and the school are on corners, but beyond that he is not sure if it is going to be possible to send both of his children to the same school. The professor has a map of his town. Show how to formulate the problem of determining whether both his children can go to the same school as a maximum-flow problem.</p>
+</li>
+<li><p>Solution:</p>
+<p>Create a vertex for each corner, and if there is a street between corners u and v, create directed edges (u,v) and (v,u).</p>
+<p>Set the capacity of each edge to 1. Let the source be corner on which the professor’s house sits, and let the sink be the corner on which the school is located.</p>
+<p>We wish to find a flow of value 22 that also has the property that f(u,v) is an integer for all vertices u and v.</p>
+<p>Such a flow represents two edge-disjoint paths from the house to the school.</p>
+</li>
+</ul>
+<h4 id="26-1-7"><a href="#26-1-7" class="headerlink" title="26.1-7"></a>26.1-7</h4><ul>
+<li><p>Suppose that, in addition to edge capacities, a flow network has <strong>vertex capacities</strong>. That is each vertex vv has a limit l(v) on how much flow can pass though vv. Show how to transform a flow network G&#x3D;(V,E) with vertex capacities into an equivalent flow network G′&#x3D;(V′,E′) without vertex capacities, such that a maximum flow in G′ has the same value as a maximum flow in G. How many vertices and edges does G′ have?</p>
+</li>
+<li><p>Solution:</p>
+<p>We will construct G′ by splitting each vertex v of G into two vertices v1, v2, joined by an edge of capacity l(v). All incoming edges of vv are now incoming edges to v1. All outgoing edges from vv are now outgoing edges from v2.</p>
+<p>More formally, construct G′&#x3D;(V′,E′) with capacity function c′ as follows. For every v∈V, create two vertices v1, v2 in V′. Add an edge (v1,v2) in E′ with c′(v1,v2)&#x3D;l(v). For every edge (u,v)∈E, create an edge (u2,v1) in E′ with capacity c′(u2,v1)&#x3D;c(u,v). Make s1 and t2 as the new source and target vertices in G′. Clearly, |V′|&#x3D;2|V| and |E′|&#x3D;|E|+|V|.</p>
+<p>I draw a picture to vividly illustrate the idea.</p>
+<p><img src="/images/maxflow3.jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219165840.png"></p>
+</li>
+</ul>
+<h2 id="最小费用最大流"><a href="#最小费用最大流" class="headerlink" title="最小费用最大流"></a>最小费用最大流</h2><ul>
+<li><p>最小费用最大流问题是经济学和管理学中的一类典型问题。在一个网络中每段路径都有 “容量” 和 “费用” 两个限制的条件下，此类问题的研究试图寻找出：流量从 A 到 B，如何选择路径、分配经过路径的流量，可以在流量最大的前提下，达到所用的费用最小的要求。如 n 辆卡车要运送物品，从 A 地到 B 地。由于每条路段都有不同的路费要缴纳，每条路能容纳的车的数量有限制，最小费用最大流问题指如何分配卡车的出发路径可以达到费用最低，物品又能全部送到。</p>
+</li>
+<li><p>注意：最后得到的流必须是最大流，最大流可能有多种情况，目标是找出最小费用的那种情况。</p>
+</li>
+<li><p>解决最小费用最大流问题，一般有两条途径。</p>
+<ul>
+<li><p>一条途径是先用最大流算法算出最大流，然后根据边费用，检查是否有可能在流量平衡的前提下通过调整边流量，使总费用得以减少？只要有这个可能，就进行这样的调整。调整后，得到一个新的最大流。然后，在这个新流的基础上继续检查，调整。这样迭代下去，直至无调整可能，便得到最小费用最大流。这一思路的特点是保持问题的可行性（始终保持最大流），向最优推进。</p>
+</li>
+<li><p>另一条解决途径和前面介绍的最大流算法思路相类似，一般首先给出零流作为初始流。这个流的费用为零，当然是最小费用的。然后寻找一条源点至汇点的增流链，但要求这条增流链必须是所有增流链中费用最小的一条。如果能找出增流链，则在增流链上增流，得出新流。将这个流做为初始流看待，继续寻找增流链增流。这样迭代下去，直至找不出增流链，这时的流即为最小费用最大流。这一算法思路的特点是保持解的最优性（每次得到的新流都是费用最小的流），而逐渐向可行解靠近（直至最大流时才是一个可行解）。</p>
+</li>
+</ul>
+</li>
+<li><p>第二种办法与前文的 Ford-fulkerson 方法很像，所以选择它更方便，如何找到费用最小的增链流呢？可以用最短路径算法，这里是单源最短路径，所以选择 Dijkstra 算法找出最短路径即可，关于 Dijkstra 的介绍见：<a target="_blank" rel="noopener" href="http://www.jianshu.com/p/8ba71199a65f">http://www.jianshu.com/p/8ba71199a65f</a>，里面有 Python 实现的程序。</p>
+</li>
+</ul>
+<h3 id="最小费用最大流实例"><a href="#最小费用最大流实例" class="headerlink" title="最小费用最大流实例"></a>最小费用最大流实例</h3><ul>
+<li><p>对于如下拓扑图，给出从S1到S6允许的流的方向和带宽限制，链路按带宽收费，以括号形式表示为（带宽容量，单位带宽费用）：</p>
+<ul>
+<li><p>求出S1到S6最小费用下最大可能带宽，得出最小费用值，并标出选路状况。</p>
+</li>
+<li><p>写出对给出任意拓扑图的通用算法描述。</p>
+<p><img src="/images/maxflow4.jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219164848.png"></p>
+</li>
+</ul>
+</li>
+<li><p>源码：<a target="_blank" rel="noopener" href="https://github.com/edisonleolhl/DataStructure-Algorithm/blob/master/Graph/MaxFlow/mincostmaxflow.py">https://github.com/edisonleolhl/DataStructure-Algorithm/blob/master/Graph/MaxFlow/mincostmaxflow.py</a></p>
+</li>
+<li><p>运行截图：</p>
+<p><img src="/images/maxflow5.jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219164950.png"></p>
+</li>
+<li><p>注意增广路径是回溯的，比如第一条增广路径，终点为5，path[5]&#x3D;4，所以它的前驱是4，path[4]&#x3D;2，所以4的前驱是2，2的前驱是1，1的前驱是0，所以这条路径是 0-1-2-4-5，也就是 s1-s2-s3-s5-s6。</p>
+</li>
+<li><p>注意在寻找增广路径时用到了 Dijkstra 算法，至于为什么用 heapq （最小堆的实现），因为它每次 pop 出来的都是最小的项目，根据 Dijkstra ，每次要从未访问点中找到最小距离的顶点，这样就可以巧妙实现。</p>
+</li>
+<li><p>流量分布情况：</p>
+<p><img src="/images/maxflow6.jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219165014.png"></p>
+</li>
+</ul>
+<h2 id="最大二分匹配"><a href="#最大二分匹配" class="headerlink" title="最大二分匹配"></a>最大二分匹配</h2><blockquote>
+<p>本节部分内容转自：<a target="_blank" rel="noopener" href="https://www.renfei.org/blog/bipartite-matching.html">二分图的最大匹配、完美匹配和匈牙利算法
+</a>、<a target="_blank" rel="noopener" href="https://blog.csdn.net/smartxxyx/article/details/9672181">图的匹配问题与最大流问题 (五)—— 计算二分图的最大匹配</a></p>
+</blockquote>
+<ul>
+<li><p>最大匹配定义：给定一个无向图 G &#x3D; (V, E)，一个匹配是指：E 的某个子集 M , 对于所有的结点 v ∈ V，子集 M 中最多有一条边与 v 相连，如果子集 M 中的某条边与 v 相连，那么称 v 由 M 匹配；否则 v 就是没有匹配的。最大匹配是指：对于所有任意匹配 M’，有 |M| ≥ |M’| 的匹配 M 。</p>
+</li>
+<li><p>二分图定义：设 G&#x3D;(V,E) 是一个无向图，如果顶点 V 可分割为两个互不相交的子集 (A,B)，并且图中的每条边（i，j）所关联的两个顶点 i 和 j 分别属于这两个不同的顶点集 (i in A,j in B)，则称图 G 为一个二分图。</p>
+</li>
+<li><p>完美匹配：如果一个图的某个匹配中，所有的顶点都是匹配点，那么它就是一个完美匹配。显然，完美匹配一定是最大匹配（完美匹配的任何一个点都已经匹配，添加一条新的匹配边一定会与已有的匹配边冲突）。但并非每个图都存在完美匹配。</p>
+</li>
+<li><p>应用：把机器集合 L 与任务集合 R 相匹配， E 中有边 (u, v) 就说明一台特定的机器 u ∈ L 能够完成一项特定的任务 v ∈ R，最大二分匹配就是让尽可能多的机器运行起来，因为一台机器只能同时做一个任务，一个任务也只能同时被一个机器完成，所以这里也可理解为让尽可能多的任务被完成。</p>
+</li>
+<li><p>用下图说明，图 1 是二分图，为了直观，一般画成 2 那样，3、4 中红色边即为匹配，4 是最大匹配，同时也是完美匹配（所有顶点都是匹配点），图 5 展示了男孩和女孩暗恋关系，有连线就说明这一对能成，求最大匹配就是求能成多少对</p>
+<p><img src="/images/jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219172417.png"></p>
+<p><img src="/images/jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219172437.png"></p>
+<p><img src="/images/jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219172450.png"></p>
+<p><img src="/images/jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219172503.png"></p>
+<p><img src="/images/maxflow11.jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219172619.png"></p>
+</li>
+</ul>
+<h3 id="Ford-Fulkson方法解决最大二分匹配"><a href="#Ford-Fulkson方法解决最大二分匹配" class="headerlink" title="Ford-Fulkson方法解决最大二分匹配"></a>Ford-Fulkson方法解决最大二分匹配</h3><p>给定如下的二分图（忽略颜色）：</p>
+<p>  <img src="/images/maxflow12.jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219164236.png"></p>
+<p>把已有的边设为单向边（方向 L -&gt; R），且各边容量设为 ∞ ；增加源结点 s 与汇点 t，将 s 与集合 L 中各个结点之间构造单向边，且各边容量设为 1；同样的，将集合 R 中各个结点与 t 之间构造单向边，且各边容量设为 1。这时得到一个流网络 G’，如下：</p>
+<p>  <img src="/images/maxflow13.jpg" alt="Ford-Fulkerson 方法——最大流问题-20191219164251.png"></p>
+<p>这时，最大匹配数值就等于流网络 G’ 中最大流的值。</p>
+<h3 id="匈牙利算法解决二分匹配"><a href="#匈牙利算法解决二分匹配" class="headerlink" title="匈牙利算法解决二分匹配"></a>匈牙利算法解决二分匹配</h3><p>推荐文章：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Dark_Scope/article/details/8880547">趣写算法系列之 – 匈牙利算法</a></p>
+<p>关键就是腾挪，迭代地腾挪</p>
+<blockquote>
+<p>原文发表于 <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/efb2d79e2b0f">https://www.jianshu.com/p/efb2d79e2b0f</a>, 2017.09.08 12:35:35</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io/2023/05/13/Ford-Fulkerson%20%E6%96%B9%E6%B3%95%E2%80%94%E2%80%94%E6%9C%80%E5%A4%A7%E6%B5%81%E9%97%AE%E9%A2%98/">https://edisonleolhl.github.io/2023/05/13/Ford-Fulkerson%20%E6%96%B9%E6%B3%95%E2%80%94%E2%80%94%E6%9C%80%E5%A4%A7%E6%B5%81%E9%97%AE%E9%A2%98/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://edisonleolhl.github.io" target="_blank">一知半解</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/images/avatar.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/05/12/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20ThreadLocal%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E7%BC%93%E5%AD%98%E9%87%8D%E5%A4%8DRPC%E7%BB%93%E6%9E%9C/" title="微服务架构下的Java ThreadLocal实践——缓存重复RPC结果"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">微服务架构下的Java ThreadLocal实践——缓存重复RPC结果</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">55</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/edisonleolhl"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/edisonleolhl" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:edisonleolhl@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a><a class="social-icon" href="https://www.jianshu.com/u/28b41b12cde8" target="_blank" title="jianshu"><i class="fas fa-link" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Go Big or Go Home</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%80%E5%A4%A7%E6%B5%81-amp-amp-%E6%9C%80%E5%B0%8F%E8%B4%B9%E7%94%A8%E6%9C%80%E5%A4%A7%E6%B5%81-amp-amp-%E6%9C%80%E5%A4%A7%E4%BA%8C%E5%88%86%E5%8C%B9%E9%85%8D"><span class="toc-number">1.</span> <span class="toc-text">最大流&amp;&amp;最小费用最大流&amp;&amp;最大二分匹配</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%A4%A7%E6%B5%81%E9%97%AE%E9%A2%98"><span class="toc-number">1.1.</span> <span class="toc-text">最大流问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B7%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%BA%90%E7%BB%93%E7%82%B9%E5%92%8C%E5%A4%9A%E4%B8%AA%E6%B1%87%E7%82%B9%E7%9A%84%E7%BD%91%E7%BB%9C"><span class="toc-number">1.1.1.</span> <span class="toc-text">具有多个源结点和多个汇点的网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Ford-Fulkerson-%E6%96%B9%E6%B3%95"><span class="toc-number">1.1.2.</span> <span class="toc-text">Ford-Fulkerson 方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%A4%A7%E6%B5%81-%E6%9C%80%E5%B0%8F%E5%89%B2%E5%AE%9A%E7%90%86"><span class="toc-number">1.1.3.</span> <span class="toc-text">最大流-最小割定理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E7%9A%84%E6%95%88%E7%8E%87%E5%8F%8A%E5%85%B6%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94-Edmonds-Karp-%E7%AE%97%E6%B3%95"><span class="toc-number">1.1.4.</span> <span class="toc-text">算法的效率及其优化—— Edmonds-Karp 算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%A4%A7%E6%B5%81%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.1.5.</span> <span class="toc-text">最大流实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CLRS-Exercies"><span class="toc-number">1.1.6.</span> <span class="toc-text">CLRS Exercies</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#26-1-5"><span class="toc-number">1.1.6.1.</span> <span class="toc-text">26.1-5</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#26-1-6"><span class="toc-number">1.1.6.2.</span> <span class="toc-text">26.1-6</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#26-1-7"><span class="toc-number">1.1.6.3.</span> <span class="toc-text">26.1-7</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%B0%8F%E8%B4%B9%E7%94%A8%E6%9C%80%E5%A4%A7%E6%B5%81"><span class="toc-number">1.2.</span> <span class="toc-text">最小费用最大流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%B0%8F%E8%B4%B9%E7%94%A8%E6%9C%80%E5%A4%A7%E6%B5%81%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">最小费用最大流实例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%A4%A7%E4%BA%8C%E5%88%86%E5%8C%B9%E9%85%8D"><span class="toc-number">1.3.</span> <span class="toc-text">最大二分匹配</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Ford-Fulkson%E6%96%B9%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9C%80%E5%A4%A7%E4%BA%8C%E5%88%86%E5%8C%B9%E9%85%8D"><span class="toc-number">1.3.1.</span> <span class="toc-text">Ford-Fulkson方法解决最大二分匹配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%88%E7%89%99%E5%88%A9%E7%AE%97%E6%B3%95%E8%A7%A3%E5%86%B3%E4%BA%8C%E5%88%86%E5%8C%B9%E9%85%8D"><span class="toc-number">1.3.2.</span> <span class="toc-text">匈牙利算法解决二分匹配</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/13/Ford-Fulkerson%20%E6%96%B9%E6%B3%95%E2%80%94%E2%80%94%E6%9C%80%E5%A4%A7%E6%B5%81%E9%97%AE%E9%A2%98/" title="Ford-Fulkerson 方法——最大流问题">Ford-Fulkerson 方法——最大流问题</a><time datetime="2023-05-13T00:17:29.000Z" title="发表于 2023-05-13 08:17:29">2023-05-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20ThreadLocal%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E7%BC%93%E5%AD%98%E9%87%8D%E5%A4%8DRPC%E7%BB%93%E6%9E%9C/" title="微服务架构下的Java ThreadLocal实践——缓存重复RPC结果">微服务架构下的Java ThreadLocal实践——缓存重复RPC结果</a><time datetime="2023-05-12T05:31:47.000Z" title="发表于 2023-05-12 13:31:47">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/C++%E6%96%B0%E7%89%B9%E6%80%A7/" title="C++新特性">C++新特性</a><time datetime="2023-05-11T05:41:59.000Z" title="发表于 2023-05-11 13:41:59">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/" title="Java新特性">Java新特性</a><time datetime="2023-05-11T03:29:22.000Z" title="发表于 2023-05-11 11:29:22">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/10/%E5%BB%BA%E7%AB%99%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="建站第一篇文章">建站第一篇文章</a><time datetime="2023-05-09T16:25:27.000Z" title="发表于 2023-05-10 00:25:27">2023-05-10</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 一个廖少少</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
