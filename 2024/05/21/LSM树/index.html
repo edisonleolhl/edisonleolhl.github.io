@@ -1,0 +1,206 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>LSM树 | 一知半解</title><meta name="author" content="一个廖少少"><meta name="copyright" content="一个廖少少"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="LSM树（Log-Structured-Merge-Tree）是一种采用追加写、数据有序以及将随机 I&#x2F;O 转换为顺序 I&#x2F;O的延迟更新，批量写入硬盘的数据结构 牺牲了小部分读性能，而大幅度提高了写性能，所以很适合写多读少的场景，已经用于LevelDB等开源产品中。 LSM树会将所有的数据插入、修改、删除等操作保存在内存中，当此类操作达到一定的数据量后，再批量地写入到磁盘当中。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LSM树">
+<meta property="og:url" content="https://edisonleolhl.github.io/2024/05/21/LSM%E6%A0%91/index.html">
+<meta property="og:site_name" content="一知半解">
+<meta property="og:description" content="LSM树（Log-Structured-Merge-Tree）是一种采用追加写、数据有序以及将随机 I&#x2F;O 转换为顺序 I&#x2F;O的延迟更新，批量写入硬盘的数据结构 牺牲了小部分读性能，而大幅度提高了写性能，所以很适合写多读少的场景，已经用于LevelDB等开源产品中。 LSM树会将所有的数据插入、修改、删除等操作保存在内存中，当此类操作达到一定的数据量后，再批量地写入到磁盘当中。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://edisonleolhl.github.io/images/avatar.jpeg">
+<meta property="article:published_time" content="2024-05-21T09:19:08.000Z">
+<meta property="article:modified_time" content="2024-07-21T09:22:36.438Z">
+<meta property="article:author" content="一个廖少少">
+<meta property="article:tag" content="LSM">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://edisonleolhl.github.io/images/avatar.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://edisonleolhl.github.io/2024/05/21/LSM%E6%A0%91/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'LSM树',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-21 17:22:36'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">55</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">65</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/cover.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="一知半解"><span class="site-name">一知半解</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">LSM树</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-21T09:19:08.000Z" title="发表于 2024-05-21 17:19:08">2024-05-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-21T09:22:36.438Z" title="更新于 2024-07-21 17:22:36">2024-07-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="LSM树"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>LSM树（Log-Structured-Merge-Tree）是一种采用追加写、数据有序以及将随机 I&#x2F;O 转换为<strong>顺序 I&#x2F;O</strong>的延迟更新，批量写入硬盘的数据结构</p>
+<p><strong>牺牲了小部分读性能</strong>，而<strong>大幅度提高了写性能</strong>，所以很适合<strong>写多读少</strong>的场景，已经用于LevelDB等开源产品中。</p>
+<p>LSM树会将所有的数据<strong>插入、修改、删除等操作保存在内存中</strong>，当此类操作达到一定的数据量后，再批量地写入到磁盘当中。而在写入磁盘时，会和以前的数据做<strong>合并</strong>。在合并过程中，并不会像B+树一样，在原数据的位置上修改，而是直接插入新的数据，从而避免了随机写。</p>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>LSM树的结构是横跨内存和磁盘的，包含memtable、immutable memtable、SSTable等多个部分。</p>
+<ul>
+<li>memtable<ul>
+<li>memtable是在内存中的数据结构，用以保存最近的一些更新操作，当写数据到memtable中时，会先通过WAL的方式备份到磁盘中，以防数据因为内存掉电而丢失。</li>
+<li><strong>预写式日志（Write-ahead logging，缩写 WAL）</strong>是关系数据库系统中用于提供原子性和持久性（ACID属性中的两个）的一系列技术。在使用WAL的系统中，所有的修改在提交之前都要先写入log文件中。</li>
+<li>memtable可以使用跳跃表或者搜索树等数据结构来组织数据以保持数据的有序性。当memtable达到一定的数据量后，memtable会转化成为immutable memtable，同时会创建一个新的memtable来处理新的数据。</li>
+</ul>
+</li>
+<li>immutable memtable<ul>
+<li>immutable memtable在内存中是不可修改的数据结构，它是将memtable转变为SSTable的一种中间状态。</li>
+<li>目的是为了在转存过程中不阻塞写操作。写操作可以由新的memtable处理，而不用因为锁住memtable而等待。</li>
+</ul>
+</li>
+<li>SSTable<ul>
+<li><strong>SSTable(Sorted String Table)即为有序键值对集合</strong>，是LSM树组在磁盘中的数据的结构。如果SSTable比较大的时候，还可以根据键的值建立一个索引来加速SSTable的查询</li>
+</ul>
+</li>
+</ul>
+<h3 id="CRUD"><a href="#CRUD" class="headerlink" title="CRUD"></a>CRUD</h3><ul>
+<li>增&#x2F;写：首先需要通过WAL将数据写入到磁盘Log中，防止数据丢失，然后数据会被写入到内存的memtable中，这样一次写操作即已经完成了，只需要1次磁盘IO，再加1次内存操作。相较于B+树的多次磁盘随机IO，大大提高了效率。随后这些在memtable中的数据会被批量的合并到磁盘中的SSTable当中，将随机写变为了顺序写。</li>
+<li>删：并不需要像B+树一样，在磁盘中的找到相应的数据后再删除，只需要在memtable中插入一条数据当作标志，如delKey:1933，当读操作读到memtable中的这个标志时，就会知道这个key已被删除。随后在日志合并中，这条被删除的数据会在合并的过程中一起被删除。</li>
+<li>改：与删除操作类似，都是只操作memtable，写入一个标志，随后真正的更新操作被延迟在合并时一并完成。</li>
+<li>查：相较于B+树慢很多，读操作需要依次读取memtable、immutable memtable、SSTable0、SSTable1……。需要反序地遍历所有的集合，又因为写入顺序和合并顺序的缘故，序号小的集合中的数据一定会比序号大的集合中的数据新。所以在这个反序遍历的过程中一旦匹配到了要读取的数据，那么一定是最新的数据，只要返回该数据即可。但是如果一个数据的确不在所有的数据集合中，则会白白得遍历一遍。可用布隆过滤器加速查询，也可以用索引加速查询</li>
+</ul>
+<h3 id="合并方式"><a href="#合并方式" class="headerlink" title="合并方式"></a>合并方式</h3><ul>
+<li>size-tiered策略：是HBase采用的合并策略，具体内容是当某个规模的集合达到一定的数量时，将这些集合合并为一个大的集合。比如有5个50个数据的集合，那么就将他们合并为一个250个数据的集合。这种策略有一个缺点是当集合达到一定的数据量后，合并操作会变得十分的耗时。</li>
+<li>leveled策略：是LevelDB和RocksDB采用的合并策略，size-tiered策略因为会产生大数据量的集合，所以会造成<strong>突发的IO和CPU资源的消耗</strong>，所以leveled策略使用了分层的数据结构来代替原来的大数据集合。leveled策略将集合的大小限制在一个小的范围内如5MB，而且将集合划分为不同的层级。每一个层级的集合总大小是固定且递增的。如第一层为50MB，第二层为500MB…。当某一层的数据集合大小达到上限时，就会从这一层中选出一个文件和下一层合并，或者直接提升到下一层。如果在合并过程中发现了数据冲突，则丢弃下一层的数据，因为低层的数据总是更新的。同时leveled策略会限制，除第一层外。其他的每一层的键值都不会重复。这是通过合并时剔除冗余数据实现的，以此来加速在同一层内数据的线性扫描速度。</li>
+</ul>
+<h3 id="比较B树和LSM树"><a href="#比较B树和LSM树" class="headerlink" title="比较B树和LSM树"></a>比较B树和LSM树</h3><h4 id="读写速度"><a href="#读写速度" class="headerlink" title="读写速度"></a>读写速度</h4><p>通常LSM树的写入速度更快，而B树的读取速度更快</p>
+<p>LSM树上的读取通常比较慢，因为它们必须在压缩的不同阶段检查几个不同的数据结构和SSTables。</p>
+<h4 id="LSM树的优点"><a href="#LSM树的优点" class="headerlink" title="LSM树的优点"></a>LSM树的优点</h4><p>B树索引必须至少两次写入每一段数据：一次写入预先写入日志，一次写入树页面本身（也许再次分页）。即使在该页面中只有几个字节发生了变化，也需要一次编写整个页面的开销。有些存储引擎甚至会覆盖同一个页面两次，以免在电源故障的情况下导致页面部分更新</p>
+<p>LSM树通常能够比B树支持<strong>更高的写入吞吐量</strong>，部分原因是它们有时具有较低的写放大（尽管这取决于存储引擎配置和工作负载），部分是因为它们顺序地写入紧凑的SSTable文件而不是必须覆盖树中的几个页面</p>
+<p>LSM树可以被<strong>压缩得更好</strong>，因此经常比B树在磁盘上产生更小的文件。 B树存储引擎会由于分割而留下一些未使用的磁盘空间：当页面被拆分或某行不能放入现有页面时，页面中的某些空间仍未被使用。由于LSM树不是面向页面的，并且定期重写SSTables以去除碎片，所以它们具有较低的存储开销，特别是当使用平坦压缩时。</p>
+<h4 id="LSM树的缺点"><a href="#LSM树的缺点" class="headerlink" title="LSM树的缺点"></a>LSM树的缺点</h4><p>日志结构存储的缺点是压缩过程有时会干扰正在进行的读写操作，因为磁盘资源有限</p>
+<p>压缩的另一个问题出现在高写入吞吐量：磁盘的有限写入带宽需要在初始写入（记录和刷新内存表到磁盘）和在后台运行的压缩线程之间共享。写入空数据库时，可以使用全磁盘带宽进行初始写入，但数据库越大，压缩所需的磁盘带宽就越多。</p>
+<p>如果写入吞吐量很高，并且压缩没有仔细配置，压缩跟不上写入速率。在这种情况下，磁盘上未合并段的数量不断增加，直到磁盘空间用完，读取速度也会减慢，因为它们需要检查更多段文件。</p>
+<p>B树的一个优点是<strong>每个键只存在于索引中的一个位置</strong>，而日志结构化的存储引擎可能在不同的段中有相同键的多个副本。这个方面使得B树在想要提供强大的事务语义的数据库中很有吸引力：在许多关系数据库中，<strong>事务隔离</strong>是通过在键范围上使用锁来实现的，在B树索引中，这些锁可以直接连接到树</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io">一个廖少少</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://edisonleolhl.github.io/2024/05/21/LSM%E6%A0%91/">https://edisonleolhl.github.io/2024/05/21/LSM%E6%A0%91/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://edisonleolhl.github.io" target="_blank">一知半解</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/LSM/">LSM</a><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></div><div class="post_share"><div class="social-share" data-image="/images/avatar.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/05/15/Rocketmq%E5%8E%9F%E7%90%86/" title="Rocketmq原理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Rocketmq原理</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">一个廖少少</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">55</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">65</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/edisonleolhl"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/edisonleolhl" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:edisonleolhl@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a><a class="social-icon" href="https://www.jianshu.com/u/28b41b12cde8" target="_blank" title="jianshu"><i class="fas fa-link" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Go Big or Go Home</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CRUD"><span class="toc-number">2.</span> <span class="toc-text">CRUD</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%88%E5%B9%B6%E6%96%B9%E5%BC%8F"><span class="toc-number">3.</span> <span class="toc-text">合并方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%94%E8%BE%83B%E6%A0%91%E5%92%8CLSM%E6%A0%91"><span class="toc-number">4.</span> <span class="toc-text">比较B树和LSM树</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BB%E5%86%99%E9%80%9F%E5%BA%A6"><span class="toc-number">4.1.</span> <span class="toc-text">读写速度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#LSM%E6%A0%91%E7%9A%84%E4%BC%98%E7%82%B9"><span class="toc-number">4.2.</span> <span class="toc-text">LSM树的优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#LSM%E6%A0%91%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="toc-number">4.3.</span> <span class="toc-text">LSM树的缺点</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/21/LSM%E6%A0%91/" title="LSM树">LSM树</a><time datetime="2024-05-21T09:19:08.000Z" title="发表于 2024-05-21 17:19:08">2024-05-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/15/Rocketmq%E5%8E%9F%E7%90%86/" title="Rocketmq原理">Rocketmq原理</a><time datetime="2023-05-15T07:00:18.000Z" title="发表于 2023-05-15 15:00:18">2023-05-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Java%20ThreadLocal%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E7%BC%93%E5%AD%98%E9%87%8D%E5%A4%8DRPC%E7%BB%93%E6%9E%9C/" title="微服务架构下的Java ThreadLocal实践——缓存重复RPC结果">微服务架构下的Java ThreadLocal实践——缓存重复RPC结果</a><time datetime="2023-05-12T05:31:47.000Z" title="发表于 2023-05-12 13:31:47">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/C++%E6%96%B0%E7%89%B9%E6%80%A7/" title="C++新特性">C++新特性</a><time datetime="2023-05-11T05:41:59.000Z" title="发表于 2023-05-11 13:41:59">2023-05-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/11/Java%E6%96%B0%E7%89%B9%E6%80%A7/" title="Java新特性">Java新特性</a><time datetime="2023-05-11T03:29:22.000Z" title="发表于 2023-05-11 11:29:22">2023-05-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By 一个廖少少</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
